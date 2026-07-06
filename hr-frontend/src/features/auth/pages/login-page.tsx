@@ -2,8 +2,11 @@ import { useState } from 'react'
 import { User, Lock, Eye, EyeOff, Building2 } from 'lucide-react'
 import { useNavigate } from 'react-router'
 
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { IconInput } from '@/components/icon-input'
 import { useTokenStore } from '@/stores/token-store'
-import citecLogo from "@/assets/citec-logo.png";
+import citecLogo from '@/assets/citec-logo.png'
 
 function LogoIcon() {
   return (
@@ -28,7 +31,7 @@ export function LoginPage() {
     // TEMPORARY fake sign-in — Phase 3 replaces this with the real useLogin mutation
     setTimeout(() => {
       setIsLoading(false)
-      setToken('dev-token') // pretend the backend returned a token
+      setToken('dev-token')
       navigate('/')
     }, 1200)
   }
@@ -77,60 +80,68 @@ export function LoginPage() {
 
             {/* Username */}
             <div className="flex flex-col gap-2">
-              <label className="font-semibold text-[13px]" style={{ color: '#374151' }} htmlFor="username">Username</label>
-              <div className="flex items-center gap-2.5 h-[52px] px-3.5 rounded-[8px] bg-white border transition-colors"
-                style={{ borderColor: username ? '#72cfe9' : '#e5e7eb', boxShadow: '0 1px 1px rgba(0,0,0,0.04)' }}>
-                <User className="size-5 shrink-0" style={{ color: '#9ca3af' }} />
-                <input
-                  id="username" type="text" value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  placeholder="Enter your username"
-                  className="flex-1 bg-transparent text-[14px] outline-none placeholder:text-[#9ca3af]"
-                  style={{ color: '#111827' }} autoComplete="username"
-                />
-              </div>
+              <Label htmlFor="username" className="text-[13px] font-semibold" style={{ color: '#374151' }}>Username</Label>
+              <IconInput
+                id="username"
+                icon={User}
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Enter your username"
+                autoComplete="username"
+                className="h-[52px] rounded-[8px] bg-white text-[14px]"
+              />
             </div>
 
             {/* Password */}
             <div className="flex flex-col gap-2">
-              <label className="font-semibold text-[13px]" style={{ color: '#374151' }} htmlFor="password">Password</label>
-              <div className="flex items-center gap-2.5 h-[52px] px-3.5 rounded-[8px] bg-white border transition-colors"
-                style={{ borderColor: password ? '#72cfe9' : '#e5e7eb', boxShadow: '0 1px 1px rgba(0,0,0,0.04)' }}>
-                <Lock className="size-5 shrink-0" style={{ color: '#9ca3af' }} />
-                <input
-                  id="password" type={showPassword ? 'text' : 'password'} value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="flex-1 bg-transparent text-[14px] outline-none placeholder:text-[#9ca3af]"
-                  style={{ color: '#111827' }} autoComplete="current-password"
-                />
-                <button type="button" onClick={() => setShowPassword((v) => !v)}
-                  className="shrink-0 text-[#9ca3af] hover:text-[#6b7280] transition-colors"
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}>
-                  {showPassword ? <EyeOff className="size-5" /> : <Eye className="size-5" />}
-                </button>
-              </div>
+              <Label htmlFor="password" className="text-[13px] font-semibold" style={{ color: '#374151' }}>Password</Label>
+              <IconInput
+                id="password"
+                icon={Lock}
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                autoComplete="current-password"
+                className="h-[52px] rounded-[8px] bg-white text-[14px]"
+                trailing={
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setShowPassword((v) => !v)}
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    className="text-muted-foreground hover:text-foreground"
+                  >
+                    {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                  </Button>
+                }
+              />
               <div className="flex justify-end">
-                <button type="button" className="font-semibold text-[13px] transition-opacity hover:opacity-70" style={{ color: '#72cfe9' }}>
+                <Button type="button" variant="link" className="h-auto p-0 text-[13px] font-semibold" style={{ color: '#72cfe9' }}>
                   Forgot Password?
-                </button>
+                </Button>
               </div>
             </div>
 
             {/* Submit */}
-            <button type="submit" disabled={isLoading}
-              className="flex items-center justify-center h-[56px] rounded-[10px] font-extrabold text-[16px] text-white transition-opacity disabled:opacity-70"
-              style={{ background: '#72cfe9', boxShadow: '0 10px 12px rgba(114,207,233,0.25)' }}>
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="h-[56px] w-full rounded-[10px] text-[16px] font-extrabold text-white hover:opacity-90"
+              style={{ background: '#72cfe9', boxShadow: '0 10px 12px rgba(114,207,233,0.25)' }}
+            >
               {isLoading ? (
                 <span className="flex items-center gap-2">
-                  <svg className="animate-spin size-5" viewBox="0 0 24 24" fill="none">
+                  <svg className="size-5 animate-spin" viewBox="0 0 24 24" fill="none">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
                   </svg>
                   Signing In…
                 </span>
               ) : 'Sign In'}
-            </button>
+            </Button>
           </form>
         </div>
       </div>
