@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/emsdb
+    username: postgres
+    password: "0000"
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+  modulith:
+    events:
+      jdbc:
+        schema-initialization:
+          enabled: true
+server:
+  port: 8080
+
+ems:
+  security:
+    token-secret: ${EMS_SECURITY_TOKEN_SECRET:change-this-local-development-secret-before-production}
+    access-token-ttl: 15m
+    refresh-token-ttl: 7d

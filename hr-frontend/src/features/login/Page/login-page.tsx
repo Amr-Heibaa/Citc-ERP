@@ -1,12 +1,15 @@
 import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { User, Lock, Eye, EyeOff, Building2 } from 'lucide-react'
 import { useNavigate } from 'react-router'
-
+import { loginSchema, type LoginForm } from '@/features/login/schemas/schema'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { IconInput } from '@/components/icon-input'
 import { useTokenStore } from '@/stores/token-store'
-import citecLogo from '@/assets/citec-logo.png'
+import citecLogo from '@/features/login/assets/citec-logo.png'
+
 
 function LogoIcon() {
   return (
@@ -19,21 +22,24 @@ function LogoIcon() {
 export function LoginPage() {
   const navigate = useNavigate()
   const setToken = useTokenStore((s) => s.setToken)
-
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setIsLoading(true)
+  // React Hook Form setup
+  const {
+    register, // register input fields
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginForm>({
+    resolver: zodResolver(loginSchema), //connect ZOD schema for validation
+    defaultValues: { username: '', password: '' },
+  })
+
+  async function onSubmit(values: LoginForm) {
     // TEMPORARY fake sign-in — Phase 3 replaces this with the real useLogin mutation
-    setTimeout(() => {
-      setIsLoading(false)
-      setToken('dev-token')
-      navigate('/')
-    }, 1200)
+    console.log('login values:', values)
+    await new Promise((r) => setTimeout(r, 1200))
+    setToken('dev-token')
+    navigate('/')
   }
 
   return (
@@ -68,7 +74,7 @@ export function LoginPage() {
 
         {/* Right panel – form */}
         <div className="flex items-center justify-center flex-1 py-12 px-10" style={{ background: '#ffffff' }}>
-          <form onSubmit={handleSubmit} className="flex flex-col gap-6 w-full max-w-[420px]" autoComplete="off">
+          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6 w-full max-w-[420px]" noValidate>
             {/* Header */}
             <div className="flex flex-col gap-3">
               <LogoIcon />
@@ -85,12 +91,15 @@ export function LoginPage() {
                 id="username"
                 icon={User}
                 type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
                 placeholder="Enter your username"
                 autoComplete="username"
+                aria-invalid={!!errors.username}
                 className="h-[52px] rounded-[8px] bg-white text-[14px]"
+                {...register('username')}
               />
+              {errors.username && (
+                <p className="text-[12px] text-destructive">{errors.username.message}</p>
+              )}
             </div>
 
             {/* Password */}
@@ -100,11 +109,11 @@ export function LoginPage() {
                 id="password"
                 icon={Lock}
                 type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 autoComplete="current-password"
+                aria-invalid={!!errors.password}
                 className="h-[52px] rounded-[8px] bg-white text-[14px]"
+                {...register('password')}
                 trailing={
                   <Button
                     type="button"
@@ -118,6 +127,9 @@ export function LoginPage() {
                   </Button>
                 }
               />
+              {errors.password && (
+                <p className="text-[12px] text-destructive">{errors.password.message}</p>
+              )}
               <div className="flex justify-end">
                 <Button type="button" variant="link" className="h-auto p-0 text-[13px] font-semibold" style={{ color: '#72cfe9' }}>
                   Forgot Password?
@@ -128,11 +140,11 @@ export function LoginPage() {
             {/* Submit */}
             <Button
               type="submit"
-              disabled={isLoading}
+              disabled={isSubmitting}
               className="h-[56px] w-full rounded-[10px] text-[16px] font-extrabold text-white hover:opacity-90"
               style={{ background: '#72cfe9', boxShadow: '0 10px 12px rgba(114,207,233,0.25)' }}
             >
-              {isLoading ? (
+              {isSubmitting ? (
                 <span className="flex items-center gap-2">
                   <svg className="size-5 animate-spin" viewBox="0 0 24 24" fill="none">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
