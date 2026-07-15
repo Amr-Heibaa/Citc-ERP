@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "generate:client": "orval --config orval.config.ts"
+    
   },
   "dependencies": {
     "@hookform/resolvers": "^5.4.0",
