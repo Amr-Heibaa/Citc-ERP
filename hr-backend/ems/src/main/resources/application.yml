@@ -14,6 +14,7 @@ spring:
         schema-initialization:
           enabled: true
 server:
+  address:
   port: 8080
 
 ems:
