@@ -35,7 +35,7 @@ import type {
   EmploymentRecordRequest,
   EmploymentRecordResponse,
   ListEmployeesParams,
-  PageEmployeeSummary,
+  PagedModelEmployeeSummary,
   PositionAssignmentRequest,
   PositionAssignmentResponse
 } from '../../model';
@@ -213,7 +213,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 ) => {
 
 
-      return customInstance<PageEmployeeSummary>(
+      return customInstance<PagedModelEmployeeSummary>(
       {url: `/api/hr/employees`, method: 'GET',
         params, signal
     },

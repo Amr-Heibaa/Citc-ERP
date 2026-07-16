@@ -5,6 +5,7 @@ import com.citec.ems.iam.domain.*;
 import com.citec.ems.iam.infrastructure.*;
 import com.citec.ems.shared.BadRequestException;
 import com.citec.ems.shared.NotFoundException;
+import com.citec.ems.shared.TextNormalizer;
 import com.citec.ems.iam.web.IamDtos.PermissionCreateRequest;
 import com.citec.ems.iam.web.IamDtos.PermissionResponse;
 import com.citec.ems.iam.web.IamDtos.RoleCreateRequest;
@@ -75,22 +76,24 @@ public class IamAdminService {
 
     @Transactional
     public UserSummary createUser(UserCreateRequest request) {
-        userRepository.findByUsernameIgnoreCase(request.username()).ifPresent(user -> {
+        String username = TextNormalizer.trim(request.username());
+        String email = TextNormalizer.email(request.email());
+        userRepository.findByUsernameIgnoreCase(username).ifPresent(user -> {
             throw new BadRequestException("Username already exists.");
         });
-        userRepository.findByEmailIgnoreCase(request.email()).ifPresent(user -> {
+        userRepository.findByEmailIgnoreCase(email).ifPresent(user -> {
             throw new BadRequestException("Email already exists.");
         });
 
         UserStatus status = request.userStatusId() == null
                 ? userStatusRepository.findByStatusCodeIgnoreCase(UserStatus.ACTIVE)
-                        .orElseThrow(() -> new NotFoundException("ACTIVE user status was not found."))
+                  .orElseThrow(() -> new NotFoundException("ACTIVE user status was not found."))
                 : userStatusRepository.findById(request.userStatusId())
-                        .orElseThrow(() -> new NotFoundException("User status was not found."));
+                  .orElseThrow(() -> new NotFoundException("User status was not found."));
 
         User user = new User();
-        user.setUsername(request.username().trim());
-        user.setEmail(request.email().trim());
+        user.setUsername(username);
+        user.setEmail(email);
         user.setPasswordHash(passwordEncoder.encode(request.password()));
         user.setStatus(status);
         return userSummary(userRepository.save(user));
@@ -122,13 +125,14 @@ public class IamAdminService {
 
     @Transactional
     public RoleResponse createRole(RoleCreateRequest request) {
-        roleRepository.findByRoleCodeIgnoreCase(request.roleCode()).ifPresent(role -> {
+        String roleCode = TextNormalizer.code(request.roleCode());
+        roleRepository.findByRoleCodeIgnoreCase(roleCode).ifPresent(role -> {
             throw new BadRequestException("Role code already exists.");
         });
         Role role = new Role();
-        role.setRoleCode(request.roleCode().trim().toUpperCase());
-        role.setRoleName(request.roleName().trim());
-        role.setDescription(request.description());
+        role.setRoleCode(roleCode);
+        role.setRoleName(TextNormalizer.trim(request.roleName()));
+        role.setDescription(TextNormalizer.trim(request.description()));
         role.setActive(request.active() == null || request.active());
         return roleResponse(roleRepository.save(role));
     }
@@ -140,18 +144,19 @@ public class IamAdminService {
 
     @Transactional
     public PermissionResponse createPermission(PermissionCreateRequest request) {
-        permissionRepository.findByPermissionCodeIgnoreCase(request.permissionCode()).ifPresent(permission -> {
+        String permissionCode = TextNormalizer.code(request.permissionCode());
+        permissionRepository.findByPermissionCodeIgnoreCase(permissionCode).ifPresent(permission -> {
             throw new BadRequestException("Permission code already exists.");
         });
         Permission permission = new Permission();
-        permission.setPermissionCode(request.permissionCode().trim().toUpperCase());
-        permission.setPermissionName(request.permissionName().trim());
-        permission.setDescription(request.description());
+        permission.setPermissionCode(permissionCode);
+        permission.setPermissionName(TextNormalizer.trim(request.permissionName()));
+        permission.setDescription(TextNormalizer.trim(request.description()));
         permission.setActive(request.active() == null || request.active());
         permission.setApplicationModule(request.applicationModuleId() == null
                 ? null
                 : applicationModuleRepository.findById(request.applicationModuleId())
-                        .orElseThrow(() -> new NotFoundException("Application module was not found.")));
+                  .orElseThrow(() -> new NotFoundException("Application module was not found.")));
         return permissionResponse(permissionRepository.save(permission));
     }
 

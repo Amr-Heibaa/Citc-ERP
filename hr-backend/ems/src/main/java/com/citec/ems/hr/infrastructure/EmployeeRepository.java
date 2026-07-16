@@ -12,14 +12,15 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     Optional<Employee> findByEmployeeNumberIgnoreCase(String employeeNumber);
 
-    @EntityGraph(attributePaths = {"user", "status", "currentOrgUnit"})
+    @EntityGraph(attributePaths = {"status", "currentOrgUnit"})
     @Query("""
             select employee
             from Employee employee
             where (:orgUnitId is null or employee.currentOrgUnit.orgUnitId = :orgUnitId)
-              and (:statusCode is null or lower(employee.status.statusCode) = lower(:statusCode))
+              and (:statusCode is null
+                   or lower(employee.status.statusCode) = lower(cast(:statusCode as string)))
               and (:q is null
-                   or lower(employee.employeeNumber) like lower(concat('%', :q, '%')))
+                   or lower(employee.employeeNumber) like lower(concat('%', cast(:q as string), '%')))
             """)
     org.springframework.data.domain.Page<Employee> search(
             @Param("q") String q,
@@ -27,7 +28,3 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
             @Param("statusCode") String statusCode,
             org.springframework.data.domain.Pageable pageable);
 }
-
-
-
-

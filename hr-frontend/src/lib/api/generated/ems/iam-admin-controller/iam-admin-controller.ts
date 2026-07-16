@@ -27,9 +27,9 @@ import type {
   ListPermissionsParams,
   ListRolesParams,
   ListUsersParams,
-  PagePermissionResponse,
-  PageRoleResponse,
-  PageUserSummary,
+  PagedModelPermissionResponse,
+  PagedModelRoleResponse,
+  PagedModelUserSummary,
   PermissionCreateRequest,
   PermissionResponse,
   RoleCreateRequest,
@@ -69,7 +69,7 @@ export const listUsers = (
 ) => {
 
 
-      return customInstance<PageUserSummary>(
+      return customInstance<PagedModelUserSummary>(
       {url: `/api/iam/users`, method: 'GET',
         params, signal
     },
@@ -273,7 +273,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 ) => {
 
 
-      return customInstance<PageRoleResponse>(
+      return customInstance<PagedModelRoleResponse>(
       {url: `/api/iam/roles`, method: 'GET',
         params, signal
     },
@@ -477,7 +477,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 ) => {
 
 
-      return customInstance<PagePermissionResponse>(
+      return customInstance<PagedModelPermissionResponse>(
       {url: `/api/iam/permissions`, method: 'GET',
         params, signal
     },

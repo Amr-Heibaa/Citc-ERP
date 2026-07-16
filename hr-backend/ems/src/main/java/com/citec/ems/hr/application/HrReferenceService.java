@@ -5,6 +5,7 @@ import com.citec.ems.hr.domain.*;
 import com.citec.ems.hr.infrastructure.*;
 import com.citec.ems.shared.BadRequestException;
 import com.citec.ems.shared.NotFoundException;
+import com.citec.ems.shared.TextNormalizer;
 import com.citec.ems.hr.web.HrDtos.ContractTypeCreateRequest;
 import com.citec.ems.hr.web.HrDtos.ContractTypeResponse;
 import com.citec.ems.hr.web.HrDtos.EmployeeStatusResponse;
@@ -58,13 +59,14 @@ public class HrReferenceService {
 
     @Transactional
     public OrganizationResponse createOrganization(OrganizationCreateRequest request) {
-        organizationRepository.findByOrganizationCodeIgnoreCase(request.organizationCode()).ifPresent(organization -> {
+        String organizationCode = TextNormalizer.code(request.organizationCode());
+        organizationRepository.findByOrganizationCodeIgnoreCase(organizationCode).ifPresent(organization -> {
             throw new BadRequestException("Organization code already exists.");
         });
         Organization organization = new Organization();
-        organization.setOrganizationCode(request.organizationCode().trim().toUpperCase());
-        organization.setOrganizationNameEn(request.organizationNameEn().trim());
-        organization.setOrganizationNameAr(request.organizationNameAr().trim());
+        organization.setOrganizationCode(organizationCode);
+        organization.setOrganizationNameEn(TextNormalizer.trim(request.organizationNameEn()));
+        organization.setOrganizationNameAr(TextNormalizer.trim(request.organizationNameAr()));
         organization.setActive(request.active() == null || request.active());
         return organizationResponse(organizationRepository.save(organization));
     }
@@ -83,21 +85,22 @@ public class HrReferenceService {
     public OrganizationUnitResponse createOrganizationUnit(OrganizationUnitCreateRequest request) {
         Organization organization = organizationRepository.findById(request.organizationId())
                 .orElseThrow(() -> new NotFoundException("Organization was not found."));
+        String unitCode = TextNormalizer.code(request.unitCode());
         organizationUnitRepository.findByOrganizationOrganizationIdAndUnitCodeIgnoreCase(
                 request.organizationId(),
-                request.unitCode()).ifPresent(unit -> {
-                    throw new BadRequestException("Organization unit code already exists for this organization.");
-                });
+                unitCode).ifPresent(unit -> {
+            throw new BadRequestException("Organization unit code already exists for this organization.");
+        });
         OrganizationUnit unit = new OrganizationUnit();
         unit.setOrganization(organization);
         unit.setUnitType(unitTypeRepository.findById(request.unitTypeId())
                 .orElseThrow(() -> new NotFoundException("Unit type was not found.")));
         unit.setParentOrgUnit(request.parentOrgUnitId() == null ? null : getOrganizationUnit(request.parentOrgUnitId()));
-        unit.setUnitCode(request.unitCode().trim().toUpperCase());
-        unit.setUnitName(request.unitName().trim());
-        unit.setUnitNameAr(request.unitNameAr().trim());
-        unit.setDescription(request.description());
-        unit.setDescriptionAr(request.descriptionAr());
+        unit.setUnitCode(unitCode);
+        unit.setUnitName(TextNormalizer.trim(request.unitName()));
+        unit.setUnitNameAr(TextNormalizer.trim(request.unitNameAr()));
+        unit.setDescription(TextNormalizer.trim(request.description()));
+        unit.setDescriptionAr(TextNormalizer.trim(request.descriptionAr()));
         unit.setStartDate(request.startDate() == null ? LocalDate.now() : request.startDate());
         unit.setEndDate(request.endDate());
         unit.setActive(request.active() == null || request.active());
@@ -121,12 +124,13 @@ public class HrReferenceService {
 
     @Transactional
     public JobGradeResponse createJobGrade(JobGradeCreateRequest request) {
-        jobGradeRepository.findByGradeCodeIgnoreCase(request.gradeCode()).ifPresent(grade -> {
+        String gradeCode = TextNormalizer.code(request.gradeCode());
+        jobGradeRepository.findByGradeCodeIgnoreCase(gradeCode).ifPresent(grade -> {
             throw new BadRequestException("Job grade code already exists.");
         });
         JobGrade grade = new JobGrade();
-        grade.setGradeCode(request.gradeCode().trim().toUpperCase());
-        grade.setGradeName(request.gradeName());
+        grade.setGradeCode(gradeCode);
+        grade.setGradeName(TextNormalizer.trim(request.gradeName()));
         grade.setGradeRank(request.gradeRank());
         grade.setActive(request.active() == null || request.active());
         return jobGradeResponse(jobGradeRepository.save(grade));
@@ -139,19 +143,20 @@ public class HrReferenceService {
 
     @Transactional
     public JobPositionResponse createJobPosition(JobPositionCreateRequest request) {
-        jobPositionRepository.findByPositionCodeIgnoreCase(request.positionCode()).ifPresent(position -> {
+        String positionCode = TextNormalizer.code(request.positionCode());
+        jobPositionRepository.findByPositionCodeIgnoreCase(positionCode).ifPresent(position -> {
             throw new BadRequestException("Position code already exists.");
         });
         JobPosition position = new JobPosition();
-        position.setPositionCode(request.positionCode().trim().toUpperCase());
-        position.setPositionTitle(request.positionTitle().trim());
-        position.setPositionTitleAr(request.positionTitleAr().trim());
+        position.setPositionCode(positionCode);
+        position.setPositionTitle(TextNormalizer.trim(request.positionTitle()));
+        position.setPositionTitleAr(TextNormalizer.trim(request.positionTitleAr()));
         position.setOrgUnit(getOrganizationUnit(request.orgUnitId()));
         position.setGrade(request.gradeId() == null ? null : getJobGrade(request.gradeId()));
         position.setPositionLevel(request.positionLevel() == null ? 1 : request.positionLevel());
         position.setReportsToPosition(request.reportsToPositionId() == null ? null : getJobPosition(request.reportsToPositionId()));
-        position.setPositionDescription(request.positionDescription());
-        position.setPositionDescriptionAr(request.positionDescriptionAr());
+        position.setPositionDescription(TextNormalizer.trim(request.positionDescription()));
+        position.setPositionDescriptionAr(TextNormalizer.trim(request.positionDescriptionAr()));
         position.setOpen(request.open() == null || request.open());
         position.setActive(request.active() == null || request.active());
         return jobPositionResponse(jobPositionRepository.save(position));
@@ -164,13 +169,14 @@ public class HrReferenceService {
 
     @Transactional
     public ContractTypeResponse createContractType(ContractTypeCreateRequest request) {
-        contractTypeRepository.findByContractTypeCodeIgnoreCase(request.contractTypeCode()).ifPresent(contractType -> {
+        String contractTypeCode = TextNormalizer.code(request.contractTypeCode());
+        contractTypeRepository.findByContractTypeCodeIgnoreCase(contractTypeCode).ifPresent(contractType -> {
             throw new BadRequestException("Contract type code already exists.");
         });
         ContractType contractType = new ContractType();
-        contractType.setContractTypeCode(request.contractTypeCode().trim().toUpperCase());
-        contractType.setContractTypeName(request.contractTypeName().trim());
-        contractType.setDescription(request.description());
+        contractType.setContractTypeCode(contractTypeCode);
+        contractType.setContractTypeName(TextNormalizer.trim(request.contractTypeName()));
+        contractType.setDescription(TextNormalizer.trim(request.description()));
         contractType.setActive(request.active() == null || request.active());
         return contractTypeResponse(contractTypeRepository.save(contractType));
     }
@@ -267,7 +273,7 @@ public class HrReferenceService {
     }
 
     private String blankToNull(String value) {
-        return value == null || value.isBlank() ? null : value.trim();
+        return TextNormalizer.trim(value);
     }
 }
 

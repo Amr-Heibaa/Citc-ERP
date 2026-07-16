@@ -41,13 +41,13 @@ import type {
   OrganizationResponse,
   OrganizationUnitCreateRequest,
   OrganizationUnitResponse,
-  PageContractTypeResponse,
-  PageEmployeeStatusResponse,
-  PageJobGradeResponse,
-  PageJobPositionResponse,
-  PageOrganizationResponse,
-  PageOrganizationUnitResponse,
-  PageUnitTypeResponse
+  PagedModelContractTypeResponse,
+  PagedModelEmployeeStatusResponse,
+  PagedModelJobGradeResponse,
+  PagedModelJobPositionResponse,
+  PagedModelOrganizationResponse,
+  PagedModelOrganizationUnitResponse,
+  PagedModelUnitTypeResponse
 } from '../../model';
 
 import { customInstance } from '../../../axios';
@@ -78,7 +78,7 @@ export const listJobPositions = (
 ) => {
 
 
-      return customInstance<PageJobPositionResponse>(
+      return customInstance<PagedModelJobPositionResponse>(
       {url: `/api/hr/positions`, method: 'GET',
         params, signal
     },
@@ -223,7 +223,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 ) => {
 
 
-      return customInstance<PageOrganizationResponse>(
+      return customInstance<PagedModelOrganizationResponse>(
       {url: `/api/hr/organizations`, method: 'GET',
         params, signal
     },
@@ -368,7 +368,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 ) => {
 
 
-      return customInstance<PageOrganizationUnitResponse>(
+      return customInstance<PagedModelOrganizationUnitResponse>(
       {url: `/api/hr/org-units`, method: 'GET',
         params, signal
     },
@@ -513,7 +513,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 ) => {
 
 
-      return customInstance<PageJobGradeResponse>(
+      return customInstance<PagedModelJobGradeResponse>(
       {url: `/api/hr/job-grades`, method: 'GET',
         params, signal
     },
@@ -658,7 +658,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 ) => {
 
 
-      return customInstance<PageContractTypeResponse>(
+      return customInstance<PagedModelContractTypeResponse>(
       {url: `/api/hr/contract-types`, method: 'GET',
         params, signal
     },
@@ -803,7 +803,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 ) => {
 
 
-      return customInstance<PageUnitTypeResponse>(
+      return customInstance<PagedModelUnitTypeResponse>(
       {url: `/api/hr/unit-types`, method: 'GET',
         params, signal
     },
@@ -890,7 +890,7 @@ export const listEmployeeStatuses = (
 ) => {
 
 
-      return customInstance<PageEmployeeStatusResponse>(
+      return customInstance<PagedModelEmployeeStatusResponse>(
       {url: `/api/hr/employee-statuses`, method: 'GET',
         params, signal
     },

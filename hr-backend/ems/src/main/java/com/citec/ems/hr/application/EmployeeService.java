@@ -5,6 +5,7 @@ import com.citec.ems.hr.domain.*;
 import com.citec.ems.hr.infrastructure.*;
 import com.citec.ems.shared.BadRequestException;
 import com.citec.ems.shared.NotFoundException;
+import com.citec.ems.shared.TextNormalizer;
 import com.citec.ems.hr.web.HrDtos.EmployeeCreateRequest;
 import com.citec.ems.hr.web.HrDtos.EmployeeDetail;
 import com.citec.ems.hr.web.HrDtos.EmployeeProfileRequest;
@@ -21,6 +22,11 @@ import com.citec.ems.iam.UserAccountSummary;
 import com.citec.ems.iam.UserAccounts;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -65,8 +71,32 @@ public class EmployeeService {
 
     @Transactional(readOnly = true)
     public Page<EmployeeSummary> listEmployees(String q, Long orgUnitId, String statusCode, Pageable pageable) {
-        return employeeRepository.search(blankToNull(q), orgUnitId, blankToNull(statusCode), pageable)
-                .map(this::employeeSummary);
+        Page<Employee> page = employeeRepository.search(blankToNull(q), orgUnitId, blankToNull(statusCode), pageable);
+        List<Employee> employees = page.getContent();
+        if (employees.isEmpty()) {
+            return page.map(employee -> employeeSummary(employee, null, null));
+        }
+
+        // ONE query for every primary profile on this page
+        Map<Long, EmployeeProfile> profilesByEmployeeId = employeeProfileRepository
+                .findPrimaryProfilesByEmployeeIds(employees.stream().map(Employee::getEmployeeId).toList())
+                .stream()
+                .collect(Collectors.toMap(
+                        profile -> profile.getEmployee().getEmployeeId(),
+                        profile -> profile,
+                        (first, second) -> first));
+
+        // ONE query for every linked user account on this page
+        Set<Long> userIds = employees.stream()
+                .map(Employee::getUserId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+        Map<Long, UserAccountSummary> usersById = userAccounts.findSummaries(userIds);
+
+        return page.map(employee -> employeeSummary(
+                employee,
+                profilesByEmployeeId.get(employee.getEmployeeId()),
+                employee.getUserId() == null ? null : usersById.get(employee.getUserId())));
     }
 
     @Transactional(readOnly = true)
@@ -88,11 +118,12 @@ public class EmployeeService {
 
     @Transactional
     public EmployeeSummary createEmployee(EmployeeCreateRequest request) {
-        employeeRepository.findByEmployeeNumberIgnoreCase(request.employeeNumber()).ifPresent(employee -> {
+        String employeeNumber = TextNormalizer.code(request.employeeNumber());
+        employeeRepository.findByEmployeeNumberIgnoreCase(employeeNumber).ifPresent(employee -> {
             throw new BadRequestException("Employee number already exists.");
         });
         Employee employee = new Employee();
-        employee.setEmployeeNumber(request.employeeNumber().trim());
+        employee.setEmployeeNumber(employeeNumber);
         employee.setUserId(request.userId() == null ? null : requireUserId(request.userId()));
         employee.setCurrentOrgUnit(request.currentOrgUnitId() == null ? null : getOrgUnit(request.currentOrgUnitId()));
         employee.setHireDate(request.hireDate());
@@ -111,11 +142,14 @@ public class EmployeeService {
     @Transactional
     public EmployeeSummary updateEmployee(Long employeeId, EmployeeUpdateRequest request) {
         Employee employee = getEmployeeEntity(employeeId);
-        if (request.employeeNumber() != null && !request.employeeNumber().equalsIgnoreCase(employee.getEmployeeNumber())) {
-            employeeRepository.findByEmployeeNumberIgnoreCase(request.employeeNumber()).ifPresent(existing -> {
-                throw new BadRequestException("Employee number already exists.");
-            });
-            employee.setEmployeeNumber(request.employeeNumber().trim());
+        if (request.employeeNumber() != null) {
+            String employeeNumber = TextNormalizer.code(request.employeeNumber());
+            if (!employeeNumber.equalsIgnoreCase(employee.getEmployeeNumber())) {
+                employeeRepository.findByEmployeeNumberIgnoreCase(employeeNumber).ifPresent(existing -> {
+                    throw new BadRequestException("Employee number already exists.");
+                });
+                employee.setEmployeeNumber(employeeNumber);
+            }
         }
         if (request.userId() != null) {
             employee.setUserId(requireUserId(request.userId()));
@@ -157,13 +191,12 @@ public class EmployeeService {
         EmploymentContract contract = new EmploymentContract();
         contract.setEmployee(employee);
         contract.setContractType(request.contractTypeId() == null ? null : getContractType(request.contractTypeId()));
-        contract.setContractNumber(request.contractNumber());
+        contract.setContractNumber(TextNormalizer.code(request.contractNumber()));
         contract.setStartDate(request.startDate());
         contract.setEndDate(request.endDate());
         contract.setSalary(request.salary());
-        contract.setSalaryCurrency(request.salaryCurrency() == null || request.salaryCurrency().isBlank()
-                ? "EGP"
-                : request.salaryCurrency().trim().toUpperCase());
+        String currency = TextNormalizer.code(request.salaryCurrency());
+        contract.setSalaryCurrency(currency == null ? "EGP" : currency);
         contract.setWorkingHoursPerWeek(request.workingHoursPerWeek());
         contract.setWorkingHoursPerMonth(request.workingHoursPerMonth());
         contract.setProbationPeriodDays(request.probationPeriodDays());
@@ -224,25 +257,24 @@ public class EmployeeService {
     private EmployeeProfile buildProfile(Employee employee, EmployeeProfileRequest request) {
         EmployeeProfile profile = new EmployeeProfile();
         profile.setEmployee(employee);
-        profile.setFirstName(request.firstName().trim());
-        profile.setOtherName(request.otherName().trim());
-        profile.setDisplayName(request.displayName());
+        profile.setFirstName(TextNormalizer.trim(request.firstName()));
+        profile.setOtherName(TextNormalizer.trim(request.otherName()));
+        profile.setDisplayName(TextNormalizer.trim(request.displayName()));
         profile.setGender(request.gender());
         profile.setBirthDate(request.birthDate());
-        profile.setNationalId(request.nationalId());
-        profile.setPersonalEmail(request.personalEmail());
-        profile.setBusinessEmail(request.businessEmail());
-        profile.setPhoneNumber(request.phoneNumber());
-        profile.setMobileNumber(request.mobileNumber());
+        profile.setNationalId(TextNormalizer.trim(request.nationalId()));
+        profile.setPersonalEmail(TextNormalizer.email(request.personalEmail()));
+        profile.setBusinessEmail(TextNormalizer.email(request.businessEmail()));
+        profile.setPhoneNumber(TextNormalizer.trim(request.phoneNumber()));
+        profile.setMobileNumber(TextNormalizer.trim(request.mobileNumber()));
         profile.setCountryId(request.countryId());
         profile.setStateId(request.stateId());
         profile.setCityId(request.cityId());
-        profile.setAddressLine1(request.addressLine1());
-        profile.setAddressLine2(request.addressLine2());
-        profile.setPostalCode(request.postalCode());
+        profile.setAddressLine1(TextNormalizer.trim(request.addressLine1()));
+        profile.setAddressLine2(TextNormalizer.trim(request.addressLine2()));
+        profile.setPostalCode(TextNormalizer.trim(request.postalCode()));
         return profile;
     }
-
     private EmployeeStatus resolveStatus(Short statusId) {
         if (statusId != null) {
             return employeeStatusRepository.findById(statusId)
@@ -285,11 +317,16 @@ public class EmployeeService {
     }
 
     private EmployeeSummary employeeSummary(Employee employee) {
-        EmployeeProfile profile = employeeProfileRepository.findFirstByEmployeeEmployeeIdAndPrimaryProfileTrue(employee.getEmployeeId())
+        EmployeeProfile profile = employeeProfileRepository
+                .findFirstByEmployeeEmployeeIdAndPrimaryProfileTrue(employee.getEmployeeId())
                 .orElse(null);
         UserAccountSummary user = employee.getUserId() == null
                 ? null
                 : userAccounts.findSummary(employee.getUserId()).orElse(null);
+        return employeeSummary(employee, profile, user);
+    }
+
+    private EmployeeSummary employeeSummary(Employee employee, EmployeeProfile profile, UserAccountSummary user) {
         return new EmployeeSummary(
                 employee.getEmployeeId(),
                 employee.getEmployeeNumber(),
@@ -375,7 +412,7 @@ public class EmployeeService {
     }
 
     private String blankToNull(String value) {
-        return value == null || value.isBlank() ? null : value.trim();
+        return TextNormalizer.trim(value);
     }
 }
 
