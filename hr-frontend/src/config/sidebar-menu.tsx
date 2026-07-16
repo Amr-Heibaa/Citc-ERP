@@ -1,4 +1,12 @@
-import { LayoutDashboard, Users, CalendarCheck, type LucideIcon } from 'lucide-react'
+import {
+  LayoutDashboard,
+  Bell,
+  Copy,
+  Briefcase,
+  BarChart2,
+  Settings,
+  type LucideIcon,
+} from 'lucide-react'
 
 export type MenuItem = {
   label: string
@@ -8,6 +16,9 @@ export type MenuItem = {
 
 export const sidebarMenu: MenuItem[] = [
   { label: 'Dashboard', to: '/', icon: LayoutDashboard },
-  { label: 'Employees', to: '/employees', icon: Users },
-  { label: 'Attendance', to: '/attendance', icon: CalendarCheck },
+  { label: 'Notifications', to: '/notifications', icon: Bell },
+  { label: 'Requests', to: '/requests', icon: Copy },
+  { label: 'Projects', to: '/projects', icon: Briefcase },
+  { label: 'Reports', to: '/reports', icon: BarChart2 },
+  { label: 'Settings', to: '/settings', icon: Settings },
 ]
