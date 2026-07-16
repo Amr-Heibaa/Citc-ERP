@@ -116,6 +116,14 @@ public class EmployeeService {
                 employee.getUpdatedAt());
     }
 
+    /** Self-service: returns the employee record linked to the given user account. */
+    @Transactional(readOnly = true)
+    public EmployeeSummary getMyEmployee(Long userId) {
+        Employee employee = employeeRepository.findByUserId(userId)
+                .orElseThrow(() -> new NotFoundException("No employee record is linked to this user."));
+        return employeeSummary(employee);
+    }
+
     @Transactional
     public EmployeeSummary createEmployee(EmployeeCreateRequest request) {
         String employeeNumber = TextNormalizer.code(request.employeeNumber());

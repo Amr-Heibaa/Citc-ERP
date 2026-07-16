@@ -13,6 +13,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     Optional<Employee> findByEmployeeNumberIgnoreCase(String employeeNumber);
 
     @EntityGraph(attributePaths = {"status", "currentOrgUnit"})
+    Optional<Employee> findByUserId(Long userId);
     @Query("""
             select employee
             from Employee employee

@@ -40,6 +40,7 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/hr/employees/me").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/hr/**")
                         .hasAnyAuthority(
                                 "ROLE_SUPER_ADMIN",

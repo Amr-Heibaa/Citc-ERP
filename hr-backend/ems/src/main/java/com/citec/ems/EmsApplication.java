@@ -3,8 +3,8 @@ package com.citec.ems;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
-import org.springframework.modulith.Modulithic;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
+import org.springframework.modulith.Modulithic;
 
 @SpringBootApplication
 @ConfigurationPropertiesScan
@@ -17,6 +17,3 @@ public class EmsApplication {
     }
 
 }
-
-
-
