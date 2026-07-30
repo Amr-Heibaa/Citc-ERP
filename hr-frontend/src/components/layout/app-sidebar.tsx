@@ -28,6 +28,11 @@ export function SidebarContent({ onNavigate }: SidebarContentProps) {
   const user = useUserStore((s) => s.user)
   const role = useUserStore((s) => s.roles[0])
   const notificationCount = useUiStore((s) => s.notificationCount)
+  const roles = useUserStore((s) => s.roles)
+
+  const visibleMenu = sidebarMenu.filter(
+    (item) => !item.roles || item.roles.some((role) => roles.includes(role)),
+  )
 
   const displayName = user?.username ?? 'User'
   const roleLabel = role ?? 'Employee'
@@ -49,7 +54,7 @@ export function SidebarContent({ onNavigate }: SidebarContentProps) {
 
       {/* Nav */}
       <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto py-3">
-        {sidebarMenu.map((item) => {
+        {visibleMenu.map((item) => {
           const isActive = location.pathname === item.to
           return (
             <NavLink

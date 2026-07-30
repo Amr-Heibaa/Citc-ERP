@@ -17,8 +17,8 @@ public interface OrganizationUnitRepository extends JpaRepository<OrganizationUn
             where (:organizationId is null or unit.organization.organizationId = :organizationId)
               and (:parentOrgUnitId is null or unit.parentOrgUnit.orgUnitId = :parentOrgUnitId)
               and (:q is null
-                   or lower(unit.unitCode) like lower(concat('%', :q, '%'))
-                   or lower(unit.unitName) like lower(concat('%', :q, '%')))
+                   or lower(unit.unitCode) like lower(concat('%', cast(:q as string), '%'))
+                   or lower(unit.unitName) like lower(concat('%', cast(:q as string), '%')))
             """)
     org.springframework.data.domain.Page<OrganizationUnit> search(
             @Param("organizationId") Integer organizationId,
@@ -26,7 +26,3 @@ public interface OrganizationUnitRepository extends JpaRepository<OrganizationUn
             @Param("q") String q,
             org.springframework.data.domain.Pageable pageable);
 }
-
-
-
-

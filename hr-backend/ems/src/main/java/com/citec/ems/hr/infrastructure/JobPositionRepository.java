@@ -16,15 +16,11 @@ public interface JobPositionRepository extends JpaRepository<JobPosition, Long> 
             from JobPosition position
             where (:orgUnitId is null or position.orgUnit.orgUnitId = :orgUnitId)
               and (:q is null
-                   or lower(position.positionCode) like lower(concat('%', :q, '%'))
-                   or lower(position.positionTitle) like lower(concat('%', :q, '%')))
+                   or lower(position.positionCode) like lower(concat('%', cast(:q as string), '%'))
+                   or lower(position.positionTitle) like lower(concat('%', cast(:q as string), '%')))
             """)
     org.springframework.data.domain.Page<JobPosition> search(
             @Param("orgUnitId") Long orgUnitId,
             @Param("q") String q,
             org.springframework.data.domain.Pageable pageable);
 }
-
-
-
-

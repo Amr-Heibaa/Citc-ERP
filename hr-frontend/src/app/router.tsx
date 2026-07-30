@@ -4,6 +4,8 @@ import { AppLayout } from '@/components/layout/app-layout'
 import { ProtectedRoute } from '@/app/protected-route'
 import { LoginPage } from '@/features/login/Page/login-page'
 import { DashboardPage } from '@/features/dashboard/pages/dashboard-page'
+import { EmployeesPage } from '@/features/hr/pages/employees-page'
+import { EmployeeCreatePage } from '@/features/hr/pages/employee-create-page'
 
 function Placeholder({ name }: { name: string }) {
   return (
@@ -30,6 +32,9 @@ export const router = createBrowserRouter([
           { path: 'projects', element: <Placeholder name="Projects" /> },
           { path: 'reports', element: <Placeholder name="Reports" /> },
           { path: 'settings', element: <Placeholder name="Settings" /> },
+          { path: 'hr/employees', element: <EmployeesPage /> },
+          { path: 'hr/employees/new', element: <EmployeeCreatePage /> },
+          { path: 'hr/employees', element: <EmployeesPage /> },
         ],
       },
     ],
