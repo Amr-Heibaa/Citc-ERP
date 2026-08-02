@@ -26,7 +26,7 @@ function LogoIcon() {
 
 export function LoginPage() {
   const navigate = useNavigate()
-  const setToken = useTokenStore((s) => s.setToken)
+  const setTokens = useTokenStore((s) => s.setTokens)
   const setAuth = useUserStore((s) => s.setAuth)
   const [showPassword, setShowPassword] = useState(false)
 
@@ -45,7 +45,7 @@ export function LoginPage() {
     ...getLoginMutationOptions(),
    onSuccess: (data) => {
       clearAllQueriesCache()
-      if (data.accessToken) setToken(data.accessToken)
+      setTokens(data.accessToken ?? null, data.refreshToken ?? null)
       setAuth(data.user ?? null, data.roles ?? [], data.permissions ?? [])
       toast.success(`Welcome back, ${data.user?.username ?? ''}`)
       navigate('/')

@@ -44,7 +44,7 @@ export function EmployeesPage() {
   }, [search])
 
   const { data, isPending, isError, isPlaceholderData } = useListEmployees(
-    { q: q || undefined, page, size: PAGE_SIZE },
+    { q: q || undefined, page, size: PAGE_SIZE, sort: 'employeeNumber,asc' },
     { query: { placeholderData: keepPreviousData } },
   )
 

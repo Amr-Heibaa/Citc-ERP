@@ -194,6 +194,39 @@ public class EmployeeService {
     }
 
     @Transactional
+    public EmployeeProfileResponse updateProfile(Long employeeId, Long profileId, EmployeeProfileRequest request) {
+        EmployeeProfile profile = employeeProfileRepository.findById(profileId)
+                .filter(p -> p.getEmployee().getEmployeeId().equals(employeeId))
+                .orElseThrow(() -> new NotFoundException("Profile was not found for this employee."));
+
+        profile.setFirstName(TextNormalizer.trim(request.firstName()));
+        profile.setOtherName(TextNormalizer.trim(request.otherName()));
+        profile.setDisplayName(TextNormalizer.trim(request.displayName()));
+        profile.setGender(request.gender());
+        profile.setBirthDate(request.birthDate());
+        profile.setNationalId(TextNormalizer.trim(request.nationalId()));
+        profile.setPersonalEmail(TextNormalizer.email(request.personalEmail()));
+        profile.setBusinessEmail(TextNormalizer.email(request.businessEmail()));
+        profile.setPhoneNumber(TextNormalizer.trim(request.phoneNumber()));
+        profile.setMobileNumber(TextNormalizer.trim(request.mobileNumber()));
+        profile.setCountryId(request.countryId());
+        profile.setStateId(request.stateId());
+        profile.setCityId(request.cityId());
+        profile.setAddressLine1(TextNormalizer.trim(request.addressLine1()));
+        profile.setAddressLine2(TextNormalizer.trim(request.addressLine2()));
+        profile.setPostalCode(TextNormalizer.trim(request.postalCode()));
+
+        // if this profile is being promoted to primary, demote the old primary
+        if (Boolean.TRUE.equals(request.primary()) && !Boolean.TRUE.equals(profile.getPrimaryProfile())) {
+            employeeProfileRepository.findFirstByEmployeeEmployeeIdAndPrimaryProfileTrue(employeeId)
+                    .ifPresent(existing -> existing.setPrimaryProfile(false));
+            profile.setPrimaryProfile(true);
+        }
+
+        return profileResponse(profile);
+    }
+
+    @Transactional
     public EmploymentContractResponse addContract(Long employeeId, EmploymentContractRequest request) {
         Employee employee = getEmployeeEntity(employeeId);
         EmploymentContract contract = new EmploymentContract();

@@ -80,6 +80,14 @@ public class EmployeeController {
         return employeeService.addProfile(employeeId, request);
     }
 
+    @PutMapping("/{employeeId}/profiles/{profileId}")
+    public EmployeeProfileResponse updateProfile(
+            @PathVariable Long employeeId,
+            @PathVariable Long profileId,
+            @Valid @RequestBody EmployeeProfileRequest request) {
+        return employeeService.updateProfile(employeeId, profileId, request);
+    }
+
     @PostMapping("/{employeeId}/contracts")
     @ResponseStatus(HttpStatus.CREATED)
     public EmploymentContractResponse addContract(

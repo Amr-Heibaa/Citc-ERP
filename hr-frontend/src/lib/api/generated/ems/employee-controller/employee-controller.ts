@@ -207,6 +207,66 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       > => {
       return useMutation(getUpdateEmployeeMutationOptions(options), queryClient);
     }
+    export const updateProfile = (
+    employeeId: number,
+    profileId: number,
+    employeeProfileRequest: EmployeeProfileRequest,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+
+
+      return customInstance<EmployeeProfileResponse>(
+      {url: `/api/hr/employees/${employeeId}/profiles/${profileId}`, method: 'PUT',
+      headers: {'Content-Type': 'application/json', },
+      data: employeeProfileRequest, signal
+    },
+      options);
+    }
+
+
+
+
+export const getUpdateProfileMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateProfile>>, TError,{employeeId: number;profileId: number;data: EmployeeProfileRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateProfile>>, TError,{employeeId: number;profileId: number;data: EmployeeProfileRequest}, TContext> => {
+
+const mutationKey = ['updateProfile'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateProfile>>, {employeeId: number;profileId: number;data: EmployeeProfileRequest}> = (props) => {
+          const {employeeId,profileId,data} = props ?? {};
+
+          return  updateProfile(employeeId,profileId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateProfileMutationResult = NonNullable<Awaited<ReturnType<typeof updateProfile>>>
+    export type UpdateProfileMutationBody = EmployeeProfileRequest
+    export type UpdateProfileMutationError = unknown
+
+    export const useUpdateProfile = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateProfile>>, TError,{employeeId: number;profileId: number;data: EmployeeProfileRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateProfile>>,
+        TError,
+        {employeeId: number;profileId: number;data: EmployeeProfileRequest},
+        TContext
+      > => {
+      return useMutation(getUpdateProfileMutationOptions(options), queryClient);
+    }
     export const listEmployees = (
     params: ListEmployeesParams,
  options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
