@@ -9,7 +9,6 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "generate:client": "orval --config orval.config.ts"
-    
   },
   "dependencies": {
     "@hookform/resolvers": "^5.4.0",
@@ -62,6 +61,7 @@
     "tailwind-merge": "^3.6.0",
     "tailwindcss": "^4.3.2",
     "vaul": "^1.1.2",
+    "xlsx": "^0.18.5",
     "zod": "^4.4.3",
     "zustand": "^5.0.14"
   },

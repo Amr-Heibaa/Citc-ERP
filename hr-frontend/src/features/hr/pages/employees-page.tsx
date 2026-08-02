@@ -1,11 +1,20 @@
 import { useEffect, useState } from 'react'
 import { keepPreviousData } from '@tanstack/react-query'
-import { ChevronLeft, ChevronRight, Search, UserPlus } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Download, Search } from 'lucide-react'
 import { useNavigate } from 'react-router'
+import * as XLSX from 'xlsx'
+import { toast } from 'sonner'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { IconInput } from '@/components/icon-input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import {
   Table,
   TableBody,
@@ -14,9 +23,18 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { useListEmployees } from '@/lib/api/generated/ems/employee-controller/employee-controller'
+import {
+  useListEmployees,
+  listEmployees,
+} from '@/lib/api/generated/ems/employee-controller/employee-controller'
+import {
+  useListOrganizationUnits,
+  useListEmployeeStatuses,
+} from '@/lib/api/generated/ems/hr-reference-controller/hr-reference-controller'
+import { EmployeeBanner } from '@/features/hr/components/employee-banner'
 
 const PAGE_SIZE = 10
+const ALL = 'ALL'
 
 function statusVariant(status?: string) {
   if (status === 'ACTIVE') return 'bg-[#2ecc71]/15 text-[#1f8f4e]'
@@ -33,8 +51,14 @@ export function EmployeesPage() {
   const [search, setSearch] = useState('')
   const [q, setQ] = useState('')
   const [page, setPage] = useState(0)
+  const [orgUnitId, setOrgUnitId] = useState<string>(ALL)
+  const [statusCode, setStatusCode] = useState<string>(ALL)
+  const [exporting, setExporting] = useState(false)
 
-  // debounce the search box → resets to first page on a new query
+  const orgUnits = useListOrganizationUnits({ size: 200 })
+  const statuses = useListEmployeeStatuses({ size: 50 })
+
+  // debounce search → reset to first page on change
   useEffect(() => {
     const t = setTimeout(() => {
       setQ(search)
@@ -43,44 +67,130 @@ export function EmployeesPage() {
     return () => clearTimeout(t)
   }, [search])
 
-  const { data, isPending, isError, isPlaceholderData } = useListEmployees(
-    { q: q || undefined, page, size: PAGE_SIZE, sort: 'employeeNumber,asc' },
-    { query: { placeholderData: keepPreviousData } },
-  )
+  // reset to first page when a filter changes
+  useEffect(() => {
+    setPage(0)
+  }, [orgUnitId, statusCode])
+
+  const params = {
+    q: q || undefined,
+    orgUnitId: orgUnitId !== ALL ? Number(orgUnitId) : undefined,
+    statusCode: statusCode !== ALL ? statusCode : undefined,
+    page,
+    size: PAGE_SIZE,
+    sort: 'employeeNumber,asc',
+  }
+
+  const { data, isPending, isError, isPlaceholderData } = useListEmployees(params, {
+    query: { placeholderData: keepPreviousData },
+  })
 
   const employees = data?.content ?? []
   const totalElements = data?.page?.totalElements ?? 0
   const totalPages = data?.page?.totalPages ?? 0
 
+  // Export ALL matching rows (not just current page) to Excel
+  async function handleExport() {
+    setExporting(true)
+    try {
+      const all = await listEmployees({
+        q: q || undefined,
+        orgUnitId: orgUnitId !== ALL ? Number(orgUnitId) : undefined,
+        statusCode: statusCode !== ALL ? statusCode : undefined,
+        page: 0,
+        size: 10000,
+        sort: 'employeeNumber,asc',
+      })
+      const rows = (all.content ?? []).map((e) => ({
+        'Employee No': e.employeeNumber ?? '',
+        Name: e.displayName ?? e.username ?? '',
+        Department: e.currentOrgUnitName ?? '',
+        Status: e.statusCode ?? '',
+        'Hire Date': e.hireDate ?? '',
+        'Start Date': e.startDate ?? '',
+        'Business Email': e.businessEmail ?? '',
+      }))
+      const ws = XLSX.utils.json_to_sheet(rows)
+      const wb = XLSX.utils.book_new()
+      XLSX.utils.book_append_sheet(wb, ws, 'Employees')
+      XLSX.writeFile(wb, `employees-${new Date().toISOString().slice(0, 10)}.xlsx`)
+      toast.success(`Exported ${rows.length} employees`)
+    } catch (error) {
+      toast.error((error as { message?: string })?.message ?? 'Export failed')
+    } finally {
+      setExporting(false)
+    }
+  }
+
   return (
     <div className="flex flex-col gap-5 p-4 md:p-6">
+      {/* <EmployeeBanner /> */}
+
       {/* Header */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="font-['Space_Grotesk',sans-serif] text-[22px] font-bold text-[#1a2535]">
             Employees
           </h1>
           <p className="font-['Inter',sans-serif] text-[13px] text-[#6b7280]">
-            {totalElements} {totalElements === 1 ? 'employee' : 'employees'} total
+            Manage and view all employee information
           </p>
         </div>
         <Button
           onClick={() => navigate('/hr/employees/new')}
-          className="gap-2 bg-[#f5841f] text-white hover:bg-[#e0761a]"
+          className="bg-[#1a2535] text-white hover:bg-[#243347]"
         >
-          <UserPlus className="size-4" />
-          New Employee
+          Add Employee
         </Button>
       </div>
 
-      {/* Search */}
-      <IconInput
-        icon={Search}
-        placeholder="Search by employee number…"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="h-11 max-w-sm bg-white"
-      />
+      {/* Filter bar */}
+      <div className="flex flex-col gap-3 rounded-xl border border-[#e5e7eb] bg-white p-3 md:flex-row md:items-center">
+        <IconInput
+          icon={Search}
+          placeholder="Search for Name, ID…"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="h-11 flex-1 bg-[#f4f6f9]"
+        />
+
+        <Select value={orgUnitId} onValueChange={setOrgUnitId}>
+          <SelectTrigger className="h-11 md:w-[200px]">
+            <SelectValue placeholder="All Departments" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={ALL}>All Departments</SelectItem>
+            {orgUnits.data?.content?.map((u) => (
+              <SelectItem key={u.orgUnitId} value={String(u.orgUnitId)}>
+                {u.unitName}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <Select value={statusCode} onValueChange={setStatusCode}>
+          <SelectTrigger className="h-11 md:w-[160px]">
+            <SelectValue placeholder="All Status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={ALL}>All Status</SelectItem>
+            {statuses.data?.content?.map((s) => (
+              <SelectItem key={s.employeeStatusId} value={s.statusCode ?? ''}>
+                {s.statusCode}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <Button
+          onClick={handleExport}
+          disabled={exporting || totalElements === 0}
+          className="h-11 gap-2 bg-[#1a2535] text-white hover:bg-[#243347]"
+        >
+          <Download className="size-4" />
+          {exporting ? 'Exporting…' : 'Export'}
+        </Button>
+      </div>
 
       {/* Table */}
       <div className="overflow-hidden rounded-xl border border-[#e5e7eb] bg-white">
@@ -140,7 +250,7 @@ export function EmployeesPage() {
       {totalPages > 1 && (
         <div className="flex items-center justify-between">
           <p className="font-['Inter',sans-serif] text-[13px] text-[#6b7280]">
-            Page {page + 1} of {totalPages}
+            Page {page + 1} of {totalPages} · {totalElements} total
           </p>
           <div className="flex gap-2">
             <Button
