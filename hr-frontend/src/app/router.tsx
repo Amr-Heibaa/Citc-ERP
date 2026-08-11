@@ -11,6 +11,7 @@ import { EmployeeDetailPage } from '@/features/hr/pages/employee-detail-page'
 import { EmployeeEditPage } from '@/features/hr/pages/employee-edit-page'
 import { OrganizationsPage } from '@/features/hr/pages/organizations-page'
 import { DepartmentsPage } from '@/features/hr/pages/departments-page'
+import { AttendanceReportPage } from '@/features/hr/pages/attendance-report-page'
 
 function Placeholder({ name }: { name: string }) {
   return (
@@ -53,6 +54,7 @@ export const router = createBrowserRouter([
           { path: 'hr/employees', element: <EmployeesPage /> },
           { path: 'hr/organizations', element: <OrganizationsPage /> },
           { path: 'hr/departments', element: <DepartmentsPage /> },
+          { path: 'hr/employees/:employeeId/attendance', element: <AttendanceReportPage /> },
         ],
       },
     ],

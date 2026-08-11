@@ -104,6 +104,12 @@ export function EmployeeDetailPage() {
           >
             Edit
           </Button>
+          <Button
+            variant="outline"
+            onClick={() => navigate(`/hr/employees/${employeeId}/attendance`)}
+          >
+            Attendance
+          </Button>
           <TerminateEmployeeDialog employeeId={employeeId} />
         </div>
       </div>

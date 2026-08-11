@@ -5,6 +5,7 @@
  * OpenAPI spec version: v0
  */
 
+export * from './attendanceDayResponse';
 export * from './authResponse';
 export * from './authUserResponse';
 export * from './contractTypeCreateRequest';
@@ -20,6 +21,7 @@ export * from './employmentContractRequest';
 export * from './employmentContractResponse';
 export * from './employmentRecordRequest';
 export * from './employmentRecordResponse';
+export * from './getDaysParams';
 export * from './jobGradeCreateRequest';
 export * from './jobGradeResponse';
 export * from './jobPositionCreateRequest';
