@@ -1,6 +1,5 @@
 import { Bell, Briefcase, FileText, UserPlus } from 'lucide-react'
 import { useNavigate } from 'react-router'
-import { useGetMyEmployee } from '@/lib/api/generated/ems/employee-controller/employee-controller'
 import { useUserStore } from '@/stores/user-store'
 
 const today = new Date().toLocaleDateString('en-US', {
@@ -28,7 +27,7 @@ const quickActions = [
 export function DashboardPage() {
   const navigate = useNavigate()
   const username = useUserStore((s) => s.user?.username)
-  const myEmployee = useGetMyEmployee()
+const myEmployee = { data: undefined } as { data: undefined }
 
   // fall back to the username until the employee record loads
   const displayName = myEmployee.data?.displayName ?? username ?? 'User'

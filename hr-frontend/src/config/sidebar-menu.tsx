@@ -21,7 +21,7 @@ export const sidebarMenu: MenuItem[] = [
   { label: 'Dashboard', to: '/', icon: LayoutDashboard },
   { label: 'Notifications', to: '/notifications', icon: Bell },
   { label: 'Requests', to: '/requests', icon: Copy },
-{ label: 'HR', to: '/hr', icon: Users, roles: ['SUPER_ADMIN', 'HR_MANAGER'] },
+  { label: 'HR', to: '/hr', icon: Users },
   { label: 'Projects', to: '/projects', icon: Briefcase },
   { label: 'Reports', to: '/reports', icon: BarChart2 },
   { label: 'Settings', to: '/settings', icon: Settings },

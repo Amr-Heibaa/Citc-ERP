@@ -4,7 +4,8 @@ import { AppLayout } from '@/components/layout/app-layout'
 import { ProtectedRoute } from '@/app/protected-route'
 import { LoginPage } from '@/features/login/Page/login-page'
 import { DashboardPage } from '@/features/dashboard/pages/dashboard-page'
-
+import { HrHomePage } from '@/features/hr/pages/hr-home-page'
+import { EmployeesPage } from '@/features/hr/pages/employees-page'
 function Placeholder({ name }: { name: string }) {
   return (
     <div className="p-6">
@@ -30,6 +31,8 @@ export const router = createBrowserRouter([
           { path: 'projects', element: <Placeholder name="Projects" /> },
           { path: 'reports', element: <Placeholder name="Reports" /> },
           { path: 'settings', element: <Placeholder name="Settings" /> },
+          { path: 'hr', element: <HrHomePage /> },
+          { path: 'hr/employees', element: <EmployeesPage /> },
         ],
       },
     ],
