@@ -6,6 +6,7 @@ import { LoginPage } from '@/features/login/Page/login-page'
 import { DashboardPage } from '@/features/dashboard/pages/dashboard-page'
 import { HrHomePage } from '@/features/hr/pages/hr-home-page'
 import { EmployeesPage } from '@/features/hr/pages/employees-page'
+import { EmployeeDetailPage } from '@/features/hr/pages/employee-detail-page'
 function Placeholder({ name }: { name: string }) {
   return (
     <div className="p-6">
@@ -33,6 +34,7 @@ export const router = createBrowserRouter([
           { path: 'settings', element: <Placeholder name="Settings" /> },
           { path: 'hr', element: <HrHomePage /> },
           { path: 'hr/employees', element: <EmployeesPage /> },
+          { path: 'hr/employees/:employeeId', element: <EmployeeDetailPage /> },
         ],
       },
     ],
