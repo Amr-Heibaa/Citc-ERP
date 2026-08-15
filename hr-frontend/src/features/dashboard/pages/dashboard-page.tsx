@@ -1,6 +1,7 @@
 import { Bell, Briefcase, FileText, UserPlus } from 'lucide-react'
 import { useNavigate } from 'react-router'
 import { useUserStore } from '@/stores/user-store'
+import { useMyEmployee } from "@/features/hr/api/use-employees";
 
 const today = new Date().toLocaleDateString('en-US', {
   weekday: 'long',
@@ -27,7 +28,7 @@ const quickActions = [
 export function DashboardPage() {
   const navigate = useNavigate()
   const username = useUserStore((s) => s.user?.username)
-const myEmployee = { data: undefined } as { data: undefined }
+const myEmployee = useMyEmployee();
 
   // fall back to the username until the employee record loads
   const displayName = myEmployee.data?.displayName ?? username ?? 'User'

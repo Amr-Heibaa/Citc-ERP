@@ -1,55 +1,72 @@
-import { useEffect } from 'react'
-import { Bell, ChevronLeft, Menu, Moon, Search, X } from 'lucide-react'
-import { Outlet, useLocation, useNavigate } from 'react-router'
+import { useEffect } from "react";
+import { Bell, ChevronLeft, Menu, Moon, Search, X } from "lucide-react";
+import { Outlet, useLocation, useNavigate } from "react-router";
 
-import { SidebarContent } from '@/components/layout/app-sidebar'
-import { useUiStore } from '@/stores/ui-store'
-import { useUserStore } from '@/stores/user-store'
+import { SidebarContent } from "@/components/layout/app-sidebar";
+import { useUiStore } from "@/stores/ui-store";
+import { useUserStore } from "@/stores/user-store";
 
 const pageTitles: Record<string, string> = {
-  '/': 'Dashboard',
-  '/notifications': 'Notifications',
-  '/requests': 'Requests',
-  '/requests/new': 'New Request',
-  '/projects': 'Projects',
-  '/reports': 'Reports',
-  '/settings': 'Settings',
-}
+  "/": "Dashboard",
+  "/notifications": "Notifications",
+  "/requests": "Requests",
+  "/requests/new": "New Request",
+  "/projects": "Projects",
+  "/reports": "Reports",
+  "/settings": "Settings",
+  "/hr": "HR",
+  "/hr/employees": "HR › Employees",
+  "/hr/employees/new": "HR › Employees › Create Employee",
+};
 
 function initials(name: string) {
   return name
-    .split(' ')
+    .split(" ")
     .map((part) => part[0])
     .slice(0, 2)
-    .join('')
-    .toUpperCase()
+    .join("")
+    .toUpperCase();
 }
 
 function NotificationDot() {
-  const count = useUiStore((s) => s.notificationCount)
-  if (count === 0) return null
-  return <span className="absolute -right-1 -top-1 size-2 rounded-full bg-[#e74c3c]" />
+  const count = useUiStore((s) => s.notificationCount);
+  if (count === 0) return null;
+  return (
+    <span className="absolute -right-1 -top-1 size-2 rounded-full bg-[#e74c3c]" />
+  );
 }
 
 export function AppLayout() {
-  const location = useLocation()
-  const navigate = useNavigate()
-  const sidebarOpen = useUiStore((s) => s.sidebarOpen)
-  const setSidebarOpen = useUiStore((s) => s.setSidebarOpen)
-  const user = useUserStore((s) => s.user)
+  const location = useLocation();
+  const navigate = useNavigate();
+  const sidebarOpen = useUiStore((s) => s.sidebarOpen);
+  const setSidebarOpen = useUiStore((s) => s.setSidebarOpen);
+  const user = useUserStore((s) => s.user);
 
   // Close the mobile drawer once the viewport is desktop-sized
   useEffect(() => {
     const onResize = () => {
-      if (window.innerWidth >= 768) setSidebarOpen(false)
-    }
-    window.addEventListener('resize', onResize)
-    return () => window.removeEventListener('resize', onResize)
-  }, [setSidebarOpen])
+      if (window.innerWidth >= 768) setSidebarOpen(false);
+    };
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, [setSidebarOpen]);
 
-  const title = pageTitles[location.pathname] ?? ''
-  // a sub-page is any route nested deeper than one level (e.g. /requests/new)
-  const isSubPage = location.pathname.split('/').filter(Boolean).length > 1
+  const isEmployeeDetailPage = /^\/hr\/employees\/\d+$/.test(location.pathname);
+
+  const isEmployeeEditPage = /^\/hr\/employees\/\d+\/edit$/.test(
+  location.pathname,
+);
+
+  const title = isEmployeeDetailPage
+    ? "HR › Employees › Employee Details"
+    : isEmployeeEditPage
+    ? "HR › Employees › Edit Employee"
+    : (pageTitles[location.pathname] ?? "");
+
+  const isSubPage =
+    location.pathname.split("/").filter(Boolean).length > 1 &&
+    !isEmployeeDetailPage;
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-[#f4f6f9]">
@@ -97,7 +114,9 @@ export function AppLayout() {
                 className="flex shrink-0 cursor-pointer items-center gap-1.5 text-[#6b7280] transition-colors hover:text-[#1a2535]"
               >
                 <ChevronLeft size={18} />
-                <span className="hidden font-['Inter',sans-serif] text-[14px] sm:inline">Back</span>
+                <span className="hidden font-['Inter',sans-serif] text-[14px] sm:inline">
+                  Back
+                </span>
               </button>
             )}
 
@@ -131,7 +150,7 @@ export function AppLayout() {
             </button>
 
             <button
-              onClick={() => navigate('/notifications')}
+              onClick={() => navigate("/notifications")}
               aria-label="Notifications"
               className="relative cursor-pointer"
             >
@@ -141,7 +160,7 @@ export function AppLayout() {
 
             <div className="flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-full bg-[#f5841f] md:size-9">
               <span className="font-['Inter',sans-serif] text-[12px] font-bold text-white">
-                {initials(user?.username ?? 'User')}
+                {initials(user?.username ?? "User")}
               </span>
             </div>
           </div>
@@ -153,5 +172,5 @@ export function AppLayout() {
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -11,7 +11,6 @@ import { Label } from "@/components/ui/label";
 import { IconInput } from "@/components/icon-input";
 import { useTokenStore } from "@/stores/token-store";
 import { signin } from "@/lib/api/auth";
-import { useUserStore } from "@/stores/user-store";
 import citecLogo from "@/features/login/assets/citec-logo.png";
 import { clearAllQueriesCache } from "@/lib/api/query-client";
 
@@ -26,7 +25,6 @@ function LogoIcon() {
 export function LoginPage() {
   const navigate = useNavigate();
   const setTokens = useTokenStore((s) => s.setTokens);
-  const setAuth = useUserStore((s) => s.setAuth);
   const [showPassword, setShowPassword] = useState(false);
 
   // React Hook Form setup

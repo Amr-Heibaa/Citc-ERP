@@ -47,43 +47,57 @@ const today = new Date().toLocaleDateString("en-GB", {
 export function HrHomePage() {
   const navigate = useNavigate();
   const { data: me } = useMyEmployee();
+
+  const displayName =
+    me?.displayName ??
+    "User";
+
+  const department =
+    me?.currentOrgUnitName ??
+    "";
+
+  const employeeNumber =
+    me?.employeeNumber ??
+    "—";
+
   return (
     <div className="flex flex-col gap-6 p-6">
       {/* Welcome Banner */}
       <div
-        className="relative h-[120px] overflow-hidden rounded-2xl"
-        style={{
-          background: "linear-gradient(174deg, #1a2535 25%, #243347 75%)",
-        }}
+        className="relative overflow-hidden rounded-2xl"
+        style={{ backgroundImage: 'linear-gradient(174deg, #1a2535 25%, #243347 75%)' }}
       >
-        <div className="absolute left-0 top-0 opacity-5">
-          <svg width="200" height="200" viewBox="0 0 200 200" fill="none">
+        <div className="pointer-events-none absolute -left-12 -top-12 size-[200px] opacity-5">
+          <svg viewBox="0 0 200 200" fill="none">
             <path
-              d="M0 50H200M0 100H200M0 150H200M50 0V200M100 0V200M150 0V200"
+              d="M10 10 L190 10 M10 50 L190 50 M10 90 L190 90 M10 130 L190 130 M10 170 L190 170 M10 10 L10 190 M50 10 L50 190 M90 10 L90 190 M130 10 L130 190 M170 10 L170 190"
               stroke="#F5841F"
               strokeWidth="2"
+              strokeLinecap="round"
             />
           </svg>
         </div>
-        <div className="flex h-full items-center justify-between px-8">
-        <div>
-            <p className="font-['Inter',sans-serif] text-2xl font-bold text-white">
-              {me?.displayName ?? 'HR Portal'}
+        <div className="flex flex-col items-start justify-between gap-3 px-5 py-5 sm:flex-row sm:items-center md:h-[120px] md:px-8 md:py-0">
+          <div className="flex flex-col gap-1">
+            <p className="font-['Inter',sans-serif] text-[20px] font-bold text-white md:text-[28px]">
+              {displayName}
             </p>
-            <p className="font-['Inter',sans-serif] text-[15px] text-[#a4aab6]">
-              {me?.positionTitle ?? me?.currentOrgUnitName ?? 'Human Resources Management'}
+            <p className="font-['Inter',sans-serif] text-[13px] text-[#a4aab6] md:text-[15px]">
+              {department}
             </p>
           </div>
-          <p className="font-['Inter',sans-serif] text-xl text-white">
+          <p className="hidden font-['Inter',sans-serif] text-[13px] text-white md:block md:text-[20px]">
             {today}
           </p>
-          {me?.employeeNumber && (
-            <div className="flex size-16 items-center justify-center rounded-full bg-[#f5841f]/20">
-              <span className="font-['Space_Grotesk',sans-serif] text-sm font-bold text-white">
-                {me.employeeNumber}
-              </span>
+          <div className="relative hidden sm:block">
+            <div className="flex">
+              <div className="size-16 rounded-full bg-[#f5841f]/20 md:size-20" />
+              <div className="-ml-8 size-16 rounded-full bg-[#2ecc71]/20 md:-ml-10 md:size-20" />
             </div>
-          )}
+            <p className="absolute inset-0 flex items-center justify-center font-['Inter',sans-serif] text-[14px] font-bold text-white md:text-[16px]">
+              {employeeNumber}
+            </p>
+          </div>
         </div>
       </div>
 

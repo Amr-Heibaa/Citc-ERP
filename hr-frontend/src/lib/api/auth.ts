@@ -22,3 +22,11 @@ export async function refresh(refreshToken: string): Promise<AuthResponse> {
   const res = await axiosInstance.post('/api/auth/refresh', { refreshToken })
   return res.data
 }
+
+export type CreateUserRequest = { username: string; email: string; password: string }
+export type CreateUserResponse = { userId: number; username: string; email: string }
+
+export async function createUser(data: CreateUserRequest): Promise<CreateUserResponse> {
+  const res = await axiosInstance.post('/api/auth/users', data)
+  return res.data
+}
