@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react";
-import { AlertCircle, Download, RefreshCw, Search } from "lucide-react";
+import { AlertCircle, Download, FileUp, RefreshCw, Search } from "lucide-react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
-
+import { EmployeeImportDialog } from "@/features/hr/components/employee-import-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -315,6 +315,7 @@ export function EmployeesPage() {
   const [status, setStatus] = useState("");
 
   const [exportOpen, setExportOpen] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
 
   const [exportFormat, setExportFormat] = useState<ExportFormat>("CSV");
 
@@ -414,12 +415,23 @@ export function EmployeesPage() {
             </p>
           </div>
 
-          <Button
-            onClick={() => navigate("/hr/employees/new")}
-            className="h-10 bg-[#1a2535] text-white hover:bg-[#243347]"
-          >
-            Add Employee
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setImportOpen(true)}
+              className="h-10 gap-2"
+            >
+              <FileUp className="size-4" />
+              Import Employees
+            </Button>
+
+            <Button
+              onClick={() => navigate("/hr/employees/new")}
+              className="h-10 bg-[#1a2535] text-white hover:bg-[#243347]"
+            >
+              Add Employee
+            </Button>
+          </div>
         </div>
 
         <div className="flex flex-col gap-3 rounded-xl border border-gray-200 bg-white p-4 lg:flex-row lg:items-center">
@@ -623,6 +635,7 @@ export function EmployeesPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      <EmployeeImportDialog open={importOpen} onOpenChange={setImportOpen} />
     </>
   );
 }

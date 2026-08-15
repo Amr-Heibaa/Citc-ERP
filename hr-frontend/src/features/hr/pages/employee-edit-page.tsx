@@ -66,6 +66,25 @@ const editEmployeeSchema = z.object({
     .max(255, "Qualification cannot exceed 255 characters")
     .optional(),
 
+  socialInsuranceNumber: z.string().max(50).optional(),
+
+  maritalStatus: z.string().max(50).optional(),
+
+  graduationDate: z.string().optional(),
+
+  specialization: z.string().max(255).optional(),
+
+  workLocation: z.string().max(255).optional(),
+
+  healthInsuranceCardNumber: z.string().max(100).optional(),
+
+  totalExperienceYears: z
+    .string()
+    .regex(/^\d*(\.\d+)?$/, "Must be a valid number")
+    .optional(),
+
+  leaveNotes: z.string().optional(),
+
   personalEmail: optionalEmail,
   businessEmail: optionalEmail,
   phoneNumber: z.string().optional(),
@@ -234,6 +253,22 @@ export function EmployeeEditPage() {
 
       qualification: emp.qualification ?? "",
 
+      socialInsuranceNumber: emp.socialInsuranceNumber ?? "",
+
+      maritalStatus: emp.maritalStatus ?? "",
+
+      graduationDate: emp.graduationDate ?? "",
+
+      specialization: emp.specialization ?? "",
+
+      workLocation: emp.workLocation ?? "",
+
+      healthInsuranceCardNumber: emp.healthInsuranceCardNumber ?? "",
+
+      totalExperienceYears: emp.totalExperienceYears?.toString() ?? "",
+
+      leaveNotes: emp.leaveNotes ?? "",
+
       personalEmail: emp.personalEmail ?? "",
       businessEmail: emp.businessEmail ?? "",
       phoneNumber: emp.phoneNumber ?? "",
@@ -280,6 +315,22 @@ export function EmployeeEditPage() {
             : values.militaryExemptionExpiryDate || null,
 
         qualification: values.qualification?.trim() || null,
+        socialInsuranceNumber: values.socialInsuranceNumber?.trim() || null,
+
+        maritalStatus: values.maritalStatus?.trim() || null,
+
+        graduationDate: values.graduationDate || null,
+
+        specialization: values.specialization?.trim() || null,
+
+        workLocation: values.workLocation?.trim() || null,
+
+        healthInsuranceCardNumber:
+          values.healthInsuranceCardNumber?.trim() || null,
+
+        totalExperienceYears: numberOrNull(values.totalExperienceYears),
+
+        leaveNotes: values.leaveNotes?.trim() || null,
 
         personalEmail: values.personalEmail || null,
         businessEmail: values.businessEmail || null,
@@ -507,6 +558,60 @@ export function EmployeeEditPage() {
                     placeholder="Bachelor of Computer Science"
                   />
                 </Field>
+              </Section>
+
+              <Section title="Official Information">
+                <Field label="Social Insurance Number">
+                  <Input
+                    {...register("socialInsuranceNumber")}
+                    maxLength={50}
+                  />
+                </Field>
+
+                <Field label="Marital Status">
+                  <Input {...register("maritalStatus")} maxLength={50} />
+                </Field>
+
+                <Field label="Graduation Date">
+                  <Input {...register("graduationDate")} type="date" />
+                </Field>
+
+                <Field label="Specialization">
+                  <Input {...register("specialization")} maxLength={255} />
+                </Field>
+
+                <Field label="Work Location">
+                  <Input {...register("workLocation")} maxLength={255} />
+                </Field>
+
+                <Field label="Health Insurance Card Number">
+                  <Input
+                    {...register("healthInsuranceCardNumber")}
+                    maxLength={100}
+                  />
+                </Field>
+
+                <Field
+                  label="Total Experience Years"
+                  error={errors.totalExperienceYears?.message}
+                >
+                  <Input
+                    {...register("totalExperienceYears")}
+                    type="number"
+                    min="0"
+                    step="0.01"
+                  />
+                </Field>
+
+                <div className="md:col-span-2">
+                  <Field label="Leave Notes">
+                    <textarea
+                      {...register("leaveNotes")}
+                      rows={3}
+                      className="flex w-full rounded-md border border-input bg-[#f4f6f9] px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+                    />
+                  </Field>
+                </div>
               </Section>
               <Section title="Skills">
                 <div className="md:col-span-2">

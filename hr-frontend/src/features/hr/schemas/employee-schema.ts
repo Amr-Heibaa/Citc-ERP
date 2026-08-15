@@ -57,6 +57,22 @@ export const personalInfoSchema = z.object({
     .max(255, "Qualification cannot exceed 255 characters")
     .optional(),
 
+  socialInsuranceNumber: z.string().max(50).optional(),
+
+  maritalStatus: z.string().max(50).optional(),
+
+  graduationDate: z.string().optional(),
+
+  specialization: z.string().max(255).optional(),
+
+  workLocation: z.string().max(255).optional(),
+
+  healthInsuranceCardNumber: z.string().max(100).optional(),
+
+  totalExperienceYears: optionalNumber,
+
+  leaveNotes: z.string().optional(),
+
   personalEmail: optionalEmail,
   businessEmail: optionalEmail,
 
@@ -127,6 +143,7 @@ export const contractSchema = z.object({
   probationPeriodDays: optionalNumber,
 
   workType: z.enum(["Full Time", "Part Time"]).optional(),
+  contractNotes: z.string().optional(),
 });
 
 export type IdentityFormValues = z.infer<typeof identitySchema>;

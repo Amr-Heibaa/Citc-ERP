@@ -1,11 +1,12 @@
-import { Award, Briefcase } from "lucide-react";
+import { Award, Briefcase, FileSpreadsheet } from "lucide-react";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useEmployeeDetail } from "@/features/hr/api/use-employees";
 import type { EmployeeDetail, HistoryEntry } from "@/lib/api/hr-api";
-
+import { EmployeeContractImportDialog } from "@/features/hr/components/employee-contract-import-dialog";
 const TAB_TRIGGER_CLASS =
   "h-12 flex-none rounded-none border-x-0 border-t-0 border-b-2 border-transparent bg-transparent px-0 shadow-none data-[state=active]:border-[#f5841f] data-[state=active]:bg-transparent data-[state=active]:text-[#f5841f]";
 function fmt(v: string | null) {
@@ -133,8 +134,6 @@ function PersonalTab({ emp }: { emp: EmployeeDetail }) {
               value={fmt(emp.nationalIdExpiryDate)}
             />
 
-            <InfoRow label="Qualification" value={emp.qualification} />
-
             {emp.gender === 1 && (
               <InfoRow
                 label="Military Exemption Expiry"
@@ -144,6 +143,51 @@ function PersonalTab({ emp }: { emp: EmployeeDetail }) {
           </div>
         </div>
       </div>
+
+      <div>
+        <SectionTitle>Official Information</SectionTitle>
+
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <InfoRow
+            label="Social Insurance Number"
+            value={emp.socialInsuranceNumber}
+          />
+
+          <InfoRow label="Marital Status" value={emp.maritalStatus} />
+
+          <InfoRow
+            label="Health Insurance Card"
+            value={emp.healthInsuranceCardNumber}
+          />
+
+          <InfoRow label="Graduation Date" value={fmt(emp.graduationDate)} />
+
+          <InfoRow label="Specialization" value={emp.specialization} />
+
+          <InfoRow
+            label="Total Experience"
+            value={
+              emp.totalExperienceYears != null
+                ? `${emp.totalExperienceYears} years`
+                : null
+            }
+          />
+
+          <InfoRow label="Work Location" value={emp.workLocation} />
+
+          <InfoRow label="Qualification" value={emp.qualification} />
+        </div>
+      </div>
+
+      {emp.leaveNotes && (
+        <div>
+          <SectionTitle>Leave Notes</SectionTitle>
+
+          <div className="whitespace-pre-wrap rounded-lg bg-[#f4f6f9] px-4 py-3 font-['Inter',sans-serif] text-sm text-[#1a2535]">
+            {emp.leaveNotes}
+          </div>
+        </div>
+      )}
       <div>
         <SectionTitle>Contact</SectionTitle>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -198,48 +242,151 @@ function EmploymentTab({ emp }: { emp: EmployeeDetail }) {
   );
 }
 
-function ContractsTab({ emp }: { emp: EmployeeDetail }) {
-  const contracts = emp.contracts ?? [];
-
-  if (contracts.length === 0) {
-    return (
-      <div className="py-8 text-center font-['Inter',sans-serif] text-gray-400">
-        No contracts on file.
-      </div>
-    );
-  }
+function ContractValue({
+  label,
+  value,
+}: {
+  label: string;
+  value: React.ReactNode;
+}) {
   return (
-    <div className="grid grid-cols-1 gap-4 py-4 sm:grid-cols-2">
-      {contracts.map((c) => (
-        <div
-          key={c.contractId}
-          className="rounded-xl border border-gray-100 bg-[#f4f6f9] p-4"
-        >
-          <div className="mb-1 flex items-start justify-between">
-            <div>
-              <p className="font-['Inter',sans-serif] font-semibold text-[#1a2535]">
-                Contract #{c.contractNumber ?? c.contractId}
-              </p>
-              {c.salary != null && (
-                <p className="mt-1 font-['Inter',sans-serif] text-xs text-gray-500">
-                  Salary : {c.salary} {c.salaryCurrency}
-                </p>
-              )}
-            </div>
-            <Badge
-              className={`border-0 ${c.active ? "bg-emerald-100 text-emerald-700" : "bg-gray-200 text-gray-500"}`}
-            >
-              {c.active ? "Active" : "Inactive"}
-            </Badge>
-          </div>
-          <div className="mt-3 flex items-center gap-1 font-['Inter',sans-serif] text-xs text-gray-400">
-            📅 {fmt(c.startDate)} - {c.endDate ? fmt(c.endDate) : "Ongoing"}
-          </div>
-        </div>
-      ))}
+    <div className="rounded-lg bg-white px-3 py-2">
+      <p className="font-['Inter',sans-serif] text-[10px] uppercase tracking-wide text-gray-400">
+        {label}
+      </p>
+
+      <p className="mt-0.5 font-['Inter',sans-serif] text-xs font-medium text-[#1a2535]">
+        {value}
+      </p>
     </div>
   );
 }
+
+function ContractsTab({ emp }: { emp: EmployeeDetail }) {
+  const contracts = emp.contracts ?? [];
+  const [importOpen, setImportOpen] = useState(false);
+
+  return (
+    <div className="flex flex-col gap-4 py-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm font-semibold text-[#1a2535]">
+            Employee Contracts
+          </p>
+
+          <p className="text-xs text-gray-400">
+            {contracts.length} contract(s)
+          </p>
+        </div>
+
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => setImportOpen(true)}
+        >
+          <FileSpreadsheet className="mr-2 size-4" />
+          Import Contracts
+        </Button>
+      </div>
+
+      {contracts.length === 0 ? (
+        <div className="rounded-xl border border-dashed py-10 text-center font-['Inter',sans-serif] text-sm text-gray-400">
+          No contracts on file.
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {contracts.map((c) => (
+            <div
+              key={c.contractId}
+              className="rounded-xl border border-gray-100 bg-[#f4f6f9] p-4"
+            >
+              <div className="mb-1 flex items-start justify-between">
+                <div>
+                  <p className="font-['Inter',sans-serif] font-semibold text-[#1a2535]">
+                    Contract #{c.contractNumber ?? c.contractId}
+                  </p>
+
+                  {c.contractTypeName && (
+                    <p className="mt-1 font-['Inter',sans-serif] text-xs text-gray-500">
+                      {c.contractTypeName}
+                    </p>
+                  )}
+
+                  {c.salary != null && (
+                    <p className="mt-1 font-['Inter',sans-serif] text-xs text-gray-500">
+                      Salary : {c.salary} {c.salaryCurrency}
+                    </p>
+                  )}
+                </div>
+
+                <Badge
+                  className={`border-0 ${
+                    c.active
+                      ? "bg-emerald-100 text-emerald-700"
+                      : "bg-gray-200 text-gray-500"
+                  }`}
+                >
+                  {c.active ? "Active" : "Inactive"}
+                </Badge>
+              </div>
+
+              <div className="mt-3 flex items-center gap-1 font-['Inter',sans-serif] text-xs text-gray-400">
+                📅 {fmt(c.startDate)} -{" "}
+                {c.endDate ? fmt(c.endDate) : "Ongoing"}
+              </div>
+
+              <div className="mt-3 grid grid-cols-2 gap-2">
+                <ContractValue
+                  label="Work Type"
+                  value={
+                    c.fulltime == null
+                      ? "—"
+                      : c.fulltime
+                        ? "Full Time"
+                        : "Part Time"
+                  }
+                />
+
+                <ContractValue
+                  label="Probation"
+                  value={
+                    c.probationPeriodDays != null
+                      ? `${c.probationPeriodDays} days`
+                      : "—"
+                  }
+                />
+
+                <ContractValue
+                  label="Hours / Week"
+                  value={c.workingHoursPerWeek ?? "—"}
+                />
+
+                <ContractValue
+                  label="Hours / Month"
+                  value={c.workingHoursPerMonth ?? "—"}
+                />
+              </div>
+
+              {c.notes && (
+                <p className="mt-3 whitespace-pre-wrap border-t border-gray-200 pt-3 font-['Inter',sans-serif] text-xs leading-5 text-gray-500">
+                  {c.notes}
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      <EmployeeContractImportDialog
+        employeeId={emp.employeeId}
+        open={importOpen}
+        onOpenChange={setImportOpen}
+      />
+    </div>
+  );
+}
+
 
 function HistoryTab({ history }: { history: HistoryEntry[] }) {
   const records = history ?? [];

@@ -311,6 +311,22 @@ function PersonalStep({
 
       qualification: defaults.qualification ?? "",
 
+      socialInsuranceNumber: defaults.socialInsuranceNumber ?? "",
+
+      maritalStatus: defaults.maritalStatus ?? "",
+
+      graduationDate: defaults.graduationDate ?? "",
+
+      specialization: defaults.specialization ?? "",
+
+      workLocation: defaults.workLocation ?? "",
+
+      healthInsuranceCardNumber: defaults.healthInsuranceCardNumber ?? "",
+
+      totalExperienceYears: defaults.totalExperienceYears ?? "",
+
+      leaveNotes: defaults.leaveNotes ?? "",
+
       personalEmail: defaults.personalEmail ?? defaults.email ?? "",
 
       businessEmail: defaults.businessEmail ?? "",
@@ -406,19 +422,77 @@ function PersonalStep({
             />
           </Field>
 
-          <Input
-            {...register("birthDate")}
-            type="date"
-            readOnly={Boolean(nationalIdData)}
-            className={nationalIdData ? "bg-gray-100" : ""}
-          />
+          <Field label="Social Insurance Number">
+            <Input {...register("socialInsuranceNumber")} maxLength={50} />
+          </Field>
 
-          <Input
-            {...register("birthDate")}
-            type="date"
-            readOnly={Boolean(nationalIdData)}
-            className={nationalIdData ? "bg-gray-100" : ""}
-          />
+          <Field label="Marital Status">
+            <Input
+              {...register("maritalStatus")}
+              placeholder="Married, Single..."
+              maxLength={50}
+            />
+          </Field>
+
+          <Field label="Graduation Date">
+            <Input {...register("graduationDate")} type="date" />
+          </Field>
+
+          <Field label="Specialization">
+            <Input {...register("specialization")} maxLength={255} />
+          </Field>
+
+          <Field label="Work Location">
+            <Input {...register("workLocation")} maxLength={255} />
+          </Field>
+
+          <Field label="Health Insurance Card Number">
+            <Input {...register("healthInsuranceCardNumber")} maxLength={100} />
+          </Field>
+
+          <Field
+            label="Total Experience Years"
+            error={errors.totalExperienceYears?.message}
+          >
+            <Input
+              {...register("totalExperienceYears")}
+              type="number"
+              min="0"
+              step="0.01"
+            />
+          </Field>
+
+          <div className="md:col-span-3">
+            <Field label="Leave Notes">
+              <textarea
+                {...register("leaveNotes")}
+                rows={3}
+                className="flex w-full rounded-md border border-input bg-[#f4f6f9] px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+                placeholder="Employee leave information and notes"
+              />
+            </Field>
+          </div>
+
+          <Field label="Birth Date">
+            <Input
+              {...register("birthDate")}
+              type="date"
+              readOnly={Boolean(nationalIdData)}
+              className={nationalIdData ? "bg-gray-100" : ""}
+            />
+          </Field>
+
+          <Field label="Gender" error={errors.gender?.message}>
+            <select
+              {...register("gender")}
+              disabled={Boolean(nationalIdData)}
+              className={selectClass}
+            >
+              <option value="">Select Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+          </Field>
 
           <Field label="Photo">
             <Input
@@ -756,6 +830,7 @@ function ContractStep({
       probationPeriodDays: defaults.probationPeriodDays ?? "",
 
       workType: defaults.workType ?? "Full Time",
+      contractNotes: defaults.contractNotes ?? "",
     },
   });
 
@@ -824,6 +899,17 @@ function ContractStep({
               <option value="Part Time">Part Time</option>
             </select>
           </Field>
+
+          <div className="md:col-span-2">
+            <Field label="Contract Notes">
+              <textarea
+                {...register("contractNotes")}
+                rows={3}
+                className="flex w-full rounded-md border border-input bg-[#f4f6f9] px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+                placeholder="Contract notes"
+              />
+            </Field>
+          </div>
         </div>
 
         <DesignArt />
@@ -898,6 +984,23 @@ export function EmployeeCreatePage() {
 
           qualification: all.qualification?.trim() || null,
 
+          socialInsuranceNumber: all.socialInsuranceNumber?.trim() || null,
+
+          maritalStatus: all.maritalStatus?.trim() || null,
+
+          graduationDate: all.graduationDate || null,
+
+          specialization: all.specialization?.trim() || null,
+
+          workLocation: all.workLocation?.trim() || null,
+
+          healthInsuranceCardNumber:
+            all.healthInsuranceCardNumber?.trim() || null,
+
+          totalExperienceYears: numberOrNull(all.totalExperienceYears),
+
+          leaveNotes: all.leaveNotes?.trim() || null,
+
           personalEmail: all.personalEmail || all.email || null,
 
           businessEmail: all.businessEmail || null,
@@ -963,6 +1066,7 @@ export function EmployeeCreatePage() {
           probationPeriodDays: numberOrNull(all.probationPeriodDays),
 
           fulltime: all.workType ? all.workType === "Full Time" : null,
+          contractNotes: all.contractNotes?.trim() || null,
         },
       });
 
