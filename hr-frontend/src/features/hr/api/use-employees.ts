@@ -1,121 +1,87 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { createUser, type CreateUserRequest } from "@/lib/api/auth";
 
 import {
+  confirm as confirmContractImport,
+  preview as previewContractImport,
+} from "@/lib/api/generated/ems/employee-contract-controller/employee-contract-controller";
+
+import {
   createEmployee,
-  getEmployeeDetail,
-  getMyEmployee,
-  listContractTypes,
-  listEmployees,
-  listOrganizations,
-  listOrgUnits,
-  listPositions,
-  listStatuses,
   updateEmployee,
-  type CreateEmployeeRequest,
-  type UpdateEmployeeRequest,
-  confirmEmployeeImport,
-  previewEmployeeImport,
-  confirmContractImport,
-  previewContractImport,
-} from "@/lib/api/hr-api";
+  useGetEmployeeDetail,
+  useGetMyEmployee,
+  useListEmployees,
+} from "@/lib/api/generated/ems/employee-controller/employee-controller";
 
-export const employeeKeys = {
-  all: ["employees"] as const,
+import {
+  confirm1 as confirmEmployeeImport,
+  preview1 as previewEmployeeImport,
+} from "@/lib/api/generated/ems/employee-import-controller/employee-import-controller";
 
-  lists: () => [...employeeKeys.all, "list"] as const,
+import {
+  useContractTypes as useContractTypesQuery,
+  useOrgUnits as useOrgUnitsQuery,
+  useOrganizations as useOrganizationsQuery,
+  usePositions as usePositionsQuery,
+  useStatuses as useStatusesQuery,
+} from "@/lib/api/generated/ems/reference-controller/reference-controller";
 
-  detail: (employeeId: number) =>
-    [...employeeKeys.all, "detail", employeeId] as const,
+import type {
+  CreateEmployeeRequest,
+  UpdateEmployeeRequest,
+} from "@/lib/api/generated/model";
 
-  me: () => [...employeeKeys.all, "me"] as const,
-};
+import {
+  employeeDetailQueryKey,
+  isEmployeeQueryKey,
+  isReferenceQueryKey,
+} from "@/features/hr/api/query-keys";
 
-export const hrReferenceKeys = {
-  all: ["hr-reference-data"] as const,
-
-  statuses: () => [...hrReferenceKeys.all, "statuses"] as const,
-
-  orgUnits: () => [...hrReferenceKeys.all, "org-units"] as const,
-
-  organizations: () => [...hrReferenceKeys.all, "organizations"] as const,
-
-  positions: () => [...hrReferenceKeys.all, "positions"] as const,
-
-  contractTypes: () => [...hrReferenceKeys.all, "contract-types"] as const,
-};
+// See employee-import-types.ts: the generated types for these two
+// endpoints are wrong (backend schema-naming bug), so we cast to the
+// real runtime shape here instead of hand-writing the whole request.
+import type {
+  ContractImportResult,
+  EmployeeImportPreview,
+  EmployeeImportResult,
+} from "@/features/hr/api/import-row-types";
 
 const REFERENCE_STALE_TIME = 5 * 60 * 1000;
 
 export function useEmployees() {
-  return useQuery({
-    queryKey: employeeKeys.lists(),
-    queryFn: listEmployees,
-  });
+  return useListEmployees();
 }
 
 export function useMyEmployee() {
-  return useQuery({
-    queryKey: employeeKeys.me(),
-    queryFn: getMyEmployee,
-    retry: false,
-  });
+  return useGetMyEmployee({ query: { retry: false } });
 }
 
 export function useEmployeeDetail(employeeId: number) {
-  return useQuery({
-    queryKey: employeeKeys.detail(employeeId),
-
-    queryFn: () => getEmployeeDetail(employeeId),
-
-    enabled: Number.isInteger(employeeId) && employeeId > 0,
+  return useGetEmployeeDetail(employeeId, {
+    query: { enabled: Number.isInteger(employeeId) && employeeId > 0 },
   });
 }
 
 export function useStatuses() {
-  return useQuery({
-    queryKey: hrReferenceKeys.statuses(),
-
-    queryFn: listStatuses,
-    staleTime: REFERENCE_STALE_TIME,
-  });
+  return useStatusesQuery({ query: { staleTime: REFERENCE_STALE_TIME } });
 }
 
 export function useOrgUnits() {
-  return useQuery({
-    queryKey: hrReferenceKeys.orgUnits(),
-
-    queryFn: listOrgUnits,
-    staleTime: REFERENCE_STALE_TIME,
-  });
+  return useOrgUnitsQuery({ query: { staleTime: REFERENCE_STALE_TIME } });
 }
 
 export function useOrganizations() {
-  return useQuery({
-    queryKey: hrReferenceKeys.organizations(),
-
-    queryFn: listOrganizations,
-    staleTime: REFERENCE_STALE_TIME,
-  });
+  return useOrganizationsQuery({ query: { staleTime: REFERENCE_STALE_TIME } });
 }
 
 export function usePositions() {
-  return useQuery({
-    queryKey: hrReferenceKeys.positions(),
-
-    queryFn: listPositions,
-    staleTime: REFERENCE_STALE_TIME,
-  });
+  return usePositionsQuery({ query: { staleTime: REFERENCE_STALE_TIME } });
 }
 
 export function useContractTypes() {
-  return useQuery({
-    queryKey: hrReferenceKeys.contractTypes(),
-
-    queryFn: listContractTypes,
-    staleTime: REFERENCE_STALE_TIME,
-  });
+  return useContractTypesQuery({ query: { staleTime: REFERENCE_STALE_TIME } });
 }
 
 export type CreateEmployeeInput = {
@@ -128,7 +94,7 @@ export function useCreateEmployee() {
 
   return useMutation({
     mutationFn: async ({ account, employee }: CreateEmployeeInput) => {
-      let userId = employee.userId ?? null;
+      let userId = employee.userId;
 
       if (account) {
         const createdUser = await createUser(account);
@@ -136,15 +102,12 @@ export function useCreateEmployee() {
         userId = createdUser.userId;
       }
 
-      return createEmployee({
-        ...employee,
-        userId,
-      });
+      return createEmployee({ ...employee, userId });
     },
 
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: employeeKeys.all,
+        predicate: (query) => isEmployeeQueryKey(query.queryKey),
       });
     },
   });
@@ -154,12 +117,11 @@ export function useUpdateEmployee(employeeId: number) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: UpdateEmployeeRequest) =>
-      updateEmployee(employeeId, data),
+    mutationFn: (data: UpdateEmployeeRequest) => updateEmployee(employeeId, data),
 
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: employeeKeys.all,
+        predicate: (query) => isEmployeeQueryKey(query.queryKey),
       });
     },
   });
@@ -167,7 +129,8 @@ export function useUpdateEmployee(employeeId: number) {
 
 export function usePreviewEmployeeImport() {
   return useMutation({
-    mutationFn: (file: File) => previewEmployeeImport(file),
+    mutationFn: (file: File) =>
+      previewEmployeeImport({ file }, { timeout: 120_000 }) as unknown as Promise<EmployeeImportPreview>,
   });
 }
 
@@ -175,24 +138,22 @@ export function useConfirmEmployeeImport() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (file: File) => confirmEmployeeImport(file),
+    mutationFn: (file: File) =>
+      confirmEmployeeImport({ file }, { timeout: 300_000 }) as unknown as Promise<EmployeeImportResult>,
 
     onSuccess: async () => {
-      await Promise.all([
-        queryClient.invalidateQueries({
-          queryKey: employeeKeys.all,
-        }),
-
-        queryClient.invalidateQueries({
-          queryKey: hrReferenceKeys.all,
-        }),
-      ]);
+      await queryClient.invalidateQueries({
+        predicate: (query) =>
+          isEmployeeQueryKey(query.queryKey) || isReferenceQueryKey(query.queryKey),
+      });
     },
   });
 }
+
 export function usePreviewContractImport(employeeId: number) {
   return useMutation({
-    mutationFn: (file: File) => previewContractImport(employeeId, file),
+    mutationFn: (file: File) =>
+      previewContractImport(employeeId, { file }, { timeout: 120_000 }),
   });
 }
 
@@ -200,11 +161,12 @@ export function useConfirmContractImport(employeeId: number) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (file: File) => confirmContractImport(employeeId, file),
+    mutationFn: (file: File) =>
+      confirmContractImport(employeeId, { file }, { timeout: 300_000 }) as unknown as Promise<ContractImportResult>,
 
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: employeeKeys.detail(employeeId),
+        queryKey: employeeDetailQueryKey(employeeId),
       });
     },
   });

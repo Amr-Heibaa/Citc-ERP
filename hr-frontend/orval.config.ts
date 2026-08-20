@@ -3,7 +3,7 @@ import { defineConfig } from 'orval'
 export default defineConfig({
   ems: {
     input: {
-      target: 'http://localhost:8080/v3/api-docs',
+      target: 'http://localhost:8083/v3/api-docs',
     },
     output: {
       mode: 'tags-split',

@@ -23,6 +23,7 @@ import {
   useConfirmEmployeeImport,
   usePreviewEmployeeImport,
 } from "@/features/hr/api/use-employees";
+import type { EmployeeImportResult } from "@/features/hr/api/import-row-types";
 
 type EmployeeImportDialogProps = {
   open: boolean;
@@ -54,9 +55,7 @@ export function EmployeeImportDialog({
     }
 
     if (filter === "WARNINGS") {
-      return preview.rows.filter(
-        (row) => row.warnings.length > 0,
-      );
+      return preview.rows.filter((row) => row.warnings.length > 0);
     }
 
     return preview.rows;
@@ -70,11 +69,7 @@ export function EmployeeImportDialog({
   }
 
   function handleOpenChange(nextOpen: boolean) {
-    if (
-      !nextOpen &&
-      (previewMutation.isPending ||
-        confirmMutation.isPending)
-    ) {
+    if (!nextOpen && (previewMutation.isPending || confirmMutation.isPending)) {
       return;
     }
 
@@ -96,9 +91,7 @@ export function EmployeeImportDialog({
       toast.success("Excel file validated successfully");
     } catch (error) {
       toast.error(
-        error instanceof Error
-          ? error.message
-          : "Unable to preview the Excel file",
+        error instanceof Error ? error.message : "Unable to preview the Excel file",
       );
     }
   }
@@ -109,8 +102,7 @@ export function EmployeeImportDialog({
     }
 
     try {
-      const importResult =
-        await confirmMutation.mutateAsync(file);
+      const importResult = await confirmMutation.mutateAsync(file);
 
       if (importResult.failedRows > 0) {
         toast.warning(
@@ -123,22 +115,15 @@ export function EmployeeImportDialog({
       }
     } catch (error) {
       toast.error(
-        error instanceof Error
-          ? error.message
-          : "Unable to import employees",
+        error instanceof Error ? error.message : "Unable to import employees",
       );
     }
   }
 
-  const pending =
-    previewMutation.isPending ||
-    confirmMutation.isPending;
+  const pending = previewMutation.isPending || confirmMutation.isPending;
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={handleOpenChange}
-    >
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
         className="flex-col gap-0 overflow-hidden p-0"
         style={{
@@ -155,8 +140,8 @@ export function EmployeeImportDialog({
           </DialogTitle>
 
           <DialogDescription>
-            Upload the employee Excel file, review validation results,
-            then confirm the import.
+            Upload the employee Excel file, review validation results, then
+            confirm the import.
           </DialogDescription>
         </DialogHeader>
 
@@ -184,8 +169,7 @@ export function EmployeeImportDialog({
                 accept=".xlsx,.xls"
                 disabled={pending}
                 onChange={(event) => {
-                  const selected =
-                    event.target.files?.[0] ?? null;
+                  const selected = event.target.files?.[0] ?? null;
 
                   setFile(selected);
                   setFilter("ALL");
@@ -287,10 +271,7 @@ export function EmployeeImportDialog({
                             {row.displayName}
                           </p>
 
-                          <p
-                            dir="rtl"
-                            className="mt-0.5 text-left text-xs text-gray-400"
-                          >
+                          <p dir="rtl" className="mt-0.5 text-left text-xs text-gray-400">
                             {row.arabicName}
                           </p>
 
@@ -349,29 +330,22 @@ export function EmployeeImportDialog({
 
                         <td className="max-w-[330px] px-3 py-3">
                           {row.errors.map((message) => (
-                            <p
-                              key={`error-${message}`}
-                              className="mb-1 text-xs text-red-600"
-                            >
+                            <p key={`error-${message}`} className="mb-1 text-xs text-red-600">
                               {message}
                             </p>
                           ))}
 
                           {row.warnings.map((message) => (
-                            <p
-                              key={`warning-${message}`}
-                              className="mb-1 text-xs text-amber-600"
-                            >
+                            <p key={`warning-${message}`} className="mb-1 text-xs text-amber-600">
                               {message}
                             </p>
                           ))}
 
-                          {row.errors.length === 0 &&
-                            row.warnings.length === 0 && (
-                              <span className="text-xs text-gray-400">
-                                Ready to import
-                              </span>
-                            )}
+                          {row.errors.length === 0 && row.warnings.length === 0 && (
+                            <span className="text-xs text-gray-400">
+                              Ready to import
+                            </span>
+                          )}
                         </td>
                       </tr>
                     ))}
@@ -381,9 +355,7 @@ export function EmployeeImportDialog({
             </>
           )}
 
-          {result && (
-            <ImportResultView result={result} />
-          )}
+          {result && <ImportResultView result={result} />}
 
           {!preview && !result && (
             <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-3 text-center">
@@ -397,8 +369,8 @@ export function EmployeeImportDialog({
                 </p>
 
                 <p className="mt-1 max-w-md text-sm text-gray-400">
-                  The file will be validated first. No database changes
-                  occur until you confirm the import.
+                  The file will be validated first. No database changes occur
+                  until you confirm the import.
                 </p>
               </div>
             </div>
@@ -432,10 +404,7 @@ export function EmployeeImportDialog({
 
           {preview && !result && (
             <Button
-              disabled={
-                preview.validRows === 0 ||
-                confirmMutation.isPending
-              }
+              disabled={preview.validRows === 0 || confirmMutation.isPending}
               onClick={handleConfirm}
               className="bg-[#1a2535] text-white hover:bg-[#243347]"
             >
@@ -467,9 +436,7 @@ function SummaryCard({
     <div className="rounded-xl border border-gray-100 bg-white px-4 py-3">
       <p className="text-xs text-gray-400">{label}</p>
 
-      <p className={`mt-1 text-2xl font-bold ${color}`}>
-        {value}
-      </p>
+      <p className={`mt-1 text-2xl font-bold ${color}`}>{value}</p>
     </div>
   );
 }
@@ -488,9 +455,7 @@ function FilterButton({
       type="button"
       onClick={onClick}
       className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
-        active
-          ? "bg-[#1a2535] text-white"
-          : "bg-[#f4f6f9] text-gray-500 hover:bg-gray-200"
+        active ? "bg-[#1a2535] text-white" : "bg-[#f4f6f9] text-gray-500 hover:bg-gray-200"
       }`}
     >
       {children}
@@ -498,32 +463,11 @@ function FilterButton({
   );
 }
 
-function ImportResultView({
-  result,
-}: {
-  result: {
-    totalRows: number;
-    importedRows: number;
-    skippedRows: number;
-    failedRows: number;
-    rows: Array<{
-      rowNumber: number;
-      employeeNumber: string;
-      displayName: string;
-      employeeId: number | null;
-      status: "IMPORTED" | "SKIPPED" | "FAILED";
-      message: string | null;
-    }>;
-  };
-}) {
+function ImportResultView({ result }: { result: EmployeeImportResult }) {
   return (
     <>
       <div className="grid shrink-0 grid-cols-2 gap-3 lg:grid-cols-4">
-        <SummaryCard
-          label="Total"
-          value={result.totalRows}
-          color="text-[#1a2535]"
-        />
+        <SummaryCard label="Total" value={result.totalRows} color="text-[#1a2535]" />
 
         <SummaryCard
           label="Imported"
@@ -537,38 +481,29 @@ function ImportResultView({
           color="text-amber-600"
         />
 
-        <SummaryCard
-          label="Failed"
-          value={result.failedRows}
-          color="text-red-600"
-        />
+        <SummaryCard label="Failed" value={result.failedRows} color="text-red-600" />
       </div>
 
       <div className="flex items-center gap-2 rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
         <CheckCircle2 className="size-5 shrink-0" />
-
-        The import finished. Imported employees are now available in
-        the employee list.
+        The import finished. Imported employees are now available in the
+        employee list.
       </div>
 
       <div className="min-h-0 flex-1 overflow-auto rounded-xl border border-gray-100">
         <table className="w-full min-w-[800px]">
           <thead className="sticky top-0 bg-[#f4f6f9]">
             <tr>
-              {[
-                "Row",
-                "Employee Number",
-                "Employee",
-                "Status",
-                "Message",
-              ].map((heading) => (
-                <th
-                  key={heading}
-                  className="border-b border-gray-200 px-4 py-3 text-left text-xs font-semibold text-gray-500"
-                >
-                  {heading}
-                </th>
-              ))}
+              {["Row", "Employee Number", "Employee", "Status", "Message"].map(
+                (heading) => (
+                  <th
+                    key={heading}
+                    className="border-b border-gray-200 px-4 py-3 text-left text-xs font-semibold text-gray-500"
+                  >
+                    {heading}
+                  </th>
+                ),
+              )}
             </tr>
           </thead>
 
@@ -578,9 +513,7 @@ function ImportResultView({
                 key={`${row.rowNumber}-${row.employeeNumber}`}
                 className="border-b border-gray-100"
               >
-                <td className="px-4 py-3 text-xs text-gray-400">
-                  {row.rowNumber}
-                </td>
+                <td className="px-4 py-3 text-xs text-gray-400">{row.rowNumber}</td>
 
                 <td className="px-4 py-3 text-xs text-gray-600">
                   {row.employeeNumber}
@@ -600,10 +533,7 @@ function ImportResultView({
                           : "bg-red-100 text-red-700"
                     }`}
                   >
-                    {row.status === "FAILED" && (
-                      <AlertTriangle />
-                    )}
-
+                    {row.status === "FAILED" && <AlertTriangle />}
                     {row.status}
                   </Badge>
                 </td>
