@@ -1,4 +1,5 @@
 import { z } from "zod";
+
 import { parseEgyptianNationalId } from "@/features/hr/utils/egyptian-national-id";
 
 const optionalEmail = z
@@ -107,6 +108,8 @@ export const employmentSchema = z.object({
   hireDate: z.string().optional(),
 
   startDate: z.string().optional(),
+
+  terminationDate: z.string().optional(),
 });
 
 export const positionSchema = z.object({
@@ -146,6 +149,15 @@ export const contractSchema = z.object({
   contractNotes: z.string().optional(),
 });
 
+// The edit dialog only ever updates the personal + employment fields that
+// UpdateEmployeeRequest exposes (position/contract have their own flows).
+// Unlike the create wizard's employment step, this field can't be skipped
+// once an employee record exists.
+export const editEmployeeSchema = personalInfoSchema.extend({
+  ...employmentSchema.shape,
+  employeeNumber: z.string().trim().min(1, "Employee number is required"),
+});
+
 export type IdentityFormValues = z.infer<typeof identitySchema>;
 
 export type PersonalInfoFormValues = z.infer<typeof personalInfoSchema>;
@@ -155,3 +167,13 @@ export type EmploymentFormValues = z.infer<typeof employmentSchema>;
 export type PositionFormValues = z.infer<typeof positionSchema>;
 
 export type ContractFormValues = z.infer<typeof contractSchema>;
+
+export type EditEmployeeFormValues = z.infer<typeof editEmployeeSchema>;
+
+export type EmployeeWizardData = Partial<
+  IdentityFormValues &
+    PersonalInfoFormValues &
+    EmploymentFormValues &
+    PositionFormValues &
+    ContractFormValues
+>;

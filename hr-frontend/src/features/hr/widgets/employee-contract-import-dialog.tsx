@@ -9,7 +9,6 @@ import {
   XCircle,
 } from "lucide-react";
 import { toast } from "sonner";
-import * as XLSX from "xlsx";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -60,12 +59,10 @@ const TEMPLATE_EXAMPLE = [
   "Example contract",
 ];
 
-function downloadTemplate() {
-  const worksheet =
-    XLSX.utils.aoa_to_sheet([
-      TEMPLATE_HEADERS,
-      TEMPLATE_EXAMPLE,
-    ]);
+async function downloadTemplate() {
+  const XLSX = await import("xlsx");
+
+  const worksheet = XLSX.utils.aoa_to_sheet([TEMPLATE_HEADERS, TEMPLATE_EXAMPLE]);
 
   worksheet["!cols"] = [
     { wch: 22 },
@@ -81,19 +78,11 @@ function downloadTemplate() {
     { wch: 35 },
   ];
 
-  const workbook =
-    XLSX.utils.book_new();
+  const workbook = XLSX.utils.book_new();
 
-  XLSX.utils.book_append_sheet(
-    workbook,
-    worksheet,
-    "Contracts",
-  );
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Contracts");
 
-  XLSX.writeFile(
-    workbook,
-    "employee-contracts-template.xlsx",
-  );
+  XLSX.writeFile(workbook, "employee-contracts-template.xlsx");
 }
 
 export function EmployeeContractImportDialog({
@@ -101,21 +90,15 @@ export function EmployeeContractImportDialog({
   open,
   onOpenChange,
 }: EmployeeContractImportDialogProps) {
-  const [file, setFile] =
-    useState<File | null>(null);
+  const [file, setFile] = useState<File | null>(null);
 
-  const previewMutation =
-    usePreviewContractImport(employeeId);
-
-  const confirmMutation =
-    useConfirmContractImport(employeeId);
+  const previewMutation = usePreviewContractImport(employeeId);
+  const confirmMutation = useConfirmContractImport(employeeId);
 
   const preview = previewMutation.data;
   const result = confirmMutation.data;
 
-  const pending =
-    previewMutation.isPending ||
-    confirmMutation.isPending;
+  const pending = previewMutation.isPending || confirmMutation.isPending;
 
   function reset() {
     setFile(null);
@@ -123,9 +106,7 @@ export function EmployeeContractImportDialog({
     confirmMutation.reset();
   }
 
-  function handleOpenChange(
-    nextOpen: boolean,
-  ) {
+  function handleOpenChange(nextOpen: boolean) {
     if (!nextOpen && pending) {
       return;
     }
@@ -139,25 +120,16 @@ export function EmployeeContractImportDialog({
 
   async function handlePreview() {
     if (!file) {
-      toast.error(
-        "Select an Excel file first",
-      );
+      toast.error("Select an Excel file first");
       return;
     }
 
     try {
-      await previewMutation.mutateAsync(
-        file,
-      );
-
-      toast.success(
-        "Contract file validated",
-      );
+      await previewMutation.mutateAsync(file);
+      toast.success("Contract file validated");
     } catch (error) {
       toast.error(
-        error instanceof Error
-          ? error.message
-          : "Unable to preview contracts",
+        error instanceof Error ? error.message : "Unable to preview contracts",
       );
     }
   }
@@ -168,35 +140,23 @@ export function EmployeeContractImportDialog({
     }
 
     if (preview.validRows === 0) {
-      toast.error(
-        "The file has no valid contracts",
-      );
+      toast.error("The file has no valid contracts");
       return;
     }
 
     try {
-      const response =
-        await confirmMutation.mutateAsync(
-          file,
-        );
+      const response = await confirmMutation.mutateAsync(file);
 
-      toast.success(
-        `${response.importedRows} contracts imported`,
-      );
+      toast.success(`${response.importedRows} contracts imported`);
     } catch (error) {
       toast.error(
-        error instanceof Error
-          ? error.message
-          : "Unable to import contracts",
+        error instanceof Error ? error.message : "Unable to import contracts",
       );
     }
   }
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={handleOpenChange}
-    >
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
         className="flex-col gap-0 overflow-hidden p-0"
         style={{
@@ -213,9 +173,8 @@ export function EmployeeContractImportDialog({
           </DialogTitle>
 
           <DialogDescription>
-            Download the template, add the
-            contracts, then preview and confirm
-            the import.
+            Download the template, add the contracts, then preview and
+            confirm the import.
           </DialogDescription>
         </DialogHeader>
 
@@ -233,9 +192,7 @@ export function EmployeeContractImportDialog({
                   </p>
 
                   <p className="truncate text-xs text-gray-400">
-                    {file
-                      ? file.name
-                      : "Select an .xlsx or .xls file"}
+                    {file ? file.name : "Select an .xlsx or .xls file"}
                   </p>
                 </div>
 
@@ -244,9 +201,7 @@ export function EmployeeContractImportDialog({
                   accept=".xlsx,.xls"
                   disabled={pending}
                   onChange={(event) => {
-                    const selected =
-                      event.target.files?.[0] ??
-                      null;
+                    const selected = event.target.files?.[0] ?? null;
 
                     setFile(selected);
                     previewMutation.reset();
@@ -294,58 +249,30 @@ export function EmployeeContractImportDialog({
                 <table className="w-full min-w-[950px] text-left text-sm">
                   <thead className="sticky top-0 bg-[#f4f6f9] text-xs text-gray-500">
                     <tr>
-                      <th className="px-4 py-3">
-                        Row
-                      </th>
-
-                      <th className="px-4 py-3">
-                        Contract Type
-                      </th>
-
-                      <th className="px-4 py-3">
-                        Contract Number
-                      </th>
-
-                      <th className="px-4 py-3">
-                        Start Date
-                      </th>
-
-                      <th className="px-4 py-3">
-                        Work Type
-                      </th>
-
-                      <th className="px-4 py-3">
-                        Status
-                      </th>
-
-                      <th className="px-4 py-3">
-                        Message
-                      </th>
+                      <th className="px-4 py-3">Row</th>
+                      <th className="px-4 py-3">Contract Type</th>
+                      <th className="px-4 py-3">Contract Number</th>
+                      <th className="px-4 py-3">Start Date</th>
+                      <th className="px-4 py-3">Work Type</th>
+                      <th className="px-4 py-3">Status</th>
+                      <th className="px-4 py-3">Message</th>
                     </tr>
                   </thead>
 
                   <tbody>
-                    {preview.rows.map((row) => (
-                      <tr
-                        key={row.rowNumber}
-                        className="border-t"
-                      >
-                        <td className="px-4 py-3 text-gray-500">
-                          {row.rowNumber}
-                        </td>
+                    {(preview.rows ?? []).map((row) => {
+                      const errors = row.errors ?? [];
+                      const warnings = row.warnings ?? [];
 
-                        <td className="px-4 py-3">
-                          {row.contractType || "—"}
-                        </td>
+                      return (
+                      <tr key={row.rowNumber} className="border-t">
+                        <td className="px-4 py-3 text-gray-500">{row.rowNumber}</td>
 
-                        <td className="px-4 py-3">
-                          {row.contractNumber ||
-                            "—"}
-                        </td>
+                        <td className="px-4 py-3">{row.contractType || "—"}</td>
 
-                        <td className="px-4 py-3">
-                          {row.startDate || "—"}
-                        </td>
+                        <td className="px-4 py-3">{row.contractNumber || "—"}</td>
+
+                        <td className="px-4 py-3">{row.startDate || "—"}</td>
 
                         <td className="px-4 py-3">
                           {row.fulltime == null
@@ -370,33 +297,24 @@ export function EmployeeContractImportDialog({
                         </td>
 
                         <td className="max-w-[320px] px-4 py-3 text-xs">
-                          {row.errors.length > 0 && (
-                            <p className="text-red-600">
-                              {row.errors.join(", ")}
-                            </p>
+                          {errors.length > 0 && (
+                            <p className="text-red-600">{errors.join(", ")}</p>
                           )}
 
-                          {row.warnings.length >
-                            0 && (
+                          {warnings.length > 0 && (
                             <p className="mt-1 flex items-start gap-1 text-amber-600">
                               <AlertTriangle className="mt-0.5 size-3 shrink-0" />
-                              {row.warnings.join(
-                                ", ",
-                              )}
+                              {warnings.join(", ")}
                             </p>
                           )}
 
-                          {row.errors.length ===
-                            0 &&
-                            row.warnings.length ===
-                              0 && (
-                              <span className="text-gray-400">
-                                Ready
-                              </span>
-                            )}
+                          {errors.length === 0 && warnings.length === 0 && (
+                            <span className="text-gray-400">Ready</span>
+                          )}
                         </td>
                       </tr>
-                    ))}
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
@@ -434,44 +352,24 @@ export function EmployeeContractImportDialog({
                 <table className="w-full text-left text-sm">
                   <thead className="sticky top-0 bg-[#f4f6f9] text-xs text-gray-500">
                     <tr>
-                      <th className="px-4 py-3">
-                        Row
-                      </th>
-
-                      <th className="px-4 py-3">
-                        Contract Number
-                      </th>
-
-                      <th className="px-4 py-3">
-                        Status
-                      </th>
-
-                      <th className="px-4 py-3">
-                        Message
-                      </th>
+                      <th className="px-4 py-3">Row</th>
+                      <th className="px-4 py-3">Contract Number</th>
+                      <th className="px-4 py-3">Status</th>
+                      <th className="px-4 py-3">Message</th>
                     </tr>
                   </thead>
 
                   <tbody>
                     {result.rows.map((row) => (
-                      <tr
-                        key={row.rowNumber}
-                        className="border-t"
-                      >
-                        <td className="px-4 py-3">
-                          {row.rowNumber}
-                        </td>
+                      <tr key={row.rowNumber} className="border-t">
+                        <td className="px-4 py-3">{row.rowNumber}</td>
 
-                        <td className="px-4 py-3">
-                          {row.contractNumber ||
-                            "—"}
-                        </td>
+                        <td className="px-4 py-3">{row.contractNumber || "—"}</td>
 
                         <td className="px-4 py-3">
                           <Badge
                             className={
-                              row.status ===
-                              "IMPORTED"
+                              row.status === "IMPORTED"
                                 ? "border-0 bg-emerald-100 text-emerald-700"
                                 : "border-0 bg-amber-100 text-amber-700"
                             }
@@ -494,12 +392,7 @@ export function EmployeeContractImportDialog({
 
         <DialogFooter className="shrink-0 border-t border-gray-100 px-6 py-4">
           {result ? (
-            <Button
-              type="button"
-              onClick={() =>
-                handleOpenChange(false)
-              }
-            >
+            <Button type="button" onClick={() => handleOpenChange(false)}>
               Done
             </Button>
           ) : preview ? (
@@ -508,40 +401,29 @@ export function EmployeeContractImportDialog({
                 type="button"
                 variant="outline"
                 disabled={pending}
-                onClick={() =>
-                  previewMutation.reset()
-                }
+                onClick={() => previewMutation.reset()}
               >
                 Back
               </Button>
 
               <Button
                 type="button"
-                disabled={
-                  pending ||
-                  preview.validRows === 0
-                }
+                disabled={pending || preview.validRows === 0}
                 onClick={handleConfirm}
               >
                 {confirmMutation.isPending && (
                   <Loader2 className="mr-2 size-4 animate-spin" />
                 )}
-
                 Confirm Import
               </Button>
             </>
           ) : (
-            <Button
-              type="button"
-              disabled={!file || pending}
-              onClick={handlePreview}
-            >
+            <Button type="button" disabled={!file || pending} onClick={handlePreview}>
               {previewMutation.isPending ? (
                 <Loader2 className="mr-2 size-4 animate-spin" />
               ) : (
                 <FileSpreadsheet className="mr-2 size-4" />
               )}
-
               Preview
             </Button>
           )}
@@ -557,20 +439,14 @@ function SummaryCard({
   color,
 }: {
   label: string;
-  value: number;
+  value: number | undefined;
   color: string;
 }) {
   return (
     <div className="rounded-xl border bg-white px-5 py-4">
-      <p className="text-xs text-gray-400">
-        {label}
-      </p>
+      <p className="text-xs text-gray-400">{label}</p>
 
-      <p
-        className={`mt-1 text-2xl font-bold ${color}`}
-      >
-        {value}
-      </p>
+      <p className={`mt-1 text-2xl font-bold ${color}`}>{value ?? 0}</p>
     </div>
   );
 }
