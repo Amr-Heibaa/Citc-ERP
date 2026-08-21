@@ -135,7 +135,7 @@ export function useStatuses<TData = Awaited<ReturnType<typeof statuses>>, TError
 
 
 
-export const positions = (
+export const positions1 = (
 
  options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
@@ -150,66 +150,66 @@ export const positions = (
 
 
 
-export const getPositionsQueryKey = () => {
+export const getPositions1QueryKey = () => {
     return [
     `/api/hr/ref/positions`
     ] as const;
     }
 
 
-export const getPositionsQueryOptions = <TData = Awaited<ReturnType<typeof positions>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof positions>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getPositions1QueryOptions = <TData = Awaited<ReturnType<typeof positions1>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof positions1>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getPositionsQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getPositions1QueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof positions>>> = ({ signal }) => positions(requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof positions1>>> = ({ signal }) => positions1(requestOptions, signal);
 
 
 
 
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof positions>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof positions1>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type PositionsQueryResult = NonNullable<Awaited<ReturnType<typeof positions>>>
-export type PositionsQueryError = unknown
+export type Positions1QueryResult = NonNullable<Awaited<ReturnType<typeof positions1>>>
+export type Positions1QueryError = unknown
 
 
-export function usePositions<TData = Awaited<ReturnType<typeof positions>>, TError = unknown>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof positions>>, TError, TData>> & Pick<
+export function usePositions1<TData = Awaited<ReturnType<typeof positions1>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof positions1>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof positions>>,
+          Awaited<ReturnType<typeof positions1>>,
           TError,
-          Awaited<ReturnType<typeof positions>>
+          Awaited<ReturnType<typeof positions1>>
         > , 'initialData'
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function usePositions<TData = Awaited<ReturnType<typeof positions>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof positions>>, TError, TData>> & Pick<
+export function usePositions1<TData = Awaited<ReturnType<typeof positions1>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof positions1>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof positions>>,
+          Awaited<ReturnType<typeof positions1>>,
           TError,
-          Awaited<ReturnType<typeof positions>>
+          Awaited<ReturnType<typeof positions1>>
         > , 'initialData'
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function usePositions<TData = Awaited<ReturnType<typeof positions>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof positions>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function usePositions1<TData = Awaited<ReturnType<typeof positions1>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof positions1>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export function usePositions<TData = Awaited<ReturnType<typeof positions>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof positions>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function usePositions1<TData = Awaited<ReturnType<typeof positions1>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof positions1>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getPositionsQueryOptions(options)
+  const queryOptions = getPositions1QueryOptions(options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
