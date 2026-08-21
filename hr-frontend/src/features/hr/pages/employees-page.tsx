@@ -5,10 +5,10 @@ import { useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
 import { useEmployees } from "@/features/hr/api/use-employees";
 import { useEmployeesFiltersStore } from "@/features/hr/store/employees-filters-store";
-import { EmployeeImportDialog } from "@/features/hr/widgets/employee-import-dialog";
-import { EmployeesExportDialog } from "@/features/hr/widgets/employees-export-dialog";
-import { EmployeesFiltersBar } from "@/features/hr/widgets/employees-filters-bar";
-import { EmployeesTable } from "@/features/hr/widgets/employees-table";
+import { EmployeeImportDialog } from "@/features/hr/components/employee-import-dialog";
+import { EmployeesExportDialog } from "@/features/hr/components/employees-export-dialog";
+import { EmployeesFiltersBar } from "@/features/hr/components/employees-filters-bar";
+import { EmployeesTable } from "@/features/hr/components/employees-table";
 import type { EmployeeSummary } from "@/lib/api/generated/model";
 
 const NO_EMPLOYEES: EmployeeSummary[] = [];

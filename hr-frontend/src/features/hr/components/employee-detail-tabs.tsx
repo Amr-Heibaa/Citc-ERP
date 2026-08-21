@@ -6,7 +6,7 @@ import { EmploymentTab } from "@/features/hr/components/employee-employment-tab"
 import { HistoryTab } from "@/features/hr/components/employee-history-tab";
 import { OverviewTab } from "@/features/hr/components/employee-overview-tab";
 import { PersonalTab } from "@/features/hr/components/employee-personal-tab";
-import { ContractsTab } from "@/features/hr/widgets/employee-contracts-tab";
+import { ContractsTab } from "@/features/hr/components/employee-contracts-tab";
 import type { EmployeeDetail } from "@/lib/api/generated/model";
 
 const TAB_TRIGGER_CLASS =

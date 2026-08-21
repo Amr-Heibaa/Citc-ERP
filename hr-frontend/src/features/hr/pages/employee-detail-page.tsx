@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router";
 import { Button } from "@/components/ui/button";
 import { useEmployeeDetail } from "@/features/hr/api/use-employees";
 import { EmployeeDetailHero } from "@/features/hr/components/employee-detail-hero";
-import { EmployeeDetailTabs } from "@/features/hr/widgets/employee-detail-tabs";
+import { EmployeeDetailTabs } from "@/features/hr/components/employee-detail-tabs";
 
 export function EmployeeDetailPage() {
   const navigate = useNavigate();

@@ -9,7 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useEmployeeDetail } from "@/features/hr/api/use-employees";
-import { EmployeeEditForm } from "@/features/hr/widgets/employee-edit-form";
+import { EmployeeEditForm } from "@/features/hr/components/employee-edit-form";
 
 export function EmployeeEditPage() {
   const navigate = useNavigate();

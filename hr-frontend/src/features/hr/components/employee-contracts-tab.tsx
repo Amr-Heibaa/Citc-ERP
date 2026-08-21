@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ContractValue } from "@/features/hr/components/employee-info-row";
-import { EmployeeContractImportDialog } from "@/features/hr/widgets/employee-contract-import-dialog";
+import { EmployeeContractImportDialog } from "@/features/hr/components/employee-contract-import-dialog";
 import { formatDate } from "@/features/hr/utils/format";
 import type { EmployeeDetail } from "@/lib/api/generated/model";
 
