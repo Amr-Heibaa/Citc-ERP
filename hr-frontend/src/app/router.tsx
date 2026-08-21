@@ -5,10 +5,14 @@ import { ProtectedRoute } from "@/app/protected-route";
 import { LoginPage } from "@/features/login/Page/login-page";
 import { DashboardPage } from "@/features/dashboard/pages/dashboard-page";
 import { HrHomePage } from "@/features/hr/pages/hr-home-page";
-import { EmployeesPage } from "@/features/hr/pages/employees-page";
-import { EmployeeDetailPage } from "@/features/hr/pages/employee-detail-page";
-import { EmployeeCreatePage } from "@/features/hr/pages/employee-create-page";
-import { EmployeeEditPage } from "@/features/hr/pages/employee-edit-page";
+import { EmployeesPage } from "@/features/hr/employees/pages/employees-page";
+import { EmployeeDetailPage } from "@/features/hr/employees/pages/employee-detail-page";
+import { EmployeeCreatePage } from "@/features/hr/employees/pages/employee-create-page";
+import { EmployeeEditPage } from "@/features/hr/employees/pages/employee-edit-page";
+import { OrganizationsPage } from "@/features/hr/organizations/pages/organizations-page";
+import { OrganizationDetailPage } from "@/features/hr/organizations/pages/organization-detail-page";
+import { OrganizationCreatePage } from "@/features/hr/organizations/pages/organization-create-page";
+import { OrganizationEditPage } from "@/features/hr/organizations/pages/organization-edit-page";
 
 function Placeholder({ name }: { name: string }) {
   return (
@@ -48,6 +52,16 @@ export const router = createBrowserRouter([
           {
             path: "hr/employees/:employeeId",
             element: <EmployeeDetailPage />,
+          },
+          { path: "hr/organizations", element: <OrganizationsPage /> },
+          { path: "hr/organizations/new", element: <OrganizationCreatePage /> },
+          {
+            path: "hr/organizations/:organizationId/edit",
+            element: <OrganizationEditPage />,
+          },
+          {
+            path: "hr/organizations/:organizationId",
+            element: <OrganizationDetailPage />,
           },
         ],
       },

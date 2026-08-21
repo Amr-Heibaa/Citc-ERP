@@ -1,7 +1,7 @@
 import { Bell, Briefcase, FileText, UserPlus } from 'lucide-react'
 import { useNavigate } from 'react-router'
 import { useUserStore } from '@/stores/user-store'
-import { useMyEmployee } from "@/features/hr/api/use-employees";
+import { useMyEmployee } from "@/features/hr/employees/api/use-employees";
 
 const today = new Date().toLocaleDateString('en-US', {
   weekday: 'long',

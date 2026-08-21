@@ -1,6 +1,6 @@
 import { Users, FileText, Briefcase, Settings, Building2 } from "lucide-react";
 import { useNavigate } from "react-router";
-import { useMyEmployee } from "@/features/hr/api/use-employees";
+import { useMyEmployee } from "@/features/hr/employees/api/use-employees";
 type ModuleCard = {
   id: string;
   label: string;
@@ -19,6 +19,7 @@ const MODULES: ModuleCard[] = [
     id: "organization",
     label: "Organization",
     icon: <Building2 size={24} className="text-[#1a2535]" />,
+    to: "/hr/organizations",
   },
   {
     id: "jobs",
