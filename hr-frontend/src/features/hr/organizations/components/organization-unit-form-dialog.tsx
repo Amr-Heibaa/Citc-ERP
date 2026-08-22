@@ -1,9 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
-import {
-  useForm,
-  useWatch,
-} from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -48,41 +45,30 @@ export function OrganizationUnitFormDialog({
   fixedParentUnitId,
 }: {
   open: boolean;
-  onOpenChange: (
-    open: boolean,
-  ) => void;
+  onOpenChange: (open: boolean) => void;
   organizationId: number;
   mode: "create" | "edit";
   unit?: OrganizationUnitDetail;
   fixedParentUnitId?: number;
 }) {
-  const unitId =
-    unit?.id ?? 0;
+  const unitId = unit?.id ?? 0;
 
-  const unitTypes =
-    useOrganizationUnitTypes();
+  const unitTypes = useOrganizationUnitTypes(open);
 
-  const organizationUnits =
-    useOrganizationUnits(
-      organizationId,
-    );
+  const organizationUnits = useOrganizationUnits(organizationId, open);
 
-  const createUnit =
-    useCreateOrganizationUnit(
-      organizationId,
-    );
+  const createUnit = useCreateOrganizationUnit(organizationId);
 
-  const createChildUnit =
-    useCreateOrganizationChildUnit(
-      organizationId,
-      fixedParentUnitId ?? 0,
-    );
+  const createChildUnit = useCreateOrganizationChildUnit(
+    organizationId,
+    fixedParentUnitId ?? 0,
+  );
 
-  const updateUnitMutation =
-    useUpdateOrganizationUnit(
-      organizationId,
-      unitId,
-    );
+  const updateUnitMutation = useUpdateOrganizationUnit(
+    organizationId,
+    unitId,
+    unit?.parentUnitId,
+  );
 
   const {
     register,
@@ -90,20 +76,11 @@ export function OrganizationUnitFormDialog({
     control,
     reset,
     setValue,
-    formState: {
-      errors,
-    },
-  } =
-    useForm<OrganizationUnitFormValues>({
-      resolver: zodResolver(
-        organizationUnitSchema,
-      ),
-      defaultValues:
-        organizationUnitToFormValues(
-          unit,
-          fixedParentUnitId,
-        ),
-    });
+    formState: { errors },
+  } = useForm<OrganizationUnitFormValues>({
+    resolver: zodResolver(organizationUnitSchema),
+    defaultValues: organizationUnitToFormValues(unit, fixedParentUnitId),
+  });
 
   const active = useWatch({
     control,
@@ -115,18 +92,8 @@ export function OrganizationUnitFormDialog({
       return;
     }
 
-    reset(
-      organizationUnitToFormValues(
-        unit,
-        fixedParentUnitId,
-      ),
-    );
-  }, [
-    fixedParentUnitId,
-    open,
-    reset,
-    unit,
-  ]);
+    reset(organizationUnitToFormValues(unit, fixedParentUnitId));
+  }, [fixedParentUnitId, open, reset, unit]);
 
   const pending =
     createUnit.isPending ||
@@ -147,124 +114,77 @@ export function OrganizationUnitFormDialog({
         ? "Add Child Unit"
         : "Add Unit";
 
-  const submit =
-    handleSubmit(
-      async (values) => {
-        try {
-          if (
-            mode === "edit"
-          ) {
-            await updateUnitMutation.mutateAsync(
-              toUpdateOrganizationUnitRequest(
-                values,
-              ),
-            );
+  const submit = handleSubmit(async (values) => {
+    try {
+      if (mode === "edit") {
+        await updateUnitMutation.mutateAsync(
+          toUpdateOrganizationUnitRequest(values),
+        );
 
-            toast.success(
-              "Unit updated successfully",
-            );
-          } else if (
-            fixedParentUnitId !=
-            null
-          ) {
-            await createChildUnit.mutateAsync(
-              toCreateOrganizationUnitRequest(
-                {
-                  ...values,
-                  parentOrgUnitId:
-                    String(
-                      fixedParentUnitId,
-                    ),
-                },
-              ),
-            );
+        toast.success("Unit updated successfully");
+      } else if (fixedParentUnitId != null) {
+        await createChildUnit.mutateAsync(
+          toCreateOrganizationUnitRequest({
+            ...values,
+            parentOrgUnitId: String(fixedParentUnitId),
+          }),
+        );
 
-            toast.success(
-              "Child unit added successfully",
-            );
-          } else {
-            await createUnit.mutateAsync(
-              toCreateOrganizationUnitRequest(
-                values,
-              ),
-            );
+        toast.success("Child unit added successfully");
+      } else {
+        await createUnit.mutateAsync(toCreateOrganizationUnitRequest(values));
 
-            toast.success(
-              "Unit added successfully",
-            );
-          }
+        toast.success("Unit added successfully");
+      }
 
-          onOpenChange(false);
-        } catch (error) {
-          toast.error(
-            error instanceof Error
-              ? error.message
-              : "Unable to save unit",
-          );
-        }
-      },
-    );
+      onOpenChange(false);
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Unable to save unit",
+      );
+    }
+  });
 
   const typeOptions =
-    unitTypes.data?.flatMap(
-      (type) =>
-        type.id == null
-          ? []
-          : [{
-              value: String(
-                type.id,
-              ),
-              label:
-                type.nameEn ??
-                type.code,
-            }],
+    unitTypes.data?.flatMap((type) =>
+      type.id == null
+        ? []
+        : [
+            {
+              value: String(type.id),
+              label: type.nameEn ?? type.code,
+            },
+          ],
     ) ?? [];
 
   const parentOptions = [
     {
       value: ROOT_UNIT_VALUE,
-      label:
-        "No parent (root unit)",
+      label: "No parent (root unit)",
     },
 
-    ...(organizationUnits.data?.flatMap(
-      (candidate) => {
-        if (
-          candidate.id == null ||
-          candidate.id ===
-            unitId
-        ) {
-          return [];
-        }
+    ...(organizationUnits.data?.flatMap((candidate) => {
+      if (candidate.id == null || candidate.id === unitId) {
+        return [];
+      }
 
-        return [{
-          value: String(
-            candidate.id,
-          ),
-          label:
-            candidate.name ??
-            candidate.code,
-        }];
-      },
-    ) ?? []),
+      return [
+        {
+          value: String(candidate.id),
+          label: candidate.name ?? candidate.code,
+        },
+      ];
+    }) ?? []),
   ];
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={
-        onOpenChange
-      }
-    >
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="flex max-h-[92vh] max-w-3xl flex-col gap-0 overflow-hidden p-0">
         <DialogHeader className="shrink-0 border-b border-gray-100 px-6 py-5">
-          <DialogTitle className="text-xl text-[#1a2535]">
-            {title}
-          </DialogTitle>
+          <DialogTitle className="text-xl text-[#1a2535]">{title}</DialogTitle>
 
           <DialogDescription>
-            Enter the organization
-            unit information.
+            Enter the organization unit information.
           </DialogDescription>
         </DialogHeader>
 
@@ -273,87 +193,37 @@ export function OrganizationUnitFormDialog({
           className="flex min-h-0 flex-1 flex-col overflow-hidden"
         >
           <div className="grid flex-1 grid-cols-1 gap-5 overflow-y-auto px-6 py-5 md:grid-cols-2">
-            <LabeledField
-              label="Unit Code"
-              error={
-                errors.code?.message
-              }
-            >
-              <Input
-                {...register(
-                  "code",
-                )}
-              />
+            <LabeledField label="Unit Code" error={errors.code?.message}>
+              <Input {...register("code")} />
             </LabeledField>
 
-            <LabeledField
-              label="Unit Type"
-              error={
-                errors
-                  .unitTypeId
-                  ?.message
-              }
-            >
+            <LabeledField label="Unit Type" error={errors.unitTypeId?.message}>
               <SelectField
                 control={control}
                 name="unitTypeId"
                 placeholder="Select unit type"
-                options={
-                  typeOptions
-                }
+                options={typeOptions}
               />
             </LabeledField>
 
-            <LabeledField
-              label="Name (English)"
-              error={
-                errors
-                  .nameEn
-                  ?.message
-              }
-            >
-              <Input
-                {...register(
-                  "nameEn",
-                )}
-              />
+            <LabeledField label="Name (English)" error={errors.nameEn?.message}>
+              <Input {...register("nameEn")} />
             </LabeledField>
 
-            <LabeledField
-              label="Name (Arabic)"
-              error={
-                errors
-                  .nameAr
-                  ?.message
-              }
-            >
-              <Input
-                {...register(
-                  "nameAr",
-                )}
-                dir="rtl"
-              />
+            <LabeledField label="Name (Arabic)" error={errors.nameAr?.message}>
+              <Input {...register("nameAr")} dir="rtl" />
             </LabeledField>
 
             <LabeledField
               label="Parent Unit"
-              error={
-                errors
-                  .parentOrgUnitId
-                  ?.message
-              }
+              error={errors.parentOrgUnitId?.message}
             >
               <SelectField
                 control={control}
                 name="parentOrgUnitId"
                 placeholder="Select parent unit"
-                options={
-                  parentOptions
-                }
-                disabled={
-                  fixedParentUnitId !=
-                  null
-                }
+                options={parentOptions}
+                disabled={fixedParentUnitId != null}
               />
             </LabeledField>
 
@@ -361,73 +231,29 @@ export function OrganizationUnitFormDialog({
               <div className="flex h-10 items-center gap-3">
                 <Switch
                   checked={active}
-                  onCheckedChange={(
-                    checked,
-                  ) =>
-                    setValue(
-                      "active",
-                      checked,
-                    )
-                  }
+                  onCheckedChange={(checked) => setValue("active", checked)}
                 />
 
                 <span className="text-sm text-gray-600">
-                  {active
-                    ? "Active"
-                    : "Inactive"}
+                  {active ? "Active" : "Inactive"}
                 </span>
               </div>
             </LabeledField>
 
-            <LabeledField
-              label="Start Date"
-              error={
-                errors
-                  .startDate
-                  ?.message
-              }
-            >
-              <Input
-                type="date"
-                {...register(
-                  "startDate",
-                )}
-              />
+            <LabeledField label="Start Date" error={errors.startDate?.message}>
+              <Input type="date" {...register("startDate")} />
             </LabeledField>
 
-            <LabeledField
-              label="End Date"
-              error={
-                errors
-                  .endDate
-                  ?.message
-              }
-            >
-              <Input
-                type="date"
-                {...register(
-                  "endDate",
-                )}
-              />
+            <LabeledField label="End Date" error={errors.endDate?.message}>
+              <Input type="date" {...register("endDate")} />
             </LabeledField>
 
             <LabeledField label="Description">
-              <Textarea
-                {...register(
-                  "description",
-                )}
-                rows={4}
-              />
+              <Textarea {...register("description")} rows={4} />
             </LabeledField>
 
             <LabeledField label="Description (Arabic)">
-              <Textarea
-                {...register(
-                  "descriptionAr",
-                )}
-                rows={4}
-                dir="rtl"
-              />
+              <Textarea {...register("descriptionAr")} rows={4} dir="rtl" />
             </LabeledField>
           </div>
 
@@ -435,22 +261,13 @@ export function OrganizationUnitFormDialog({
             <Button
               type="button"
               variant="outline"
-              onClick={() =>
-                onOpenChange(
-                  false,
-                )
-              }
+              onClick={() => onOpenChange(false)}
             >
               Cancel
             </Button>
 
-            <Button
-              type="submit"
-              disabled={pending}
-            >
-              {pending
-                ? "Saving…"
-                : submitLabel}
+            <Button type="submit" disabled={pending}>
+              {pending ? "Saving…" : submitLabel}
             </Button>
           </DialogFooter>
         </form>

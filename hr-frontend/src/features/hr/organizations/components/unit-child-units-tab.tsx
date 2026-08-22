@@ -45,7 +45,7 @@ export function UnitChildUnitsTab({
     return childUnits.filter(
       (unit) =>
         unit.name?.toLowerCase().includes(query) ||
-        unit.nameAr?.includes(search) ||
+        unit.nameAr?.toLowerCase().includes(query) ||
         unit.code?.toLowerCase().includes(query) ||
         unit.type?.toLowerCase().includes(query) ||
         unit.manager?.toLowerCase().includes(query),
@@ -85,112 +85,106 @@ export function UnitChildUnitsTab({
   }
 
   return (
-  <>
-    <div className="overflow-hidden rounded-xl border border-gray-100">
-      <UnitTabToolbar
-        search={search}
-        onSearchChange={setSearch}
-        placeholder="Search child units..."
-        exportDisabled={filtered.length === 0}
-        onExport={handleExport}
-      >
-        <Button
-          onClick={() => setAddChildUnitOpen(true)}
-          className="gap-2 bg-[#1a2535] text-white hover:bg-[#243347]"
+    <>
+      <div className="overflow-hidden rounded-xl border border-gray-100">
+        <UnitTabToolbar
+          search={search}
+          onSearchChange={setSearch}
+          placeholder="Search child units..."
+          exportDisabled={filtered.length === 0}
+          onExport={handleExport}
         >
-          <Plus className="size-4" />
-          Add Child Unit
-        </Button>
-      </UnitTabToolbar>
+          <Button
+            onClick={() => setAddChildUnitOpen(true)}
+            className="gap-2 bg-[#1a2535] text-white hover:bg-[#243347]"
+          >
+            <Plus className="size-4" />
+            Add Child Unit
+          </Button>
+        </UnitTabToolbar>
 
-      {filtered.length === 0 ? (
-        <div className="py-16 text-center text-sm text-gray-400">
-          No child units found.
-        </div>
-      ) : (
-        <Table>
-          <TableHeader className="bg-[#f4f6f9]">
-            <TableRow>
-              <TableHead className="px-4">Unit</TableHead>
+        {filtered.length === 0 ? (
+          <div className="py-16 text-center text-sm text-gray-400">
+            No child units found.
+          </div>
+        ) : (
+          <Table>
+            <TableHeader className="bg-[#f4f6f9]">
+              <TableRow>
+                <TableHead className="px-4">Unit</TableHead>
 
-              <TableHead>Unit Type</TableHead>
+                <TableHead>Unit Type</TableHead>
 
-              <TableHead>Manager</TableHead>
+                <TableHead>Manager</TableHead>
 
-              <TableHead>Employees</TableHead>
+                <TableHead>Employees</TableHead>
 
-              <TableHead>Status</TableHead>
+                <TableHead>Status</TableHead>
 
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-
-          <TableBody>
-            {filtered.map((unit, index) => (
-              <TableRow key={unit.id ?? `${unit.code}-${index}`}>
-                <TableCell className="px-4">
-                  <p className="font-['Inter',sans-serif] text-sm font-semibold text-[#1a2535]">
-                    {unit.name ?? "—"}
-                  </p>
-
-                  <p className="text-xs text-gray-400">{unit.code ?? "—"}</p>
-                </TableCell>
-
-                <TableCell className="text-sm text-gray-600">
-                  {unit.type ?? "—"}
-                </TableCell>
-
-                <TableCell className="text-sm text-gray-600">
-                  {unit.manager ?? "—"}
-                </TableCell>
-
-                <TableCell className="text-sm text-gray-600">
-                  {unit.employees ?? 0}
-                </TableCell>
-
-                <TableCell>
-                  <OrganizationStatusBadge status={unit.status} />
-                </TableCell>
-
-                <TableCell className="text-right">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    disabled={unit.id == null}
-                    title="Open unit details"
-                    onClick={() => {
-                      if (unit.id == null) {
-                        return;
-                      }
-
-                      navigate(
-                        `/hr/organizations/${organizationId}/units/${unit.id}`,
-                      );
-                    }}
-                  >
-                    <ExternalLink className="size-4" />
-                  </Button>
-                </TableCell>
+                <TableHead className="text-right">Actions</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      )}
-    </div>
+            </TableHeader>
 
-    <OrganizationUnitFormDialog
-      open={addChildUnitOpen}
-      onOpenChange={
-        setAddChildUnitOpen
-      }
-      organizationId={
-        organizationId
-      }
-      mode="create"
-      fixedParentUnitId={
-        orgUnitId
-      }
-    />
-  </>
-);
+            <TableBody>
+              {filtered.map((unit, index) => (
+                <TableRow key={unit.id ?? `${unit.code}-${index}`}>
+                  <TableCell className="px-4">
+                    <p className="font-['Inter',sans-serif] text-sm font-semibold text-[#1a2535]">
+                      {unit.name ?? "—"}
+                    </p>
+
+                    <p className="text-xs text-gray-400">{unit.code ?? "—"}</p>
+                  </TableCell>
+
+                  <TableCell className="text-sm text-gray-600">
+                    {unit.type ?? "—"}
+                  </TableCell>
+
+                  <TableCell className="text-sm text-gray-600">
+                    {unit.manager ?? "—"}
+                  </TableCell>
+
+                  <TableCell className="text-sm text-gray-600">
+                    {unit.employees ?? 0}
+                  </TableCell>
+
+                  <TableCell>
+                    <OrganizationStatusBadge status={unit.status} />
+                  </TableCell>
+
+                  <TableCell className="text-right">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      disabled={unit.id == null}
+                      title="Open unit details"
+                      onClick={() => {
+                        if (unit.id == null) {
+                          return;
+                        }
+
+                        navigate(
+                          `/hr/organizations/${organizationId}/units/${unit.id}`,
+                        );
+                      }}
+                    >
+                      <ExternalLink className="size-4" />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
+      </div>
+
+      <OrganizationUnitFormDialog
+        open={addChildUnitOpen}
+        onOpenChange={setAddChildUnitOpen}
+        organizationId={organizationId}
+        mode="create"
+        fixedParentUnitId={orgUnitId}
+      />
+    </>
+  );
 }

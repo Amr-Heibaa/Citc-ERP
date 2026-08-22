@@ -13,14 +13,11 @@ export function filterOrganizationUnitTree(
   }
 
   return units.flatMap((unit) => {
-    const children = filterOrganizationUnitTree(
-      unit.children ?? [],
-      search,
-    );
+    const children = filterOrganizationUnitTree(unit.children ?? [], search);
 
     const matches =
       unit.name?.toLowerCase().includes(query) ||
-      unit.nameAr?.includes(search) ||
+      unit.nameAr?.toLowerCase().includes(query) ||
       unit.code?.toLowerCase().includes(query) ||
       unit.type?.toLowerCase().includes(query);
 
@@ -28,10 +25,12 @@ export function filterOrganizationUnitTree(
       return [];
     }
 
-    return [{
-      ...unit,
-      children,
-    }];
+    return [
+      {
+        ...unit,
+        children,
+      },
+    ];
   });
 }
 

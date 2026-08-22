@@ -18,7 +18,6 @@ import {
 } from "@/lib/api/generated/ems/organization-unit-tabs-controller/organization-unit-tabs-controller";
 
 const ORGANIZATION_PREFIX = "/api/hr/organizations";
-const ORGANIZATION_UNIT_PREFIX = "/api/hr/units";
 
 export const organizationListQueryKey =
   getListOrganizationsQueryKey;
@@ -70,21 +69,4 @@ export function isOrganizationQueryKey(
   ) ?? false;
 }
 
-export function isOrganizationUnitQueryKey(
-  queryKey: readonly unknown[],
-): boolean {
-  const first = firstQueryKeyPart(queryKey);
 
-  return first?.startsWith(
-    ORGANIZATION_UNIT_PREFIX,
-  ) ?? false;
-}
-
-export function isOrganizationDomainQueryKey(
-  queryKey: readonly unknown[],
-): boolean {
-  return (
-    isOrganizationQueryKey(queryKey) ||
-    isOrganizationUnitQueryKey(queryKey)
-  );
-}

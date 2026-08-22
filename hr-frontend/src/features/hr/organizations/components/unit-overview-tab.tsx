@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { OrganizationStatusBadge } from "@/features/hr/organizations/components/organization-status-badge";
 import { downloadUnitCsv } from "@/features/hr/organizations/utils/organization-unit-export";
 import { formatDate } from "@/features/hr/shared/utils/format";
+import { OrganizationSummaryRow } from "@/features/hr/organizations/components/organization-summary-row";
 import type { OrganizationUnitDetail } from "@/lib/api/generated/model";
 
 function DetailRow({
@@ -37,25 +38,7 @@ function DetailRow({
   );
 }
 
-function SummaryRow({
-  label,
-  value,
-}: {
-  label: string;
-  value: number;
-}) {
-  return (
-    <div className="flex items-center justify-between border-b border-gray-100 py-2 last:border-0">
-      <span className="font-['Inter',sans-serif] text-xs text-gray-400">
-        {label}
-      </span>
 
-      <span className="font-['Inter',sans-serif] text-xs font-semibold text-[#1a2535]">
-        {value}
-      </span>
-    </div>
-  );
-}
 
 export function UnitOverviewTab({
   unit,
@@ -178,12 +161,12 @@ export function UnitOverviewTab({
             Summary
           </h2>
 
-          <SummaryRow
+          <OrganizationSummaryRow
             label="Employees"
             value={unit.employees ?? 0}
           />
 
-          <SummaryRow
+          <OrganizationSummaryRow
             label="Active Positions"
             value={
               unit.activePositions ??
@@ -191,7 +174,7 @@ export function UnitOverviewTab({
             }
           />
 
-          <SummaryRow
+          <OrganizationSummaryRow
             label="Open Positions"
             value={
               unit.openPositions ??
@@ -199,7 +182,7 @@ export function UnitOverviewTab({
             }
           />
 
-          <SummaryRow
+          <OrganizationSummaryRow
             label="Child Units"
             value={
               unit.childUnits ?? 0

@@ -9,27 +9,9 @@ import {
   SectionTitle,
 } from "@/features/hr/shared/components/info-row";
 import { formatDate } from "@/features/hr/shared/utils/format";
+import { OrganizationSummaryRow } from "@/features/hr/organizations/components/organization-summary-row";
 import type { OrganizationDetail } from "@/lib/api/generated/model";
 
-function SummaryRow({
-  label,
-  value,
-}: {
-  label: string;
-  value: number;
-}) {
-  return (
-    <div className="flex items-center justify-between border-b border-gray-100 py-2.5 last:border-0">
-      <span className="font-['Inter',sans-serif] text-sm text-gray-400">
-        {label}
-      </span>
-
-      <span className="font-['Inter',sans-serif] text-sm font-semibold text-[#1a2535]">
-        {value}
-      </span>
-    </div>
-  );
-}
 
 function DetailSection({
   title,
@@ -211,14 +193,14 @@ export function OrganizationDetailBody({
           </section>
 
           <DetailSection title="Quick Summary">
-            <SummaryRow
+            <OrganizationSummaryRow
               label="Organization Units"
               value={
                 summary?.units ?? 0
               }
             />
 
-            <SummaryRow
+            <OrganizationSummaryRow
               label="Employees"
               value={
                 summary?.employees ??
@@ -226,7 +208,7 @@ export function OrganizationDetailBody({
               }
             />
 
-            <SummaryRow
+            <OrganizationSummaryRow
               label="Active Positions"
               value={
                 summary
@@ -235,7 +217,7 @@ export function OrganizationDetailBody({
               }
             />
 
-            <SummaryRow
+            <OrganizationSummaryRow
               label="Open Positions"
               value={
                 summary
