@@ -13,7 +13,7 @@ import { OrganizationsPage } from "@/features/hr/organizations/pages/organizatio
 import { OrganizationDetailPage } from "@/features/hr/organizations/pages/organization-detail-page";
 import { OrganizationCreatePage } from "@/features/hr/organizations/pages/organization-create-page";
 import { OrganizationEditPage } from "@/features/hr/organizations/pages/organization-edit-page";
-
+import { OrganizationUnitDetailPage } from "@/features/hr/organizations/pages/organization-unit-detail-page";
 function Placeholder({ name }: { name: string }) {
   return (
     <div className="p-6">
@@ -62,6 +62,11 @@ export const router = createBrowserRouter([
           {
             path: "hr/organizations/:organizationId",
             element: <OrganizationDetailPage />,
+          },
+
+          {
+            path: "hr/organizations/:organizationId/units/:orgUnitId",
+            element: <OrganizationUnitDetailPage />,
           },
         ],
       },

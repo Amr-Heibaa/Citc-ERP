@@ -7,15 +7,31 @@ export function OrganizationStatusBadge({
   status?: string | null;
   className?: string;
 }) {
-  const isActive = status?.toLowerCase() !== "inactive";
+  const normalized =
+    status?.trim().toLowerCase();
 
-  const styles = isActive
-    ? "bg-emerald-100 text-emerald-700"
-    : "bg-gray-200 text-gray-600";
+  if (!normalized) {
+    return (
+      <Badge
+        className={`border-0 bg-gray-100 text-gray-500 ${className ?? ""}`}
+      >
+        —
+      </Badge>
+    );
+  }
+
+  const active =
+    normalized === "active";
 
   return (
-    <Badge className={`border-0 ${styles} ${className ?? ""}`}>
-      {status ?? (isActive ? "Active" : "Inactive")}
+    <Badge
+      className={`border-0 ${
+        active
+          ? "bg-emerald-100 text-emerald-700"
+          : "bg-gray-200 text-gray-600"
+      } ${className ?? ""}`}
+    >
+      {status}
     </Badge>
   );
 }

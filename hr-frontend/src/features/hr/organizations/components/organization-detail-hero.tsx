@@ -1,9 +1,3 @@
-import { Camera, Pencil } from "lucide-react";
-import { useState } from "react";
-import { useNavigate } from "react-router";
-
-import { Button } from "@/components/ui/button";
-import { OrganizationLogoDialog } from "@/features/hr/organizations/components/organization-logo-dialog";
 import { OrganizationStatusBadge } from "@/features/hr/organizations/components/organization-status-badge";
 import type { OrganizationDetail } from "@/lib/api/generated/model";
 
@@ -12,78 +6,68 @@ export function OrganizationDetailHero({
 }: {
   organization: OrganizationDetail;
 }) {
-  const navigate = useNavigate();
-  const [logoOpen, setLogoOpen] = useState(false);
-
   return (
     <div
-      className="relative overflow-hidden rounded-xl"
+      className="relative overflow-hidden rounded-2xl"
       style={{
-        background: "linear-gradient(174deg, #1a2535 25%, #243347 75%)",
+        background:
+          "linear-gradient(174deg, #1a2535 25%, #243347 75%)",
       }}
     >
-      <div className="flex min-h-[104px] flex-wrap items-center gap-4 px-5 py-4">
-        <button
-          type="button"
-          onClick={() => setLogoOpen(true)}
-          className="group relative flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[#f5841f]/20"
-        >
+      <div className="pointer-events-none absolute right-8 top-1/2 hidden -translate-y-1/2 sm:flex">
+        <div className="size-20 rounded-full bg-[#f5841f]/20" />
+        <div className="-ml-10 size-20 rounded-full bg-[#2ecc71]/20" />
+      </div>
+
+      <div className="relative flex min-h-[128px] flex-wrap items-center gap-5 px-6 py-5">
+        <div className="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#f5841f]">
           {organization.logoDataUrl ? (
             <img
               src={organization.logoDataUrl}
-              alt={organization.nameEn ?? "Organization logo"}
+              alt={
+                organization.nameEn ??
+                "Organization logo"
+              }
               className="size-full object-cover"
             />
           ) : (
-            <span className="font-['Inter',sans-serif] text-xl font-bold text-white">
-              {organization.logoText ?? organization.code}
+            <span className="font-['Inter',sans-serif] text-base font-bold text-white">
+              {organization.logoText ??
+                organization.code ??
+                "ORG"}
             </span>
           )}
-
-          <span className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
-            <Camera className="size-5 text-white" />
-          </span>
-        </button>
+        </div>
 
         <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
-            <p className="truncate font-['Inter',sans-serif] text-lg font-bold text-white">
-              {organization.nameEn}
-            </p>
-
-            <OrganizationStatusBadge
-              status={organization.status}
-              className="border-0 bg-emerald-500/20 text-emerald-300"
-            />
-          </div>
-
-          <p
-            dir="rtl"
-            className="truncate text-left font-['Inter',sans-serif] text-xs text-[#a4aab6]"
-          >
-            {organization.nameAr}
+          <p className="truncate font-['Inter',sans-serif] text-2xl font-bold text-white">
+            {organization.nameEn ??
+              "Organization"}
           </p>
 
-          <p className="mt-0.5 font-['Inter',sans-serif] text-xs text-[#a4aab6]">
-            {organization.code} {organization.type ? `· ${organization.type}` : ""}
+          {organization.nameAr && (
+            <p
+              dir="rtl"
+              className="mt-0.5 truncate text-left font-['Inter',sans-serif] text-sm text-[#a4aab6]"
+            >
+              {organization.nameAr}
+            </p>
+          )}
+
+          <p className="mt-1 font-['Inter',sans-serif] text-xs text-[#a4aab6]">
+            Organization{" "}
+            {organization.code ??
+              "—"}
           </p>
         </div>
 
-        <Button
-          size="sm"
-          onClick={() => navigate(`/hr/organizations/${organization.id}/edit`)}
-          className="shrink-0"
-        >
-          <Pencil className="size-4" />
-          Edit Organization
-        </Button>
+        <OrganizationStatusBadge
+          status={
+            organization.status
+          }
+          className="mr-28 border-0 bg-emerald-500/20 text-emerald-300 sm:mr-36"
+        />
       </div>
-
-      <OrganizationLogoDialog
-        organizationId={organization.id ?? 0}
-        open={logoOpen}
-        onOpenChange={setLogoOpen}
-      />
     </div>
   );
 }
