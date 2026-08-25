@@ -16,7 +16,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
 import {
   useCreateOrganizationUnitRelationship,
   useOrganizationRelationTypes,
@@ -32,8 +31,10 @@ import {
   unitRelationshipSchema,
   type UnitRelationshipFormValues,
 } from "@/features/hr/organizations/schemas/unit-relationship-schema";
+import { DialogDecoration } from "@/features/hr/shared/components/dialog-decoration";
 import { LabeledField } from "@/features/hr/shared/components/labeled-field";
 import { SelectField } from "@/features/hr/shared/components/select-field";
+import { StatusSelectField } from "@/features/hr/shared/components/status-select-field";
 import type { UnitRelationship } from "@/lib/api/generated/model";
 
 export function UnitRelationshipFormDialog({
@@ -198,7 +199,7 @@ export function UnitRelationshipFormDialog({
         onOpenChange
       }
     >
-      <DialogContent className="max-w-2xl overflow-hidden p-0">
+      <DialogContent className="flex max-h-[92vh] sm:max-w-4xl flex-col overflow-hidden p-0">
         <DialogHeader className="border-b border-gray-100 px-6 py-5">
           <DialogTitle className="text-xl text-[#1a2535]">
             {editMode
@@ -213,118 +214,114 @@ export function UnitRelationshipFormDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={submit}>
-          <div className="grid grid-cols-1 gap-5 px-6 py-5 md:grid-cols-2">
-            <LabeledField
-              label="From Unit"
-              error={
-                errors
-                  .fromUnitId
-                  ?.message
-              }
-            >
-              <SelectField
-                control={control}
-                name="fromUnitId"
-                placeholder="Select from unit"
-                options={
-                  unitOptions
+        <form onSubmit={submit} className="flex min-h-0 flex-1 flex-col overflow-hidden">
+          <div className="flex min-h-0 flex-1 overflow-hidden">
+            <div className="grid flex-1 grid-cols-1 content-start gap-5 overflow-y-auto px-6 py-5 md:grid-cols-2">
+              <LabeledField
+                label="From Unit"
+                error={
+                  errors
+                    .fromUnitId
+                    ?.message
                 }
-              />
-            </LabeledField>
+              >
+                <SelectField
+                  control={control}
+                  name="fromUnitId"
+                  placeholder="Select from unit"
+                  options={
+                    unitOptions
+                  }
+                />
+              </LabeledField>
 
-            <LabeledField
-              label="To Unit"
-              error={
-                errors
-                  .toUnitId
-                  ?.message
-              }
-            >
-              <SelectField
-                control={control}
-                name="toUnitId"
-                placeholder="Select to unit"
-                options={
-                  unitOptions
+              <LabeledField
+                label="Relationship Type"
+                error={
+                  errors
+                    .relationTypeId
+                    ?.message
                 }
-              />
-            </LabeledField>
+              >
+                <SelectField
+                  control={control}
+                  name="relationTypeId"
+                  placeholder="Select relationship type"
+                  options={
+                    relationTypeOptions
+                  }
+                />
+              </LabeledField>
 
-            <LabeledField
-              label="Relationship Type"
-              error={
-                errors
-                  .relationTypeId
-                  ?.message
-              }
-            >
-              <SelectField
-                control={control}
-                name="relationTypeId"
-                placeholder="Select relationship type"
-                options={
-                  relationTypeOptions
+              <LabeledField
+                label="To Unit"
+                error={
+                  errors
+                    .toUnitId
+                    ?.message
                 }
-              />
-            </LabeledField>
+              >
+                <SelectField
+                  control={control}
+                  name="toUnitId"
+                  placeholder="Select to unit"
+                  options={
+                    unitOptions
+                  }
+                />
+              </LabeledField>
 
-            <LabeledField label="Status">
-              <div className="flex h-10 items-center gap-3">
-                <Switch
-                  checked={active}
-                  onCheckedChange={(
-                    checked,
-                  ) =>
+              <LabeledField label="Status">
+                <StatusSelectField
+                  active={active}
+                  onChange={(checked) =>
                     setValue(
                       "active",
                       checked,
                     )
                   }
                 />
+              </LabeledField>
 
-                <span className="text-sm text-gray-600">
-                  {active
-                    ? "Active"
-                    : "Inactive"}
-                </span>
-              </div>
-            </LabeledField>
+              <LabeledField
+                label="Start Date"
+                error={
+                  errors
+                    .startDate
+                    ?.message
+                }
+              >
+                <Input
+                  type="date"
+                  {...register(
+                    "startDate",
+                  )}
+                />
+              </LabeledField>
 
-            <LabeledField
-              label="Start Date"
-              error={
-                errors
-                  .startDate
-                  ?.message
-              }
-            >
-              <Input
-                type="date"
-                {...register(
-                  "startDate",
-                )}
-              />
-            </LabeledField>
+              <LabeledField
+                label="End Date"
+                error={
+                  errors
+                    .endDate
+                    ?.message
+                }
+              >
+                <Input
+                  type="date"
+                  {...register(
+                    "endDate",
+                  )}
+                />
+              </LabeledField>
+            </div>
 
-            <LabeledField
-              label="End Date"
-              error={
-                errors
-                  .endDate
-                  ?.message
-              }
-            >
-              <Input
-                type="date"
-                {...register(
-                  "endDate",
-                )}
-              />
-            </LabeledField>
+            <div className="hidden w-[220px] shrink-0 items-center justify-center border-l border-gray-100 md:flex">
+              <DialogDecoration className="h-full w-full" />
+            </div>
           </div>
 
-          <DialogFooter className="border-t border-gray-100 px-6 py-4">
+          <DialogFooter className="shrink-0 border-t border-gray-100 px-6 py-4">
             <Button
               type="button"
               variant="outline"

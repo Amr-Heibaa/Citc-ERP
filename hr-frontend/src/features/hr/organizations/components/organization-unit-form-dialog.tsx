@@ -13,7 +13,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import {
   useCreateOrganizationChildUnit,
@@ -32,8 +31,10 @@ import {
   ROOT_UNIT_VALUE,
   type OrganizationUnitFormValues,
 } from "@/features/hr/organizations/schemas/organization-unit-schema";
+import { DialogDecoration } from "@/features/hr/shared/components/dialog-decoration";
 import { LabeledField } from "@/features/hr/shared/components/labeled-field";
 import { SelectField } from "@/features/hr/shared/components/select-field";
+import { StatusSelectField } from "@/features/hr/shared/components/status-select-field";
 import type { OrganizationUnitDetail } from "@/lib/api/generated/model";
 
 export function OrganizationUnitFormDialog({
@@ -179,7 +180,7 @@ export function OrganizationUnitFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex max-h-[92vh] max-w-3xl flex-col gap-0 overflow-hidden p-0">
+      <DialogContent className="flex max-h-[92vh] sm:max-w-5xl flex-col gap-0 overflow-hidden p-0">
         <DialogHeader className="shrink-0 border-b border-gray-100 px-6 py-5">
           <DialogTitle className="text-xl text-[#1a2535]">{title}</DialogTitle>
 
@@ -192,69 +193,73 @@ export function OrganizationUnitFormDialog({
           onSubmit={submit}
           className="flex min-h-0 flex-1 flex-col overflow-hidden"
         >
-          <div className="grid flex-1 grid-cols-1 gap-5 overflow-y-auto px-6 py-5 md:grid-cols-2">
-            <LabeledField label="Unit Code" error={errors.code?.message}>
-              <Input {...register("code")} />
-            </LabeledField>
-
-            <LabeledField label="Unit Type" error={errors.unitTypeId?.message}>
-              <SelectField
-                control={control}
-                name="unitTypeId"
-                placeholder="Select unit type"
-                options={typeOptions}
-              />
-            </LabeledField>
-
-            <LabeledField label="Name (English)" error={errors.nameEn?.message}>
-              <Input {...register("nameEn")} />
-            </LabeledField>
-
-            <LabeledField label="Name (Arabic)" error={errors.nameAr?.message}>
-              <Input {...register("nameAr")} dir="rtl" />
-            </LabeledField>
-
-            <LabeledField
-              label="Parent Unit"
-              error={errors.parentOrgUnitId?.message}
-            >
-              <SelectField
-                control={control}
-                name="parentOrgUnitId"
-                placeholder="Select parent unit"
-                options={parentOptions}
-                disabled={fixedParentUnitId != null}
-              />
-            </LabeledField>
-
-            <LabeledField label="Status">
-              <div className="flex h-10 items-center gap-3">
-                <Switch
-                  checked={active}
-                  onCheckedChange={(checked) => setValue("active", checked)}
+          <div className="flex min-h-0 flex-1 overflow-hidden">
+            <div className="grid flex-1 grid-cols-1 content-start gap-5 overflow-y-auto px-6 py-5 md:grid-cols-2">
+              <LabeledField
+                label="Parent Unit"
+                error={errors.parentOrgUnitId?.message}
+              >
+                <SelectField
+                  control={control}
+                  name="parentOrgUnitId"
+                  placeholder="Select parent unit"
+                  options={parentOptions}
+                  disabled={fixedParentUnitId != null}
                 />
+              </LabeledField>
 
-                <span className="text-sm text-gray-600">
-                  {active ? "Active" : "Inactive"}
-                </span>
-              </div>
-            </LabeledField>
+              <LabeledField label="Unit Type" error={errors.unitTypeId?.message}>
+                <SelectField
+                  control={control}
+                  name="unitTypeId"
+                  placeholder="Select unit type"
+                  options={typeOptions}
+                />
+              </LabeledField>
 
-            <LabeledField label="Start Date" error={errors.startDate?.message}>
-              <Input type="date" {...register("startDate")} />
-            </LabeledField>
+              <LabeledField label="Unit Code" error={errors.code?.message}>
+                <Input {...register("code")} />
+              </LabeledField>
 
-            <LabeledField label="End Date" error={errors.endDate?.message}>
-              <Input type="date" {...register("endDate")} />
-            </LabeledField>
+              <div aria-hidden />
 
-            <LabeledField label="Description">
-              <Textarea {...register("description")} rows={4} />
-            </LabeledField>
+              <LabeledField label="Name (English)" error={errors.nameEn?.message}>
+                <Input {...register("nameEn")} />
+              </LabeledField>
 
-            <LabeledField label="Description (Arabic)">
-              <Textarea {...register("descriptionAr")} rows={4} dir="rtl" />
-            </LabeledField>
+              <LabeledField label="Name (Arabic)" error={errors.nameAr?.message}>
+                <Input {...register("nameAr")} dir="rtl" />
+              </LabeledField>
+
+              <LabeledField label="Start Date" error={errors.startDate?.message}>
+                <Input type="date" {...register("startDate")} />
+              </LabeledField>
+
+              <LabeledField label="End Date" error={errors.endDate?.message}>
+                <Input type="date" {...register("endDate")} />
+              </LabeledField>
+
+              <LabeledField label="Description">
+                <Textarea {...register("description")} rows={4} />
+              </LabeledField>
+
+              <LabeledField label="Description (Arabic)">
+                <Textarea {...register("descriptionAr")} rows={4} dir="rtl" />
+              </LabeledField>
+
+              <LabeledField label="Status">
+                <StatusSelectField
+                  active={active}
+                  onChange={(checked) => setValue("active", checked)}
+                />
+              </LabeledField>
+
+              <div aria-hidden />
+            </div>
+
+            <div className="hidden w-[220px] shrink-0 items-center justify-center border-l border-gray-100 md:flex">
+              <DialogDecoration className="h-full w-full" />
+            </div>
           </div>
 
           <DialogFooter className="shrink-0 border-t border-gray-100 px-6 py-4">
