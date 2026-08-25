@@ -215,8 +215,8 @@ export function UnitRelationshipFormDialog({
         </DialogHeader>
 
         <form onSubmit={submit} className="flex min-h-0 flex-1 flex-col overflow-hidden">
-          <div className="flex min-h-0 flex-1 overflow-hidden">
-            <div className="grid flex-1 grid-cols-1 content-start gap-5 overflow-y-auto px-6 py-5 md:grid-cols-2">
+          <div className="flex min-h-0 flex-1 overflow-y-auto">
+            <div className="grid flex-1 grid-cols-1 content-start gap-5 px-6 py-5 md:grid-cols-2">
               <LabeledField
                 label="From Unit"
                 error={
