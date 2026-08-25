@@ -235,16 +235,8 @@ export function OrganizationUnitFormDialog({
                 <Input type="date" {...register("startDate")} />
               </LabeledField>
 
-              <LabeledField label="End Date" error={errors.endDate?.message}>
-                <Input type="date" {...register("endDate")} />
-              </LabeledField>
-
               <LabeledField label="Description">
                 <Textarea {...register("description")} rows={4} />
-              </LabeledField>
-
-              <LabeledField label="Description (Arabic)">
-                <Textarea {...register("descriptionAr")} rows={4} dir="rtl" />
               </LabeledField>
 
               <LabeledField label="Status">
