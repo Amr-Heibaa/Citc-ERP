@@ -11,6 +11,11 @@ import {
 } from "@/lib/api/generated/ems/organization-unit-controller/organization-unit-controller";
 
 import {
+  confirm as confirmOrganizationUnitImport,
+  preview as previewOrganizationUnitImport,
+} from "@/lib/api/generated/ems/organization-unit-import-controller/organization-unit-import-controller";
+
+import {
   createRelationship,
   removeRelationship,
   updateRelationship,
@@ -126,6 +131,42 @@ export function useOrganizationUnitHistory(orgUnitId: number) {
   return useUnitHistoryQuery(orgUnitId, {
     query: {
       enabled: isValidId(orgUnitId),
+    },
+  });
+}
+
+export function usePreviewOrganizationUnitImport(organizationId: number) {
+  return useMutation({
+    mutationFn: (file: File) =>
+      previewOrganizationUnitImport(organizationId, { file }, { timeout: 120_000 }),
+  });
+}
+
+export function useConfirmOrganizationUnitImport(organizationId: number) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (file: File) =>
+      confirmOrganizationUnitImport(organizationId, { file }, { timeout: 300_000 }),
+
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: organizationListQueryKey(),
+        }),
+
+        queryClient.invalidateQueries({
+          queryKey: organizationDetailQueryKey(organizationId),
+        }),
+
+        queryClient.invalidateQueries({
+          queryKey: organizationTreeQueryKey(organizationId),
+        }),
+
+        queryClient.invalidateQueries({
+          queryKey: organizationUnitsQueryKey(organizationId),
+        }),
+      ]);
     },
   });
 }
