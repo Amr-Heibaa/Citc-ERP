@@ -249,7 +249,7 @@ export function OrganizationUnitFormDialog({
               <div aria-hidden />
             </div>
 
-            <div className="hidden w-[220px] shrink-0 items-center justify-center border-l border-gray-100 md:flex">
+            <div className="hidden w-[240px] shrink-0 items-center justify-center md:flex">
               <DialogDecoration className="h-full w-full" />
             </div>
           </div>

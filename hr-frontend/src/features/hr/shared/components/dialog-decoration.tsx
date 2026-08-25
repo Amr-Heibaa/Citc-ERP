@@ -1,12 +1,12 @@
 export function DialogDecoration({ className }: { className?: string }) {
-  const rayCount = 24;
-  const cx = 260;
-  const cy = 190;
-  const rInner = 40;
-  const rOuter = 145;
+  const rayCount = 36;
+  const cx = 300;
+  const cy = 195;
+  const rInner = 45;
+  const rOuter = 170;
 
   const rays = Array.from({ length: rayCount }, (_, i) => {
-    const angle = (i / (rayCount - 1)) * Math.PI * 1.3 - Math.PI * 0.65;
+    const angle = (i / (rayCount - 1)) * Math.PI * 1.7 - Math.PI * 0.85;
 
     return {
       x1: cx + Math.cos(angle) * rInner,
