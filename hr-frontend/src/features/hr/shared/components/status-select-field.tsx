@@ -1,10 +1,4 @@
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { BooleanSelectField } from "@/features/hr/shared/components/boolean-select-field";
 
 export function StatusSelectField({
   active,
@@ -14,18 +8,11 @@ export function StatusSelectField({
   onChange: (active: boolean) => void;
 }) {
   return (
-    <Select
-      value={active ? "active" : "inactive"}
-      onValueChange={(value) => onChange(value === "active")}
-    >
-      <SelectTrigger className="h-10 w-full">
-        <SelectValue />
-      </SelectTrigger>
-
-      <SelectContent>
-        <SelectItem value="active">Active</SelectItem>
-        <SelectItem value="inactive">Inactive</SelectItem>
-      </SelectContent>
-    </Select>
+    <BooleanSelectField
+      value={active}
+      onChange={onChange}
+      trueLabel="Active"
+      falseLabel="Inactive"
+    />
   );
 }

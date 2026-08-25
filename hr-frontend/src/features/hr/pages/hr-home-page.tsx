@@ -25,6 +25,7 @@ const MODULES: ModuleCard[] = [
     id: "jobs",
     label: "Jobs",
     icon: <Briefcase size={24} className="text-[#1a2535]" />,
+    to: "/hr/jobs",
   },
   {
     id: "employment",
