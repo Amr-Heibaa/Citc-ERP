@@ -14,6 +14,12 @@ import { OrganizationDetailPage } from "@/features/hr/organizations/pages/organi
 import { OrganizationCreatePage } from "@/features/hr/organizations/pages/organization-create-page";
 import { OrganizationEditPage } from "@/features/hr/organizations/pages/organization-edit-page";
 import { OrganizationUnitDetailPage } from "@/features/hr/organizations/pages/organization-unit-detail-page";
+import { JobsHomePage } from "@/features/hr/jobs/pages/jobs-home-page";
+import { JobGradesPage } from "@/features/hr/jobs/pages/job-grades-page";
+import { JobPositionsPage } from "@/features/hr/jobs/pages/job-positions-page";
+import { JobPositionCreatePage } from "@/features/hr/jobs/pages/job-position-create-page";
+import { JobPositionEditPage } from "@/features/hr/jobs/pages/job-position-edit-page";
+import { JobPositionDetailPage } from "@/features/hr/jobs/pages/job-position-detail-page";
 function Placeholder({ name }: { name: string }) {
   return (
     <div className="p-6">
@@ -67,6 +73,19 @@ export const router = createBrowserRouter([
           {
             path: "hr/organizations/:organizationId/units/:orgUnitId",
             element: <OrganizationUnitDetailPage />,
+          },
+
+          { path: "hr/jobs", element: <JobsHomePage /> },
+          { path: "hr/jobs/grades", element: <JobGradesPage /> },
+          { path: "hr/jobs/positions", element: <JobPositionsPage /> },
+          { path: "hr/jobs/positions/new", element: <JobPositionCreatePage /> },
+          {
+            path: "hr/jobs/positions/:positionId/edit",
+            element: <JobPositionEditPage />,
+          },
+          {
+            path: "hr/jobs/positions/:positionId",
+            element: <JobPositionDetailPage />,
           },
         ],
       },
