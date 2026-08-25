@@ -1,4 +1,4 @@
-import { Pencil, Plus } from "lucide-react";
+import { Pencil, Plus, Upload } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 
@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { OrganizationDetailBody } from "@/features/hr/organizations/components/organization-detail-body";
 import { OrganizationStructureTab } from "@/features/hr/organizations/components/organization-structure-tab";
 import { OrganizationUnitFormDialog } from "@/features/hr/organizations/components/organization-unit-form-dialog";
+import { OrganizationUnitImportDialog } from "@/features/hr/organizations/components/organization-unit-import-dialog";
 import { OrganizationUnitTab } from "@/features/hr/organizations/components/organization-unit-tab";
 import type { OrganizationDetail } from "@/lib/api/generated/model";
 const TRIGGER_CLASS =
@@ -23,6 +24,8 @@ export function OrganizationDetailTabs({
   const [activeTab, setActiveTab] = useState("overview");
 
   const [addUnitOpen, setAddUnitOpen] = useState(false);
+
+  const [importUnitsOpen, setImportUnitsOpen] = useState(false);
 
   const overviewActive = activeTab === "overview";
 
@@ -57,10 +60,21 @@ export function OrganizationDetailTabs({
                   Edit Organization
                 </Button>
               ) : (
-                <Button size="sm" onClick={() => setAddUnitOpen(true)}>
-                  <Plus className="size-4" />
-                  Add Unit
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setImportUnitsOpen(true)}
+                  >
+                    <Upload className="size-4" />
+                    Import
+                  </Button>
+
+                  <Button size="sm" onClick={() => setAddUnitOpen(true)}>
+                    <Plus className="size-4" />
+                    Add Unit
+                  </Button>
+                </div>
               )}
             </div>
           </div>
@@ -84,6 +98,12 @@ export function OrganizationDetailTabs({
         onOpenChange={setAddUnitOpen}
         organizationId={organizationId}
         mode="create"
+      />
+
+      <OrganizationUnitImportDialog
+        open={importUnitsOpen}
+        onOpenChange={setImportUnitsOpen}
+        organizationId={organizationId}
       />
     </>
   );

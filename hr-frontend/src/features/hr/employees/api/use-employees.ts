@@ -3,8 +3,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createUser, type CreateUserRequest } from "@/lib/api/auth";
 
 import {
-  confirm as confirmContractImport,
-  preview as previewContractImport,
+  confirm1 as confirmContractImport,
+  preview1 as previewContractImport,
 } from "@/lib/api/generated/ems/employee-contract-controller/employee-contract-controller";
 
 import {
@@ -16,8 +16,8 @@ import {
 } from "@/lib/api/generated/ems/employee-controller/employee-controller";
 
 import {
-  confirm1 as confirmEmployeeImport,
-  preview1 as previewEmployeeImport,
+  confirm2 as confirmEmployeeImport,
+  preview2 as previewEmployeeImport,
 } from "@/lib/api/generated/ems/employee-import-controller/employee-import-controller";
 
 import {
