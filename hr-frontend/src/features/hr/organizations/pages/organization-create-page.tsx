@@ -42,10 +42,13 @@ export function OrganizationCreatePage() {
     navigate("/hr/organizations");
   }
 
-  async function handleSubmit(values: OrganizationFormValues) {
+  async function handleSubmit(
+    values: OrganizationFormValues,
+    logo: { base64: string; contentType: string } | null,
+  ) {
     try {
       const created = await createOrganization.mutateAsync(
-        toCreateOrganizationRequest(values),
+        toCreateOrganizationRequest(values, logo ?? undefined),
       );
 
       toast.success("Organization created successfully");
@@ -83,6 +86,7 @@ export function OrganizationCreatePage() {
 
         <OrganizationForm
           defaultValues={EMPTY_DEFAULTS}
+          showLogoPicker
           submitLabel="Create Organization"
           pending={createOrganization.isPending}
           onCancel={close}

@@ -8,6 +8,7 @@ import type { OrganizationFormValues } from "@/features/hr/organizations/schemas
 
 export function toCreateOrganizationRequest(
   values: OrganizationFormValues,
+  logo?: { base64: string; contentType: string },
 ): CreateOrganizationRequest {
   return {
     code: values.code?.trim() || undefined,
@@ -28,8 +29,8 @@ export function toCreateOrganizationRequest(
     addressLine1: values.addressLine1.trim(),
     addressLine2: values.addressLine2?.trim() || undefined,
     postalCode: values.postalCode?.trim() || undefined,
-    // Logo is set separately via the dedicated PUT .../logo endpoint from
-    // the organization detail page — the create form never touches it.
+    logoBase64: logo?.base64,
+    logoContentType: logo?.contentType,
   };
 }
 
