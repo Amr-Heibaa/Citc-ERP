@@ -21,9 +21,11 @@ export function IdentityStepForm({
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<IdentityFormValues>({
     resolver: zodResolver(identitySchema),
+
+    mode: "onChange",
 
     defaultValues: {
       username: defaults.username ?? "",
@@ -33,13 +35,15 @@ export function IdentityStepForm({
   });
 
   return (
-    <form onSubmit={handleSubmit(next)} className="flex min-h-0 flex-1 flex-col">
+    <form
+      onSubmit={handleSubmit(next)}
+      className="flex min-h-0 flex-1 flex-col"
+    >
       <WizardHeader
         step={1}
         title="Identity"
         description="The username and email we create for user"
       />
-
       <div className="flex min-h-0 flex-1">
         <div className="flex flex-1 flex-col justify-center gap-5 px-8 py-4">
           <LabeledField label="Username" error={errors.username?.message}>
@@ -51,11 +55,19 @@ export function IdentityStepForm({
           </LabeledField>
 
           <LabeledField label="Password" error={errors.password?.message}>
-            <Input
-              {...register("password")}
-              type="password"
-              placeholder="Password"
-            />
+            <div className="space-y-2">
+              <Input
+                {...register("password")}
+                type="password"
+                placeholder="Password"
+                autoComplete="new-password"
+              />
+
+              <p className="text-xs text-[#6b7280]">
+                Use at least 6 characters with one capital letter, one number
+                and one special symbol.
+              </p>
+            </div>
           </LabeledField>
         </div>
 
@@ -67,8 +79,7 @@ export function IdentityStepForm({
           />
         </div>
       </div>
-
-      <WizardFooter step={1} />
+      <WizardFooter step={1} submitDisabled={!isValid} />{" "}
     </form>
   );
 }

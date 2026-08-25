@@ -12,7 +12,6 @@ import { formatDate } from "@/features/hr/shared/utils/format";
 import { OrganizationSummaryRow } from "@/features/hr/organizations/components/organization-summary-row";
 import type { OrganizationDetail } from "@/lib/api/generated/model";
 
-
 function DetailSection({
   title,
   children,
@@ -22,13 +21,9 @@ function DetailSection({
 }) {
   return (
     <section className="rounded-xl border border-gray-200 bg-[#f8f9fb] p-5">
-      <SectionTitle>
-        {title}
-      </SectionTitle>
+      <SectionTitle>{title}</SectionTitle>
 
-      <div className="flex flex-col gap-2">
-        {children}
-      </div>
+      <div className="flex flex-col gap-2">{children}</div>
     </section>
   );
 }
@@ -38,105 +33,58 @@ export function OrganizationDetailBody({
 }: {
   organization: OrganizationDetail;
 }) {
-  const [
-    logoDialogOpen,
-    setLogoDialogOpen,
-  ] = useState(false);
+  const [logoDialogOpen, setLogoDialogOpen] = useState(false);
 
-  const summary =
-    organization.summary;
+  const summary = organization.summary;
 
   return (
     <>
       <div className="grid gap-5 lg:grid-cols-2">
         <div className="flex flex-col gap-5">
           <DetailSection title="Organization Information">
-            <InfoRow
-              label="Organization Code"
-              value={organization.code}
-            />
+            <InfoRow label="Organization Code" value={organization.code} />
 
-            <InfoRow
-              label="Organization Type"
-              value={organization.type}
-            />
+            <InfoRow label="Organization Type" value={organization.type} />
 
-            <InfoRow
-              label="Name (English)"
-              value={organization.nameEn}
-            />
+            <InfoRow label="Name (English)" value={organization.nameEn} />
 
             <InfoRow
               label="Name (Arabic)"
               value={
                 organization.nameAr ? (
-                  <span dir="rtl">
-                    {organization.nameAr}
-                  </span>
+                  <span dir="rtl">{organization.nameAr}</span>
                 ) : null
               }
             />
 
             <InfoRow
               label="Status"
-              value={
-                <OrganizationStatusBadge
-                  status={
-                    organization.status
-                  }
-                />
-              }
+              value={<OrganizationStatusBadge status={organization.status} />}
             />
 
             <InfoRow
               label="Established Date"
-              value={formatDate(
-                organization.establishedDate,
-              )}
+              value={formatDate(organization.establishedDate)}
             />
 
             <InfoRow
               label="Registration Number"
-              value={
-                organization.registrationNumber
-              }
+              value={organization.registrationNumber}
             />
 
-            <InfoRow
-              label="Tax Number"
-              value={
-                organization.taxNumber
-              }
-            />
+            <InfoRow label="Tax Number" value={organization.taxNumber} />
           </DetailSection>
 
           <DetailSection title="Address">
-            <InfoRow
-              label="Country"
-              value={organization.country}
-            />
+            <InfoRow label="Country" value={organization.country} />
 
-            <InfoRow
-              label="State"
-              value={organization.state}
-            />
+            <InfoRow label="State" value={organization.state} />
 
-            <InfoRow
-              label="City"
-              value={organization.city}
-            />
+            <InfoRow label="City" value={organization.city} />
 
-            <InfoRow
-              label="Postal Code"
-              value={
-                organization.postalCode
-              }
-            />
+            <InfoRow label="Postal Code" value={organization.postalCode} />
 
-            <InfoRow
-              label="Address"
-              value={organization.address}
-            />
+            <InfoRow label="Address" value={organization.address} />
           </DetailSection>
         </div>
 
@@ -146,47 +94,31 @@ export function OrganizationDetailBody({
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() =>
-                  setLogoDialogOpen(
-                    true,
-                  )
-                }
+                onClick={() => setLogoDialogOpen(true)}
               >
                 <ImageIcon className="size-4" />
                 Change Photo
               </Button>
 
               <p className="mt-2 font-['Inter',sans-serif] text-xs text-gray-400">
-                JPG or PNG, maximum
-                2 MB
+                JPG or PNG, maximum 2 MB
               </p>
             </div>
 
             <button
               type="button"
-              onClick={() =>
-                setLogoDialogOpen(
-                  true,
-                )
-              }
-              className="flex size-28 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-[#f5841f]"
+              onClick={() => setLogoDialogOpen(true)}
+              className="flex size-28 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-gray-200 bg-white transition-opacity hover:opacity-90"
             >
               {organization.logoDataUrl ? (
                 <img
-                  src={
-                    organization.logoDataUrl
-                  }
-                  alt={
-                    organization.nameEn ??
-                    "Organization logo"
-                  }
+                  src={organization.logoDataUrl}
+                  alt={organization.nameEn ?? "Organization logo"}
                   className="size-full object-contain"
                 />
               ) : (
-                <span className="font-['Inter',sans-serif] text-lg font-bold text-white">
-                  {organization.logoText ??
-                    organization.code ??
-                    "ORG"}
+                <span className="flex size-full items-center justify-center bg-[#f5841f] px-2 text-center font-['Inter',sans-serif] text-lg font-bold text-white">
+                  {organization.logoText ?? organization.code ?? "ORG"}
                 </span>
               )}
             </button>
@@ -195,70 +127,41 @@ export function OrganizationDetailBody({
           <DetailSection title="Quick Summary">
             <OrganizationSummaryRow
               label="Organization Units"
-              value={
-                summary?.units ?? 0
-              }
+              value={summary?.units ?? 0}
             />
 
             <OrganizationSummaryRow
               label="Employees"
-              value={
-                summary?.employees ??
-                0
-              }
+              value={summary?.employees ?? 0}
             />
 
             <OrganizationSummaryRow
               label="Active Positions"
-              value={
-                summary
-                  ?.activePositions ??
-                0
-              }
+              value={summary?.activePositions ?? 0}
             />
 
             <OrganizationSummaryRow
               label="Open Positions"
-              value={
-                summary
-                  ?.openPositions ??
-                0
-              }
+              value={summary?.openPositions ?? 0}
             />
           </DetailSection>
 
           <DetailSection title="Contact Information">
-            <InfoRow
-              label="Phone"
-              value={organization.phone}
-            />
+            <InfoRow label="Phone" value={organization.phone} />
 
-            <InfoRow
-              label="Email"
-              value={organization.email}
-            />
+            <InfoRow label="Email" value={organization.email} />
 
-            <InfoRow
-              label="Fax"
-              value={organization.fax}
-            />
+            <InfoRow label="Fax" value={organization.fax} />
 
-            <InfoRow
-              label="Website"
-              value={organization.website}
-            />
+            <InfoRow label="Website" value={organization.website} />
           </DetailSection>
         </div>
       </div>
 
       <OrganizationLogoDialog
-        organizationId={
-          organization.id ?? 0
-        }
+        organizationId={organization.id ?? 0}
         open={logoDialogOpen}
-        onOpenChange={
-          setLogoDialogOpen
-        }
+        onOpenChange={setLogoDialogOpen}
       />
     </>
   );

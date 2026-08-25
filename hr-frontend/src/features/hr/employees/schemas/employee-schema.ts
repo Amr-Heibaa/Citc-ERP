@@ -18,7 +18,15 @@ export const identitySchema = z.object({
 
   email: z.string().trim().email("Invalid email address"),
 
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  password: z
+    .string()
+    .min(6, "Password must be at least 6 characters")
+    .regex(/[A-Z]/, "Password must contain at least one capital letter")
+    .regex(/\d/, "Password must contain at least one number")
+    .regex(
+      /[\p{P}\p{S}]/u,
+      "Password must contain at least one special symbol",
+    ),
 });
 
 export const personalInfoSchema = z.object({
