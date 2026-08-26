@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import {
   useAssignEmployeeToPosition,
   useEmployeesForJobs,
+  useEndJobPositionAssignment,
 } from "@/features/hr/jobs/api/use-job-positions";
 import {
   ASSIGNMENT_TYPE_OPTIONS,
@@ -44,8 +45,10 @@ export function AssignEmployeeDialog({
   position: JobPositionDetail;
 }) {
   const positionId = position.positionId ?? 0;
+  const currentAssignmentId = position.currentAssignment?.assignmentId ?? 0;
   const employees = useEmployeesForJobs();
   const assignEmployee = useAssignEmployeeToPosition(positionId);
+  const endAssignment = useEndJobPositionAssignment(positionId, currentAssignmentId);
 
   const {
     register,
@@ -73,6 +76,10 @@ export function AssignEmployeeDialog({
 
   const submit = handleSubmit(async (values) => {
     try {
+      if (isReassign && currentAssignmentId) {
+        await endAssignment.mutateAsync({ endDate: values.startDate });
+      }
+
       await assignEmployee.mutateAsync({
         employeeId: Number(values.employeeId),
         assignmentType: Number(values.assignmentType),
@@ -91,6 +98,8 @@ export function AssignEmployeeDialog({
       );
     }
   });
+
+  const isSaving = assignEmployee.isPending || endAssignment.isPending;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -154,8 +163,8 @@ export function AssignEmployeeDialog({
               Cancel
             </Button>
 
-            <Button type="submit" disabled={assignEmployee.isPending || !employeeId}>
-              {assignEmployee.isPending ? "Saving…" : isReassign ? "Update" : "Assign"}
+            <Button type="submit" disabled={isSaving || !employeeId}>
+              {isSaving ? "Saving…" : isReassign ? "Update" : "Assign"}
             </Button>
           </DialogFooter>
         </form>

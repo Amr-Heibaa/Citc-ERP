@@ -6,25 +6,22 @@ export function JobPositionDetailHero({
 }: {
   position: JobPositionDetail;
 }) {
-  const initials = position.code?.split("-")[0] ?? "JP";
-
   return (
     <div
-      className="relative overflow-hidden rounded-xl"
+      className="relative overflow-hidden rounded-2xl"
       style={{
         background: "linear-gradient(174deg, #1a2535 25%, #243347 75%)",
       }}
     >
-      <div className="flex min-h-[104px] items-center gap-4 px-5 py-4">
-        <div className="flex size-16 shrink-0 items-center justify-center rounded-full bg-[#f5841f]/20">
-          <span className="font-['Inter',sans-serif] text-lg font-bold text-white">
-            {initials}
-          </span>
-        </div>
+      <div className="pointer-events-none absolute right-8 top-1/2 hidden -translate-y-1/2 sm:flex">
+        <div className="size-20 rounded-full bg-[#f5841f]/20" />
+        <div className="-ml-10 size-20 rounded-full bg-[#2ecc71]/20" />
+      </div>
 
+      <div className="relative flex min-h-[104px] flex-wrap items-center gap-4 px-5 py-4">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-3">
-            <p className="truncate font-['Inter',sans-serif] text-lg font-bold text-white">
+            <p className="truncate font-['Inter',sans-serif] text-2xl font-bold text-white">
               {position.titleEn}
             </p>
 
