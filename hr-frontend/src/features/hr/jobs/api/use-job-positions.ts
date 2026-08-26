@@ -112,6 +112,20 @@ export function useEmployeesForJobs() {
   return useListEmployees({ query: { staleTime: REFERENCE_STALE_TIME } });
 }
 
+export function useEmployeeNameLookup(): Record<number, string> {
+  const employees = useEmployeesForJobs();
+
+  const lookup: Record<number, string> = {};
+
+  for (const employee of employees.data ?? []) {
+    if (employee.employeeId != null && employee.displayName) {
+      lookup[employee.employeeId] = employee.displayName;
+    }
+  }
+
+  return lookup;
+}
+
 export function useOrgUnitDetailForJobs(orgUnitId?: number) {
   return useGetUnitDetail(orgUnitId ?? 0, {
     query: { enabled: isValidId(orgUnitId ?? 0) },

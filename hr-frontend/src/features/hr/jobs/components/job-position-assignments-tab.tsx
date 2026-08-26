@@ -10,7 +10,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useJobPositionAssignments } from "@/features/hr/jobs/api/use-job-positions";
+import {
+  useEmployeeNameLookup,
+  useJobPositionAssignments,
+} from "@/features/hr/jobs/api/use-job-positions";
 import { AssignEmployeeDialog } from "@/features/hr/jobs/components/assign-employee-dialog";
 import { EndAssignmentDialog } from "@/features/hr/jobs/components/end-assignment-dialog";
 import { JobStatusBadge } from "@/features/hr/jobs/components/job-status-badge";
@@ -28,6 +31,7 @@ export function JobPositionAssignmentsTab({
 
   const history = useJobPositionAssignments(position.positionId ?? 0);
   const assignment = position.currentAssignment;
+  const employeeNames = useEmployeeNameLookup();
 
   return (
     <div className="flex flex-col gap-6">
@@ -39,8 +43,24 @@ export function JobPositionAssignmentsTab({
             <div className="flex flex-col gap-2">
               <InfoRow label="Employee" value={assignment.employeeName} />
               <InfoRow label="Assignment Type" value={assignment.assignmentType} />
+              <InfoRow
+                label="Status"
+                value={<JobStatusBadge active={assignment.active ?? false} />}
+              />
               <InfoRow label="Start Date" value={formatDate(assignment.startDate)} />
               <InfoRow label="End Date" value={formatDate(assignment.endDate)} />
+              <InfoRow
+                label="Assigned By"
+                value={
+                  assignment.assignedBy != null
+                    ? employeeNames[assignment.assignedBy]
+                    : undefined
+                }
+              />
+              <InfoRow
+                label="Assigned At"
+                value={formatDate(assignment.assignedAt?.slice(0, 10))}
+              />
             </div>
           ) : (
             <p className="font-['Inter',sans-serif] text-sm text-gray-400">
@@ -97,6 +117,7 @@ export function JobPositionAssignmentsTab({
                   <TableHead>Start</TableHead>
                   <TableHead>End</TableHead>
                   <TableHead>Status</TableHead>
+                  <TableHead>Assigned By</TableHead>
                 </TableRow>
               </TableHeader>
 
@@ -131,6 +152,10 @@ export function JobPositionAssignmentsTab({
 
                     <TableCell>
                       <JobStatusBadge active={row.active ?? false} />
+                    </TableCell>
+
+                    <TableCell className="font-['Inter',sans-serif] text-sm text-gray-600">
+                      {row.assignedBy != null ? (employeeNames[row.assignedBy] ?? "—") : "—"}
                     </TableCell>
                   </TableRow>
                 ))}
