@@ -22,6 +22,12 @@ import { JobPositionEditPage } from "@/features/hr/jobs/pages/job-position-edit-
 import { JobPositionDetailPage } from "@/features/hr/jobs/pages/job-position-detail-page";
 import { EmploymentHomePage } from "@/features/hr/employment/pages/employment-home-page";
 import { EmploymentRecordsPage } from "@/features/hr/employment/pages/employment-records-page";
+import { HrSettingsHomePage } from "@/features/hr/hr-settings/pages/hr-settings-home-page";
+import { EmployeeStatusesPage } from "@/features/hr/hr-settings/pages/employee-statuses-page";
+import { ContractTypesPage } from "@/features/hr/hr-settings/pages/contract-types-page";
+import { SkillsPage } from "@/features/hr/hr-settings/pages/skills-page";
+import { FunctionalRelationTypesPage } from "@/features/hr/hr-settings/pages/functional-relation-types-page";
+import { SettingsHistoryPage } from "@/features/hr/hr-settings/pages/settings-history-page";
 function Placeholder({ name }: { name: string }) {
   return (
     <div className="p-6">
@@ -92,6 +98,19 @@ export const router = createBrowserRouter([
 
           { path: "hr/employment", element: <EmploymentHomePage /> },
           { path: "hr/employment/records", element: <EmploymentRecordsPage /> },
+
+          { path: "hr/settings", element: <HrSettingsHomePage /> },
+          { path: "hr/settings/history", element: <SettingsHistoryPage /> },
+          {
+            path: "hr/settings/employee-statuses",
+            element: <EmployeeStatusesPage />,
+          },
+          { path: "hr/settings/contract-types", element: <ContractTypesPage /> },
+          { path: "hr/settings/skills", element: <SkillsPage /> },
+          {
+            path: "hr/settings/functional-relation-types",
+            element: <FunctionalRelationTypesPage />,
+          },
         ],
       },
     ],

@@ -21,9 +21,11 @@ import type {
 
 import type {
   ContractTypeRef,
+  FunctionalRelationTypeRef,
   OrgUnitRef,
   OrganizationRef,
   PositionRef,
+  SkillRef,
   StatusRef
 } from '../../model';
 
@@ -124,6 +126,92 @@ export function useStatuses<TData = Awaited<ReturnType<typeof statuses>>, TError
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getStatusesQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const skills = (
+
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+
+
+      return customInstance<SkillRef[]>(
+      {url: `/api/hr/ref/skills`, method: 'GET', signal
+    },
+      options);
+    }
+
+
+
+
+export const getSkillsQueryKey = () => {
+    return [
+    `/api/hr/ref/skills`
+    ] as const;
+    }
+
+
+export const getSkillsQueryOptions = <TData = Awaited<ReturnType<typeof skills>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof skills>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getSkillsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof skills>>> = ({ signal }) => skills(requestOptions, signal);
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof skills>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type SkillsQueryResult = NonNullable<Awaited<ReturnType<typeof skills>>>
+export type SkillsQueryError = unknown
+
+
+export function useSkills<TData = Awaited<ReturnType<typeof skills>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof skills>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof skills>>,
+          TError,
+          Awaited<ReturnType<typeof skills>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useSkills<TData = Awaited<ReturnType<typeof skills>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof skills>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof skills>>,
+          TError,
+          Awaited<ReturnType<typeof skills>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useSkills<TData = Awaited<ReturnType<typeof skills>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof skills>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useSkills<TData = Awaited<ReturnType<typeof skills>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof skills>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getSkillsQueryOptions(options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -382,6 +470,92 @@ export function useOrgUnits<TData = Awaited<ReturnType<typeof orgUnits>>, TError
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getOrgUnitsQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const functionalRelationTypes = (
+
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+
+
+      return customInstance<FunctionalRelationTypeRef[]>(
+      {url: `/api/hr/ref/functional-relation-types`, method: 'GET', signal
+    },
+      options);
+    }
+
+
+
+
+export const getFunctionalRelationTypesQueryKey = () => {
+    return [
+    `/api/hr/ref/functional-relation-types`
+    ] as const;
+    }
+
+
+export const getFunctionalRelationTypesQueryOptions = <TData = Awaited<ReturnType<typeof functionalRelationTypes>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof functionalRelationTypes>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getFunctionalRelationTypesQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof functionalRelationTypes>>> = ({ signal }) => functionalRelationTypes(requestOptions, signal);
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof functionalRelationTypes>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type FunctionalRelationTypesQueryResult = NonNullable<Awaited<ReturnType<typeof functionalRelationTypes>>>
+export type FunctionalRelationTypesQueryError = unknown
+
+
+export function useFunctionalRelationTypes<TData = Awaited<ReturnType<typeof functionalRelationTypes>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof functionalRelationTypes>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof functionalRelationTypes>>,
+          TError,
+          Awaited<ReturnType<typeof functionalRelationTypes>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFunctionalRelationTypes<TData = Awaited<ReturnType<typeof functionalRelationTypes>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof functionalRelationTypes>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof functionalRelationTypes>>,
+          TError,
+          Awaited<ReturnType<typeof functionalRelationTypes>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFunctionalRelationTypes<TData = Awaited<ReturnType<typeof functionalRelationTypes>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof functionalRelationTypes>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useFunctionalRelationTypes<TData = Awaited<ReturnType<typeof functionalRelationTypes>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof functionalRelationTypes>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getFunctionalRelationTypesQueryOptions(options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
