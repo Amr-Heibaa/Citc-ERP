@@ -3,6 +3,7 @@ export function HrSettingSummaryCard({
   total,
   active,
   loading,
+  error,
   actionLabel,
   onAction,
 }: {
@@ -10,6 +11,7 @@ export function HrSettingSummaryCard({
   total: number;
   active: number;
   loading?: boolean;
+  error?: boolean;
   actionLabel: string;
   onAction: () => void;
 }) {
@@ -20,17 +22,17 @@ export function HrSettingSummaryCard({
       </h3>
 
       <p className="mt-4 font-['Inter',sans-serif] text-4xl font-bold text-[#1a2535]">
-        {loading ? "—" : total.toLocaleString()}
+        {loading || error ? "—" : total.toLocaleString()}
       </p>
 
       <p className="mt-1 font-['Inter',sans-serif] text-sm text-gray-400">
-        Total Records
+        {error ? "Unable to load" : "Total Records"}
       </p>
 
       <div className="my-5 h-px w-full bg-gray-100" />
 
       <p className="font-['Inter',sans-serif] text-sm text-gray-500">
-        {loading ? "—" : active} active
+        {loading || error ? "—" : active} active
       </p>
 
       <button

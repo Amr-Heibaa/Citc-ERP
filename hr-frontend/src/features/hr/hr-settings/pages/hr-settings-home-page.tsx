@@ -37,15 +37,6 @@ export function HrSettingsHomePage() {
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         <HrSettingSummaryCard
-          title="Job Grades"
-          total={gradeRows.length}
-          active={activeGradesCount}
-          loading={grades.isLoading}
-          actionLabel="View"
-          onAction={() => navigate("/hr/jobs/grades")}
-        />
-
-        <HrSettingSummaryCard
           title="Employee Statuses"
           total={data?.employeeStatusCount ?? 0}
           active={data?.activeEmployeeStatusCount ?? 0}
@@ -79,6 +70,16 @@ export function HrSettingsHomePage() {
           loading={summary.isLoading}
           actionLabel="View"
           onAction={() => navigate("/hr/settings/functional-relation-types")}
+        />
+
+        <HrSettingSummaryCard
+          title="Job Grades"
+          total={gradeRows.length}
+          active={activeGradesCount}
+          loading={grades.isLoading}
+          error={grades.isError}
+          actionLabel="View"
+          onAction={() => navigate("/hr/jobs/grades")}
         />
       </div>
     </div>
