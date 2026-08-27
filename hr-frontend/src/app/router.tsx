@@ -20,7 +20,8 @@ import { JobPositionsPage } from "@/features/hr/jobs/pages/job-positions-page";
 import { JobPositionCreatePage } from "@/features/hr/jobs/pages/job-position-create-page";
 import { JobPositionEditPage } from "@/features/hr/jobs/pages/job-position-edit-page";
 import { JobPositionDetailPage } from "@/features/hr/jobs/pages/job-position-detail-page";
-import { EmploymentPage } from "@/features/hr/employment/pages/employment-page";
+import { EmploymentHomePage } from "@/features/hr/employment/pages/employment-home-page";
+import { EmploymentRecordsPage } from "@/features/hr/employment/pages/employment-records-page";
 function Placeholder({ name }: { name: string }) {
   return (
     <div className="p-6">
@@ -89,7 +90,8 @@ export const router = createBrowserRouter([
             element: <JobPositionDetailPage />,
           },
 
-          { path: "hr/employment", element: <EmploymentPage /> },
+          { path: "hr/employment", element: <EmploymentHomePage /> },
+          { path: "hr/employment/records", element: <EmploymentRecordsPage /> },
         ],
       },
     ],

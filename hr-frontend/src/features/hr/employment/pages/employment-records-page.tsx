@@ -1,3 +1,4 @@
+import { ChevronLeft } from "lucide-react";
 import { useMemo } from "react";
 import { useNavigate } from "react-router";
 
@@ -21,7 +22,7 @@ function StatChip({ label, value }: { label: string; value: number }) {
   );
 }
 
-export function EmploymentPage() {
+export function EmploymentRecordsPage() {
   const navigate = useNavigate();
   const directoryQuery = useEmploymentDirectory();
   const employees = directoryQuery.data ?? NO_EMPLOYEES;
@@ -108,9 +109,18 @@ export function EmploymentPage() {
 
   return (
     <div className="flex flex-col gap-4 p-4 md:p-6">
+      <button
+        type="button"
+        onClick={() => navigate("/hr/employment")}
+        className="flex w-fit items-center gap-1 font-['Inter',sans-serif] text-sm text-gray-500 hover:text-[#1a2535]"
+      >
+        <ChevronLeft className="size-4" />
+        Employment
+      </button>
+
       <div>
         <h1 className="font-['Inter',sans-serif] text-2xl font-bold text-[#1a2535]">
-          Employment
+          Employment Records
         </h1>
 
         <p className="font-['Inter',sans-serif] text-sm text-gray-400">
