@@ -15,10 +15,10 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
-  Confirm2Body,
+  Confirm1Body,
   EmployeeImportPreview,
   EmployeeImportResult,
-  Preview2Body
+  Preview1Body
 } from '../../model';
 
 import { customInstance } from '../../../axios';
@@ -28,14 +28,14 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
 
-export const preview2 = (
-    preview2Body?: Preview2Body,
+export const preview1 = (
+    preview1Body?: Preview1Body,
  options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
 
       const formData = new FormData();
-if(preview2Body?.file !== undefined) {
- formData.append(`file`, preview2Body.file);
+if(preview1Body?.file !== undefined) {
+ formData.append(`file`, preview1Body.file);
  }
 
       return customInstance<EmployeeImportPreview>(
@@ -49,11 +49,11 @@ if(preview2Body?.file !== undefined) {
 
 
 
-export const getPreview2MutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof preview2>>, TError,{data?: Preview2Body}, TContext>, request?: SecondParameter<typeof customInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof preview2>>, TError,{data?: Preview2Body}, TContext> => {
+export const getPreview1MutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof preview1>>, TError,{data?: Preview1Body}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof preview1>>, TError,{data?: Preview1Body}, TContext> => {
 
-const mutationKey = ['preview2'];
+const mutationKey = ['preview1'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -63,10 +63,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof preview2>>, {data?: Preview2Body}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof preview1>>, {data?: Preview1Body}> = (props) => {
           const {data} = props ?? {};
 
-          return  preview2(data,requestOptions)
+          return  preview1(data,requestOptions)
         }
 
 
@@ -76,28 +76,28 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type Preview2MutationResult = NonNullable<Awaited<ReturnType<typeof preview2>>>
-    export type Preview2MutationBody = Preview2Body | undefined
-    export type Preview2MutationError = unknown
+    export type Preview1MutationResult = NonNullable<Awaited<ReturnType<typeof preview1>>>
+    export type Preview1MutationBody = Preview1Body | undefined
+    export type Preview1MutationError = unknown
 
-    export const usePreview2 = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof preview2>>, TError,{data?: Preview2Body}, TContext>, request?: SecondParameter<typeof customInstance>}
+    export const usePreview1 = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof preview1>>, TError,{data?: Preview1Body}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof preview2>>,
+        Awaited<ReturnType<typeof preview1>>,
         TError,
-        {data?: Preview2Body},
+        {data?: Preview1Body},
         TContext
       > => {
-      return useMutation(getPreview2MutationOptions(options), queryClient);
+      return useMutation(getPreview1MutationOptions(options), queryClient);
     }
-    export const confirm2 = (
-    confirm2Body?: Confirm2Body,
+    export const confirm1 = (
+    confirm1Body?: Confirm1Body,
  options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
 
       const formData = new FormData();
-if(confirm2Body?.file !== undefined) {
- formData.append(`file`, confirm2Body.file);
+if(confirm1Body?.file !== undefined) {
+ formData.append(`file`, confirm1Body.file);
  }
 
       return customInstance<EmployeeImportResult>(
@@ -111,11 +111,11 @@ if(confirm2Body?.file !== undefined) {
 
 
 
-export const getConfirm2MutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof confirm2>>, TError,{data?: Confirm2Body}, TContext>, request?: SecondParameter<typeof customInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof confirm2>>, TError,{data?: Confirm2Body}, TContext> => {
+export const getConfirm1MutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof confirm1>>, TError,{data?: Confirm1Body}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof confirm1>>, TError,{data?: Confirm1Body}, TContext> => {
 
-const mutationKey = ['confirm2'];
+const mutationKey = ['confirm1'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -125,10 +125,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof confirm2>>, {data?: Confirm2Body}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof confirm1>>, {data?: Confirm1Body}> = (props) => {
           const {data} = props ?? {};
 
-          return  confirm2(data,requestOptions)
+          return  confirm1(data,requestOptions)
         }
 
 
@@ -138,17 +138,17 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type Confirm2MutationResult = NonNullable<Awaited<ReturnType<typeof confirm2>>>
-    export type Confirm2MutationBody = Confirm2Body | undefined
-    export type Confirm2MutationError = unknown
+    export type Confirm1MutationResult = NonNullable<Awaited<ReturnType<typeof confirm1>>>
+    export type Confirm1MutationBody = Confirm1Body | undefined
+    export type Confirm1MutationError = unknown
 
-    export const useConfirm2 = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof confirm2>>, TError,{data?: Confirm2Body}, TContext>, request?: SecondParameter<typeof customInstance>}
+    export const useConfirm1 = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof confirm1>>, TError,{data?: Confirm1Body}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof confirm2>>,
+        Awaited<ReturnType<typeof confirm1>>,
         TError,
-        {data?: Confirm2Body},
+        {data?: Confirm1Body},
         TContext
       > => {
-      return useMutation(getConfirm2MutationOptions(options), queryClient);
+      return useMutation(getConfirm1MutationOptions(options), queryClient);
     }

@@ -1,11 +1,16 @@
-import { FileSpreadsheet } from "lucide-react";
+import { FileSpreadsheet, Pencil, RefreshCw, XCircle } from "lucide-react";
 import { useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useContracts } from "@/features/hr/employees/api/use-contracts";
+import { ContractExportMenu } from "@/features/hr/employees/components/contract-export-menu";
+import { ContractFormDialog } from "@/features/hr/employees/components/contract-form-dialog";
 import { EmployeeContractImportDialog } from "@/features/hr/employees/components/employee-contract-import-dialog";
+import { EndContractDialog } from "@/features/hr/employees/components/end-contract-dialog";
+import { RenewContractDialog } from "@/features/hr/employees/components/renew-contract-dialog";
 import { formatDate } from "@/features/hr/shared/utils/format";
-import type { EmployeeDetail } from "@/lib/api/generated/model";
+import type { ContractDetail, EmployeeDetail } from "@/lib/api/generated/model";
 
 function ContractValue({
   label,
@@ -28,43 +33,70 @@ function ContractValue({
 }
 
 export function ContractsTab({ emp }: { emp: EmployeeDetail }) {
-  const contracts = emp.contracts ?? [];
+  const employeeId = emp.employeeId ?? 0;
+
   const [importOpen, setImportOpen] = useState(false);
+  const [formOpen, setFormOpen] = useState(false);
+  const [editingContract, setEditingContract] = useState<ContractDetail | undefined>();
+  const [endTarget, setEndTarget] = useState<ContractDetail | undefined>();
+  const [renewTarget, setRenewTarget] = useState<ContractDetail | undefined>();
+
+  const contracts = useContracts(employeeId);
+  const rows = contracts.data?.items ?? [];
 
   return (
     <div className="flex flex-col gap-4 py-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="text-sm font-semibold text-[#1a2535]">
             Employee Contracts
           </p>
 
-          <p className="text-xs text-gray-400">{contracts.length} contract(s)</p>
+          <p className="text-xs text-gray-400">{rows.length} contract(s)</p>
         </div>
 
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={() => setImportOpen(true)}
-        >
-          <FileSpreadsheet className="mr-2 size-4" />
-          Import Contracts
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          <ContractExportMenu employeeId={employeeId} label="Export All" />
+
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => setImportOpen(true)}
+          >
+            <FileSpreadsheet className="mr-2 size-4" />
+            Import Contracts
+          </Button>
+
+          <Button
+            type="button"
+            size="sm"
+            onClick={() => {
+              setEditingContract(undefined);
+              setFormOpen(true);
+            }}
+          >
+            Add Contract
+          </Button>
+        </div>
       </div>
 
-      {contracts.length === 0 ? (
+      {contracts.isLoading ? (
+        <div className="rounded-xl border border-dashed py-10 text-center font-['Inter',sans-serif] text-sm text-gray-400">
+          Loading…
+        </div>
+      ) : rows.length === 0 ? (
         <div className="rounded-xl border border-dashed py-10 text-center font-['Inter',sans-serif] text-sm text-gray-400">
           No contracts on file.
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {contracts.map((contract) => (
+          {rows.map((contract) => (
             <div
               key={contract.contractId}
               className="rounded-xl border border-gray-100 bg-[#f4f6f9] p-4"
             >
-              <div className="mb-1 flex items-start justify-between">
+              <div className="mb-1 flex items-start justify-between gap-2">
                 <div>
                   <p className="font-['Inter',sans-serif] font-semibold text-[#1a2535]">
                     Contract #{contract.contractNumber ?? contract.contractId}
@@ -84,7 +116,7 @@ export function ContractsTab({ emp }: { emp: EmployeeDetail }) {
                 </div>
 
                 <Badge
-                  className={`border-0 ${
+                  className={`shrink-0 border-0 ${
                     contract.active
                       ? "bg-emerald-100 text-emerald-700"
                       : "bg-gray-200 text-gray-500"
@@ -136,13 +168,82 @@ export function ContractsTab({ emp }: { emp: EmployeeDetail }) {
                   {contract.notes}
                 </p>
               )}
+
+              <div className="mt-3 flex flex-wrap items-center gap-1 border-t border-gray-200 pt-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEditingContract(contract);
+                    setFormOpen(true);
+                  }}
+                  className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 font-['Inter',sans-serif] text-xs font-medium text-[#f5841f] transition-colors hover:bg-[#f5841f]/10"
+                >
+                  <Pencil className="size-3.5" />
+                  Edit
+                </button>
+
+                {contract.active && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => setRenewTarget(contract)}
+                      className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 font-['Inter',sans-serif] text-xs font-medium text-[#f5841f] transition-colors hover:bg-[#f5841f]/10"
+                    >
+                      <RefreshCw className="size-3.5" />
+                      Renew
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setEndTarget(contract)}
+                      className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 font-['Inter',sans-serif] text-xs font-medium text-red-600 transition-colors hover:bg-red-50"
+                    >
+                      <XCircle className="size-3.5" />
+                      End
+                    </button>
+                  </>
+                )}
+
+                <div className="ml-auto">
+                  <ContractExportMenu
+                    employeeId={employeeId}
+                    contractId={contract.contractId}
+                    label=""
+                  />
+                </div>
+              </div>
             </div>
           ))}
         </div>
       )}
 
+      <ContractFormDialog
+        open={formOpen}
+        onOpenChange={setFormOpen}
+        employeeId={employeeId}
+        contract={editingContract}
+      />
+
+      {endTarget && (
+        <EndContractDialog
+          open={endTarget != null}
+          onOpenChange={(next) => !next && setEndTarget(undefined)}
+          employeeId={employeeId}
+          contract={endTarget}
+        />
+      )}
+
+      {renewTarget && (
+        <RenewContractDialog
+          open={renewTarget != null}
+          onOpenChange={(next) => !next && setRenewTarget(undefined)}
+          employeeId={employeeId}
+          contract={renewTarget}
+        />
+      )}
+
       <EmployeeContractImportDialog
-        employeeId={emp.employeeId ?? 0}
+        employeeId={employeeId}
         open={importOpen}
         onOpenChange={setImportOpen}
       />
