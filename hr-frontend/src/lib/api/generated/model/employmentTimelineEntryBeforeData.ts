@@ -5,6 +5,4 @@
  * OpenAPI spec version: v0
  */
 
-export type Confirm2Body = {
-  file: Blob;
-};
+export type EmploymentTimelineEntryBeforeData = {[key: string]: unknown};

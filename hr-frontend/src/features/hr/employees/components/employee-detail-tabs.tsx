@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -12,12 +12,32 @@ import type { EmployeeDetail } from "@/lib/api/generated/model";
 const TAB_TRIGGER_CLASS =
   "h-12 flex-none rounded-none border-x-0 border-t-0 border-b-2 border-transparent bg-transparent px-0 shadow-none data-[state=active]:border-[#f5841f] data-[state=active]:bg-transparent data-[state=active]:text-[#f5841f]";
 
+const TAB_VALUES = ["overview", "personal", "employment", "contracts", "history"];
+
 export function EmployeeDetailTabs({ emp }: { emp: EmployeeDetail }) {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const requestedTab = searchParams.get("tab");
+  const activeTab = TAB_VALUES.includes(requestedTab ?? "") ? requestedTab! : "overview";
+
+  function handleTabChange(value: string) {
+    setSearchParams(
+      (params) => {
+        if (value === "overview") {
+          params.delete("tab");
+        } else {
+          params.set("tab", value);
+        }
+        return params;
+      },
+      { replace: true },
+    );
+  }
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-100 bg-white">
-      <Tabs defaultValue="overview" className="w-full gap-0">
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full gap-0">
         <div className="flex items-center justify-between gap-4 border-b border-gray-100 px-5">
           <div className="min-w-0 flex-1 overflow-x-auto">
             <TabsList className="h-auto w-max gap-7 rounded-none bg-transparent p-0">

@@ -5,20 +5,37 @@
  * OpenAPI spec version: v0
  */
 import {
-  useMutation
+  useMutation,
+  useQuery
 } from '@tanstack/react-query';
 import type {
+  DataTag,
+  DefinedInitialDataOptions,
+  DefinedUseQueryResult,
   MutationFunction,
   QueryClient,
+  QueryFunction,
+  QueryKey,
+  UndefinedInitialDataOptions,
   UseMutationOptions,
-  UseMutationResult
+  UseMutationResult,
+  UseQueryOptions,
+  UseQueryResult
 } from '@tanstack/react-query';
 
 import type {
-  Confirm1Body,
+  ConfirmImportBody,
+  ContractDetail,
   ContractImportPreview,
   ContractImportResult,
-  Preview1Body
+  ContractPage,
+  CreateContractRequest,
+  EndContractRequest,
+  ExportContractParams,
+  ExportContractsParams,
+  ListContractsParams,
+  PreviewImportBody,
+  UpdateContractRequest
 } from '../../model';
 
 import { customInstance } from '../../../axios';
@@ -28,15 +45,396 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
 
-export const preview1 = (
+const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKey: K } => {
+  const result = { queryKey } as T & { queryKey: K };
+  for (const key of Object.keys(query)) {
+    // The explicit queryKey always wins, matching the previous
+    // `{ ...query, queryKey }` spread where it was set last.
+    if (key === 'queryKey') continue;
+    Object.defineProperty(result, key, {
+      enumerable: true,
+      configurable: true,
+      get: () => (query as Record<string, unknown>)[key],
+    });
+  }
+  return result;
+};
+
+export const getContract = (
     employeeId: number,
-    preview1Body?: Preview1Body,
+    contractId: number,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+
+
+      return customInstance<ContractDetail>(
+      {url: `/api/hr/employees/${employeeId}/contracts/${contractId}`, method: 'GET', signal
+    },
+      options);
+    }
+
+
+
+
+export const getGetContractQueryKey = (employeeId: number,
+    contractId: number,) => {
+    return [
+    `/api/hr/employees/${employeeId}/contracts/${contractId}`
+    ] as const;
+    }
+
+
+export const getGetContractQueryOptions = <TData = Awaited<ReturnType<typeof getContract>>, TError = unknown>(employeeId: number,
+    contractId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getContract>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetContractQueryKey(employeeId,contractId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getContract>>> = ({ signal }) => getContract(employeeId,contractId, requestOptions, signal);
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: employeeId !== null && employeeId !== undefined && contractId !== null && contractId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getContract>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetContractQueryResult = NonNullable<Awaited<ReturnType<typeof getContract>>>
+export type GetContractQueryError = unknown
+
+
+export function useGetContract<TData = Awaited<ReturnType<typeof getContract>>, TError = unknown>(
+ employeeId: number,
+    contractId: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getContract>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getContract>>,
+          TError,
+          Awaited<ReturnType<typeof getContract>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetContract<TData = Awaited<ReturnType<typeof getContract>>, TError = unknown>(
+ employeeId: number,
+    contractId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getContract>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getContract>>,
+          TError,
+          Awaited<ReturnType<typeof getContract>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetContract<TData = Awaited<ReturnType<typeof getContract>>, TError = unknown>(
+ employeeId: number,
+    contractId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getContract>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetContract<TData = Awaited<ReturnType<typeof getContract>>, TError = unknown>(
+ employeeId: number,
+    contractId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getContract>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetContractQueryOptions(employeeId,contractId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const updateContract = (
+    employeeId: number,
+    contractId: number,
+    updateContractRequest: UpdateContractRequest,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+
+
+      return customInstance<ContractDetail>(
+      {url: `/api/hr/employees/${employeeId}/contracts/${contractId}`, method: 'PUT',
+      headers: {'Content-Type': 'application/json', },
+      data: updateContractRequest, signal
+    },
+      options);
+    }
+
+
+
+
+export const getUpdateContractMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateContract>>, TError,{employeeId: number;contractId: number;data: UpdateContractRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateContract>>, TError,{employeeId: number;contractId: number;data: UpdateContractRequest}, TContext> => {
+
+const mutationKey = ['updateContract'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateContract>>, {employeeId: number;contractId: number;data: UpdateContractRequest}> = (props) => {
+          const {employeeId,contractId,data} = props ?? {};
+
+          return  updateContract(employeeId,contractId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateContractMutationResult = NonNullable<Awaited<ReturnType<typeof updateContract>>>
+    export type UpdateContractMutationBody = UpdateContractRequest
+    export type UpdateContractMutationError = unknown
+
+    export const useUpdateContract = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateContract>>, TError,{employeeId: number;contractId: number;data: UpdateContractRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateContract>>,
+        TError,
+        {employeeId: number;contractId: number;data: UpdateContractRequest},
+        TContext
+      > => {
+      return useMutation(getUpdateContractMutationOptions(options), queryClient);
+    }
+    export const listContracts = (
+    employeeId: number,
+    params?: ListContractsParams,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+
+
+      return customInstance<ContractPage>(
+      {url: `/api/hr/employees/${employeeId}/contracts`, method: 'GET',
+        params, signal
+    },
+      options);
+    }
+
+
+
+
+export const getListContractsQueryKey = (employeeId: number,
+    params?: ListContractsParams,) => {
+    return [
+    `/api/hr/employees/${employeeId}/contracts`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getListContractsQueryOptions = <TData = Awaited<ReturnType<typeof listContracts>>, TError = unknown>(employeeId: number,
+    params?: ListContractsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listContracts>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListContractsQueryKey(employeeId,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listContracts>>> = ({ signal }) => listContracts(employeeId,params, requestOptions, signal);
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: employeeId !== null && employeeId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listContracts>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ListContractsQueryResult = NonNullable<Awaited<ReturnType<typeof listContracts>>>
+export type ListContractsQueryError = unknown
+
+
+export function useListContracts<TData = Awaited<ReturnType<typeof listContracts>>, TError = unknown>(
+ employeeId: number,
+    params: undefined |  ListContractsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listContracts>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listContracts>>,
+          TError,
+          Awaited<ReturnType<typeof listContracts>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListContracts<TData = Awaited<ReturnType<typeof listContracts>>, TError = unknown>(
+ employeeId: number,
+    params?: ListContractsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listContracts>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listContracts>>,
+          TError,
+          Awaited<ReturnType<typeof listContracts>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListContracts<TData = Awaited<ReturnType<typeof listContracts>>, TError = unknown>(
+ employeeId: number,
+    params?: ListContractsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listContracts>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useListContracts<TData = Awaited<ReturnType<typeof listContracts>>, TError = unknown>(
+ employeeId: number,
+    params?: ListContractsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listContracts>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getListContractsQueryOptions(employeeId,params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const createContract = (
+    employeeId: number,
+    createContractRequest: CreateContractRequest,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+
+
+      return customInstance<ContractDetail>(
+      {url: `/api/hr/employees/${employeeId}/contracts`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: createContractRequest, signal
+    },
+      options);
+    }
+
+
+
+
+export const getCreateContractMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createContract>>, TError,{employeeId: number;data: CreateContractRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof createContract>>, TError,{employeeId: number;data: CreateContractRequest}, TContext> => {
+
+const mutationKey = ['createContract'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createContract>>, {employeeId: number;data: CreateContractRequest}> = (props) => {
+          const {employeeId,data} = props ?? {};
+
+          return  createContract(employeeId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateContractMutationResult = NonNullable<Awaited<ReturnType<typeof createContract>>>
+    export type CreateContractMutationBody = CreateContractRequest
+    export type CreateContractMutationError = unknown
+
+    export const useCreateContract = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createContract>>, TError,{employeeId: number;data: CreateContractRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof createContract>>,
+        TError,
+        {employeeId: number;data: CreateContractRequest},
+        TContext
+      > => {
+      return useMutation(getCreateContractMutationOptions(options), queryClient);
+    }
+    export const renewContract = (
+    employeeId: number,
+    contractId: number,
+    createContractRequest: CreateContractRequest,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+
+
+      return customInstance<ContractDetail>(
+      {url: `/api/hr/employees/${employeeId}/contracts/${contractId}/renew`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: createContractRequest, signal
+    },
+      options);
+    }
+
+
+
+
+export const getRenewContractMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof renewContract>>, TError,{employeeId: number;contractId: number;data: CreateContractRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof renewContract>>, TError,{employeeId: number;contractId: number;data: CreateContractRequest}, TContext> => {
+
+const mutationKey = ['renewContract'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof renewContract>>, {employeeId: number;contractId: number;data: CreateContractRequest}> = (props) => {
+          const {employeeId,contractId,data} = props ?? {};
+
+          return  renewContract(employeeId,contractId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RenewContractMutationResult = NonNullable<Awaited<ReturnType<typeof renewContract>>>
+    export type RenewContractMutationBody = CreateContractRequest
+    export type RenewContractMutationError = unknown
+
+    export const useRenewContract = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof renewContract>>, TError,{employeeId: number;contractId: number;data: CreateContractRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof renewContract>>,
+        TError,
+        {employeeId: number;contractId: number;data: CreateContractRequest},
+        TContext
+      > => {
+      return useMutation(getRenewContractMutationOptions(options), queryClient);
+    }
+    export const previewImport = (
+    employeeId: number,
+    previewImportBody?: PreviewImportBody,
  options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
 
       const formData = new FormData();
-if(preview1Body?.file !== undefined) {
- formData.append(`file`, preview1Body.file);
+if(previewImportBody?.file !== undefined) {
+ formData.append(`file`, previewImportBody.file);
  }
 
       return customInstance<ContractImportPreview>(
@@ -50,11 +448,11 @@ if(preview1Body?.file !== undefined) {
 
 
 
-export const getPreview1MutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof preview1>>, TError,{employeeId: number;data?: Preview1Body}, TContext>, request?: SecondParameter<typeof customInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof preview1>>, TError,{employeeId: number;data?: Preview1Body}, TContext> => {
+export const getPreviewImportMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof previewImport>>, TError,{employeeId: number;data?: PreviewImportBody}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof previewImport>>, TError,{employeeId: number;data?: PreviewImportBody}, TContext> => {
 
-const mutationKey = ['preview1'];
+const mutationKey = ['previewImport'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -64,10 +462,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof preview1>>, {employeeId: number;data?: Preview1Body}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof previewImport>>, {employeeId: number;data?: PreviewImportBody}> = (props) => {
           const {employeeId,data} = props ?? {};
 
-          return  preview1(employeeId,data,requestOptions)
+          return  previewImport(employeeId,data,requestOptions)
         }
 
 
@@ -77,29 +475,29 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type Preview1MutationResult = NonNullable<Awaited<ReturnType<typeof preview1>>>
-    export type Preview1MutationBody = Preview1Body | undefined
-    export type Preview1MutationError = unknown
+    export type PreviewImportMutationResult = NonNullable<Awaited<ReturnType<typeof previewImport>>>
+    export type PreviewImportMutationBody = PreviewImportBody | undefined
+    export type PreviewImportMutationError = unknown
 
-    export const usePreview1 = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof preview1>>, TError,{employeeId: number;data?: Preview1Body}, TContext>, request?: SecondParameter<typeof customInstance>}
+    export const usePreviewImport = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof previewImport>>, TError,{employeeId: number;data?: PreviewImportBody}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof preview1>>,
+        Awaited<ReturnType<typeof previewImport>>,
         TError,
-        {employeeId: number;data?: Preview1Body},
+        {employeeId: number;data?: PreviewImportBody},
         TContext
       > => {
-      return useMutation(getPreview1MutationOptions(options), queryClient);
+      return useMutation(getPreviewImportMutationOptions(options), queryClient);
     }
-    export const confirm1 = (
+    export const confirmImport = (
     employeeId: number,
-    confirm1Body?: Confirm1Body,
+    confirmImportBody?: ConfirmImportBody,
  options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
 
       const formData = new FormData();
-if(confirm1Body?.file !== undefined) {
- formData.append(`file`, confirm1Body.file);
+if(confirmImportBody?.file !== undefined) {
+ formData.append(`file`, confirmImportBody.file);
  }
 
       return customInstance<ContractImportResult>(
@@ -113,11 +511,11 @@ if(confirm1Body?.file !== undefined) {
 
 
 
-export const getConfirm1MutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof confirm1>>, TError,{employeeId: number;data?: Confirm1Body}, TContext>, request?: SecondParameter<typeof customInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof confirm1>>, TError,{employeeId: number;data?: Confirm1Body}, TContext> => {
+export const getConfirmImportMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof confirmImport>>, TError,{employeeId: number;data?: ConfirmImportBody}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof confirmImport>>, TError,{employeeId: number;data?: ConfirmImportBody}, TContext> => {
 
-const mutationKey = ['confirm1'];
+const mutationKey = ['confirmImport'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -127,10 +525,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof confirm1>>, {employeeId: number;data?: Confirm1Body}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof confirmImport>>, {employeeId: number;data?: ConfirmImportBody}> = (props) => {
           const {employeeId,data} = props ?? {};
 
-          return  confirm1(employeeId,data,requestOptions)
+          return  confirmImport(employeeId,data,requestOptions)
         }
 
 
@@ -140,17 +538,272 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type Confirm1MutationResult = NonNullable<Awaited<ReturnType<typeof confirm1>>>
-    export type Confirm1MutationBody = Confirm1Body | undefined
-    export type Confirm1MutationError = unknown
+    export type ConfirmImportMutationResult = NonNullable<Awaited<ReturnType<typeof confirmImport>>>
+    export type ConfirmImportMutationBody = ConfirmImportBody | undefined
+    export type ConfirmImportMutationError = unknown
 
-    export const useConfirm1 = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof confirm1>>, TError,{employeeId: number;data?: Confirm1Body}, TContext>, request?: SecondParameter<typeof customInstance>}
+    export const useConfirmImport = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof confirmImport>>, TError,{employeeId: number;data?: ConfirmImportBody}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof confirm1>>,
+        Awaited<ReturnType<typeof confirmImport>>,
         TError,
-        {employeeId: number;data?: Confirm1Body},
+        {employeeId: number;data?: ConfirmImportBody},
         TContext
       > => {
-      return useMutation(getConfirm1MutationOptions(options), queryClient);
+      return useMutation(getConfirmImportMutationOptions(options), queryClient);
     }
+    export const endContract = (
+    employeeId: number,
+    contractId: number,
+    endContractRequest: EndContractRequest,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+
+
+      return customInstance<ContractDetail>(
+      {url: `/api/hr/employees/${employeeId}/contracts/${contractId}/end`, method: 'PATCH',
+      headers: {'Content-Type': 'application/json', },
+      data: endContractRequest, signal
+    },
+      options);
+    }
+
+
+
+
+export const getEndContractMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof endContract>>, TError,{employeeId: number;contractId: number;data: EndContractRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof endContract>>, TError,{employeeId: number;contractId: number;data: EndContractRequest}, TContext> => {
+
+const mutationKey = ['endContract'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof endContract>>, {employeeId: number;contractId: number;data: EndContractRequest}> = (props) => {
+          const {employeeId,contractId,data} = props ?? {};
+
+          return  endContract(employeeId,contractId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type EndContractMutationResult = NonNullable<Awaited<ReturnType<typeof endContract>>>
+    export type EndContractMutationBody = EndContractRequest
+    export type EndContractMutationError = unknown
+
+    export const useEndContract = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof endContract>>, TError,{employeeId: number;contractId: number;data: EndContractRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof endContract>>,
+        TError,
+        {employeeId: number;contractId: number;data: EndContractRequest},
+        TContext
+      > => {
+      return useMutation(getEndContractMutationOptions(options), queryClient);
+    }
+    export const exportContract = (
+    employeeId: number,
+    contractId: number,
+    params?: ExportContractParams,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+
+
+      return customInstance<string>(
+      {url: `/api/hr/employees/${employeeId}/contracts/${contractId}/export`, method: 'GET',
+        params, signal
+    },
+      options);
+    }
+
+
+
+
+export const getExportContractQueryKey = (employeeId: number,
+    contractId: number,
+    params?: ExportContractParams,) => {
+    return [
+    `/api/hr/employees/${employeeId}/contracts/${contractId}/export`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getExportContractQueryOptions = <TData = Awaited<ReturnType<typeof exportContract>>, TError = unknown>(employeeId: number,
+    contractId: number,
+    params?: ExportContractParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof exportContract>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getExportContractQueryKey(employeeId,contractId,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof exportContract>>> = ({ signal }) => exportContract(employeeId,contractId,params, requestOptions, signal);
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: employeeId !== null && employeeId !== undefined && contractId !== null && contractId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof exportContract>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ExportContractQueryResult = NonNullable<Awaited<ReturnType<typeof exportContract>>>
+export type ExportContractQueryError = unknown
+
+
+export function useExportContract<TData = Awaited<ReturnType<typeof exportContract>>, TError = unknown>(
+ employeeId: number,
+    contractId: number,
+    params: undefined |  ExportContractParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof exportContract>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof exportContract>>,
+          TError,
+          Awaited<ReturnType<typeof exportContract>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useExportContract<TData = Awaited<ReturnType<typeof exportContract>>, TError = unknown>(
+ employeeId: number,
+    contractId: number,
+    params?: ExportContractParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof exportContract>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof exportContract>>,
+          TError,
+          Awaited<ReturnType<typeof exportContract>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useExportContract<TData = Awaited<ReturnType<typeof exportContract>>, TError = unknown>(
+ employeeId: number,
+    contractId: number,
+    params?: ExportContractParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof exportContract>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useExportContract<TData = Awaited<ReturnType<typeof exportContract>>, TError = unknown>(
+ employeeId: number,
+    contractId: number,
+    params?: ExportContractParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof exportContract>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getExportContractQueryOptions(employeeId,contractId,params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const exportContracts = (
+    employeeId: number,
+    params?: ExportContractsParams,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+
+
+      return customInstance<string>(
+      {url: `/api/hr/employees/${employeeId}/contracts/export`, method: 'GET',
+        params, signal
+    },
+      options);
+    }
+
+
+
+
+export const getExportContractsQueryKey = (employeeId: number,
+    params?: ExportContractsParams,) => {
+    return [
+    `/api/hr/employees/${employeeId}/contracts/export`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getExportContractsQueryOptions = <TData = Awaited<ReturnType<typeof exportContracts>>, TError = unknown>(employeeId: number,
+    params?: ExportContractsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof exportContracts>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getExportContractsQueryKey(employeeId,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof exportContracts>>> = ({ signal }) => exportContracts(employeeId,params, requestOptions, signal);
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: employeeId !== null && employeeId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof exportContracts>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ExportContractsQueryResult = NonNullable<Awaited<ReturnType<typeof exportContracts>>>
+export type ExportContractsQueryError = unknown
+
+
+export function useExportContracts<TData = Awaited<ReturnType<typeof exportContracts>>, TError = unknown>(
+ employeeId: number,
+    params: undefined |  ExportContractsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof exportContracts>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof exportContracts>>,
+          TError,
+          Awaited<ReturnType<typeof exportContracts>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useExportContracts<TData = Awaited<ReturnType<typeof exportContracts>>, TError = unknown>(
+ employeeId: number,
+    params?: ExportContractsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof exportContracts>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof exportContracts>>,
+          TError,
+          Awaited<ReturnType<typeof exportContracts>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useExportContracts<TData = Awaited<ReturnType<typeof exportContracts>>, TError = unknown>(
+ employeeId: number,
+    params?: ExportContractsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof exportContracts>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useExportContracts<TData = Awaited<ReturnType<typeof exportContracts>>, TError = unknown>(
+ employeeId: number,
+    params?: ExportContractsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof exportContracts>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getExportContractsQueryOptions(employeeId,params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+

@@ -5,6 +5,4 @@
  * OpenAPI spec version: v0
  */
 
-export type Preview2Body = {
-  file: Blob;
-};
+export type EmploymentTimelineEntryAfterData = {[key: string]: unknown};
