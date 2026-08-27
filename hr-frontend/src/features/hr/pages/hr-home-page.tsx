@@ -37,6 +37,7 @@ const MODULES: ModuleCard[] = [
     id: "hr-settings",
     label: "HR Settings",
     icon: <Settings size={24} className="text-[#1a2535]" />,
+    to: "/hr/settings",
   },
 ];
 
