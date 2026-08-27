@@ -31,6 +31,7 @@ const MODULES: ModuleCard[] = [
     id: "employment",
     label: "Employment",
     icon: <FileText size={24} className="text-[#1a2535]" />,
+    to: "/hr/employment",
   },
   {
     id: "hr-settings",
