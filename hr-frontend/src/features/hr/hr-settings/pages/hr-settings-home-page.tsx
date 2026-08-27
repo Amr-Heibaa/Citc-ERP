@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router";
 
+import { useJobGradesSummary } from "@/features/hr/hr-settings/api/use-job-grades-summary";
 import { useHrSettingsSummary } from "@/features/hr/hr-settings/api/use-settings-summary";
 import { HrSettingSummaryCard } from "@/features/hr/hr-settings/components/hr-setting-summary-card";
 
@@ -7,6 +8,10 @@ export function HrSettingsHomePage() {
   const navigate = useNavigate();
   const summary = useHrSettingsSummary();
   const data = summary.data;
+
+  const grades = useJobGradesSummary();
+  const gradeRows = grades.data ?? [];
+  const activeGradesCount = gradeRows.filter((grade) => grade.active).length;
 
   return (
     <div className="flex flex-col gap-4 p-4 md:p-6">
@@ -30,7 +35,16 @@ export function HrSettingsHomePage() {
         </button>
       </div>
 
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+        <HrSettingSummaryCard
+          title="Job Grades"
+          total={gradeRows.length}
+          active={activeGradesCount}
+          loading={grades.isLoading}
+          actionLabel="View"
+          onAction={() => navigate("/hr/jobs/grades")}
+        />
+
         <HrSettingSummaryCard
           title="Employee Statuses"
           total={data?.employeeStatusCount ?? 0}
