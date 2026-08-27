@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { useStatuses } from "@/features/hr/employees/api/use-employees";
+import { useOrganizations, useStatuses } from "@/features/hr/employees/api/use-employees";
 import {
   usePositionsForEmployment,
   useReactivateEmployment,
@@ -30,6 +30,7 @@ import { SelectField } from "@/features/hr/shared/components/select-field";
 import type { EmploymentOverview } from "@/lib/api/generated/model";
 
 const EMPTY_DEFAULTS: ReactivateFormValues = {
+  organizationId: "",
   employeeStatusId: "",
   positionId: "",
   assignmentType: "1",
@@ -49,7 +50,7 @@ export function ReactivateEmploymentDialog({
 }) {
   const employeeId = overview.employeeId ?? 0;
   const statuses = useStatuses();
-  const positions = usePositionsForEmployment(overview.organizationId);
+  const organizations = useOrganizations();
   const reactivateEmployment = useReactivateEmployment(employeeId);
 
   const reactivationStatuses = (statuses.data ?? []).filter((status) =>
@@ -61,11 +62,19 @@ export function ReactivateEmploymentDialog({
     handleSubmit,
     control,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<ReactivateFormValues>({
     resolver: zodResolver(reactivateSchema),
     defaultValues: EMPTY_DEFAULTS,
   });
+
+  // A terminated employee has no current organization (it's cleared on
+  // termination), so we can't scope the position picker to overview.organizationId
+  // like other dialogs do — the admin picks the org fresh here instead.
+  const organizationId = useWatch({ control, name: "organizationId" });
+  const selectedOrgId = organizationId ? Number(organizationId) : undefined;
+  const positions = usePositionsForEmployment(selectedOrgId);
 
   useEffect(() => {
     if (!open) {
@@ -78,6 +87,11 @@ export function ReactivateEmploymentDialog({
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
+
+  useEffect(() => {
+    setValue("positionId", "");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [organizationId]);
 
   const submit = handleSubmit(async (values) => {
     try {
@@ -107,11 +121,29 @@ export function ReactivateEmploymentDialog({
         <form onSubmit={submit}>
           <div className="grid grid-cols-1 gap-4 px-6 py-5 sm:grid-cols-2">
             <div className="sm:col-span-2">
+              <LabeledField label="Organization">
+                <SelectField
+                  control={control}
+                  name="organizationId"
+                  placeholder="Select organization"
+                  options={
+                    organizations.data?.flatMap((organization) =>
+                      organization.id == null
+                        ? []
+                        : [{ value: String(organization.id), label: organization.name }],
+                    ) ?? []
+                  }
+                />
+              </LabeledField>
+            </div>
+
+            <div className="sm:col-span-2">
               <LabeledField label="Position" error={errors.positionId?.message}>
                 <SelectField
                   control={control}
                   name="positionId"
-                  placeholder="Select position"
+                  placeholder={selectedOrgId ? "Select position" : "Select an organization first"}
+                  disabled={!selectedOrgId}
                   options={
                     positions.data?.content?.flatMap((position) =>
                       position.positionId == null

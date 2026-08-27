@@ -43,6 +43,7 @@ export function ContractsTab({ emp }: { emp: EmployeeDetail }) {
 
   const contracts = useContracts(employeeId);
   const rows = contracts.data?.items ?? [];
+  const hasActiveContract = rows.some((row) => row.active);
 
   return (
     <div className="flex flex-col gap-4 py-4">
@@ -71,6 +72,12 @@ export function ContractsTab({ emp }: { emp: EmployeeDetail }) {
           <Button
             type="button"
             size="sm"
+            disabled={hasActiveContract}
+            title={
+              hasActiveContract
+                ? "This employee already has an active contract — use Renew instead"
+                : undefined
+            }
             onClick={() => {
               setEditingContract(undefined);
               setFormOpen(true);
@@ -80,6 +87,14 @@ export function ContractsTab({ emp }: { emp: EmployeeDetail }) {
           </Button>
         </div>
       </div>
+
+      {hasActiveContract && (
+        <p className="font-['Inter',sans-serif] text-xs text-gray-400">
+          Only one active contract is allowed per employee. To replace the
+          active contract, use <span className="font-medium">Renew</span> on
+          it below instead of adding a new one.
+        </p>
+      )}
 
       {contracts.isLoading ? (
         <div className="rounded-xl border border-dashed py-10 text-center font-['Inter',sans-serif] text-sm text-gray-400">

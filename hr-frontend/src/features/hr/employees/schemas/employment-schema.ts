@@ -33,6 +33,8 @@ export const terminateSchema = z.object({
 export type TerminateFormValues = z.infer<typeof terminateSchema>;
 
 export const reactivateSchema = z.object({
+  // Client-side only, used to scope the position picker — not sent to the backend.
+  organizationId: z.string().optional(),
   employeeStatusId: z.string().min(1, "Status is required"),
   positionId: z.string().min(1, "Position is required"),
   assignmentType: z.string().min(1, "Assignment type is required"),
