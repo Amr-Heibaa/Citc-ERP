@@ -1,4 +1,4 @@
-import { Users, FileText, Briefcase, Settings, Building2 } from "lucide-react";
+import { Users, FileText, Briefcase, Settings, Building2, BarChart2 } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useMyEmployee } from "@/features/hr/employees/api/use-employees";
 type ModuleCard = {
@@ -38,6 +38,12 @@ const MODULES: ModuleCard[] = [
     label: "HR Settings",
     icon: <Settings size={24} className="text-[#1a2535]" />,
     to: "/hr/settings",
+  },
+  {
+    id: "reports",
+    label: "Reports",
+    icon: <BarChart2 size={24} className="text-[#1a2535]" />,
+    to: "/hr/reports",
   },
 ];
 

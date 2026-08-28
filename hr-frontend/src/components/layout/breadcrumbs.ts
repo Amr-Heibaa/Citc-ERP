@@ -10,6 +10,7 @@ const JOBS: Crumb = { label: "Jobs", to: "/hr/jobs" };
 const POSITIONS: Crumb = { label: "Positions", to: "/hr/jobs/positions" };
 const EMPLOYMENT: Crumb = { label: "Employment", to: "/hr/employment" };
 const HR_SETTINGS: Crumb = { label: "HR Settings", to: "/hr/settings" };
+const HR_REPORTS: Crumb = { label: "Reports", to: "/hr/reports" };
 
 type Rule = {
   pattern: RegExp;
@@ -143,6 +144,16 @@ const rules: Rule[] = [
   {
     pattern: /^\/hr\/settings\/functional-relation-types$/,
     build: () => [HR, HR_SETTINGS, { label: "Functional Relation Types" }],
+  },
+
+  { pattern: /^\/hr\/reports$/, build: () => [HR, { label: "Reports" }] },
+  {
+    pattern: /^\/hr\/reports\/hires-resignations$/,
+    build: () => [HR, HR_REPORTS, { label: "Hires & Resignations" }],
+  },
+  {
+    pattern: /^\/hr\/reports\/contract-types$/,
+    build: () => [HR, HR_REPORTS, { label: "Contract Types" }],
   },
 ];
 

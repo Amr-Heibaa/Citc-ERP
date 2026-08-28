@@ -28,6 +28,9 @@ import { ContractTypesPage } from "@/features/hr/hr-settings/pages/contract-type
 import { SkillsPage } from "@/features/hr/hr-settings/pages/skills-page";
 import { FunctionalRelationTypesPage } from "@/features/hr/hr-settings/pages/functional-relation-types-page";
 import { SettingsHistoryPage } from "@/features/hr/hr-settings/pages/settings-history-page";
+import { HrReportsHomePage } from "@/features/hr/reports/pages/hr-reports-home-page";
+import { HiresResignationsReportPage } from "@/features/hr/reports/pages/hires-resignations-report-page";
+import { ContractTypesReportPage } from "@/features/hr/reports/pages/contract-types-report-page";
 function Placeholder({ name }: { name: string }) {
   return (
     <div className="p-6">
@@ -110,6 +113,16 @@ export const router = createBrowserRouter([
           {
             path: "hr/settings/functional-relation-types",
             element: <FunctionalRelationTypesPage />,
+          },
+
+          { path: "hr/reports", element: <HrReportsHomePage /> },
+          {
+            path: "hr/reports/hires-resignations",
+            element: <HiresResignationsReportPage />,
+          },
+          {
+            path: "hr/reports/contract-types",
+            element: <ContractTypesReportPage />,
           },
         ],
       },

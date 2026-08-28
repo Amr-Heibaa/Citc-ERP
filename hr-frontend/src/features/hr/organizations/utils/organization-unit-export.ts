@@ -1,16 +1,4 @@
-function escapeCsvValue(
-  value: unknown,
-): string {
-  const normalized =
-    value == null
-      ? ""
-      : String(value);
-
-  return `"${normalized.replace(
-    /"/g,
-    '""',
-  )}"`;
-}
+import { downloadCsv } from "@/features/hr/shared/utils/export";
 
 export function downloadUnitCsv(
   fileName: string,
@@ -20,41 +8,6 @@ export function downloadUnitCsv(
     return;
   }
 
-  const headers =
-    Object.keys(rows[0]);
-
-  const csv = [
-    headers
-      .map(escapeCsvValue)
-      .join(","),
-
-    ...rows.map((row) =>
-      headers
-        .map((header) =>
-          escapeCsvValue(
-            row[header],
-          ),
-        )
-        .join(","),
-    ),
-  ].join("\r\n");
-
-  const blob = new Blob(
-    ["\uFEFF", csv],
-    {
-      type: "text/csv;charset=utf-8",
-    },
-  );
-
-  const url =
-    URL.createObjectURL(blob);
-
-  const anchor =
-    document.createElement("a");
-
-  anchor.href = url;
-  anchor.download = fileName;
-  anchor.click();
-
-  URL.revokeObjectURL(url);
+  const baseName = fileName.replace(/\.csv$/i, "");
+  downloadCsv(baseName, rows);
 }
