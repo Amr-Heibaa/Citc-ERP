@@ -149,6 +149,10 @@ const rules: Rule[] = [
     pattern: /^\/hr\/settings\/functional-relation-types$/,
     build: () => [HR, HR_SETTINGS, { label: "Functional Relation Types" }],
   },
+  {
+    pattern: /^\/hr\/settings\/access-delegation$/,
+    build: () => [HR, HR_SETTINGS, { label: "Access Delegation" }],
+  },
 
   { pattern: /^\/hr\/reports$/, build: () => [HR, { label: "Reports" }] },
   {
