@@ -19,14 +19,17 @@ import {
   downloadExcel,
   printEmployees,
 } from "@/features/hr/employees/utils/employee-export";
+import { useFetchEmployeeDetails } from "@/features/hr/employees/api/use-employees";
+import { printEmployeeProfiles } from "@/features/hr/employees/utils/employee-profile-export";
 import type { EmployeeSummary } from "@/lib/api/generated/model";
 
-const FORMATS: EmployeeExportFormat[] = ["CSV", "Excel", "PDF"];
+const FORMATS: EmployeeExportFormat[] = ["CSV", "Excel", "PDF", "Full Profile PDF"];
 
 const FORMAT_DESCRIPTIONS: Record<EmployeeExportFormat, string> = {
   CSV: "Comma-separated values",
   Excel: "Microsoft Excel workbook",
   PDF: "Open a print-ready view to save as PDF",
+  "Full Profile PDF": "Full details and photo per employee, print-ready",
 };
 
 export function EmployeesExportDialog({
@@ -43,6 +46,8 @@ export function EmployeesExportDialog({
     (state) => state.setExportFormat,
   );
 
+  const fetchDetails = useFetchEmployeeDetails();
+
   async function handleExport() {
     if (employees.length === 0) {
       toast.error("There are no employees to export");
@@ -54,8 +59,19 @@ export function EmployeesExportDialog({
         downloadCsv(employees);
       } else if (exportFormat === "Excel") {
         await downloadExcel(employees);
-      } else {
+      } else if (exportFormat === "PDF") {
         printEmployees(employees);
+      } else {
+        const employeeIds = employees
+          .map((employee) => employee.employeeId)
+          .filter((id): id is number => Number.isInteger(id));
+
+        const details = await fetchDetails.mutateAsync(employeeIds);
+
+        printEmployeeProfiles(details, {
+          title: "Employee Profiles",
+          subtitle: `${details.length} employee records`,
+        });
       }
 
       setExportOpen(false);
@@ -119,10 +135,11 @@ export function EmployeesExportDialog({
 
           <Button
             onClick={handleExport}
+            disabled={fetchDetails.isPending}
             className="bg-[#1a2535] text-white hover:bg-[#243347]"
           >
             <Download className="size-4" />
-            Export {exportFormat}
+            {fetchDetails.isPending ? "Preparing…" : `Export ${exportFormat}`}
           </Button>
         </DialogFooter>
       </DialogContent>

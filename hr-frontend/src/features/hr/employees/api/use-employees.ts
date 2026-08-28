@@ -9,6 +9,7 @@ import {
 
 import {
   createEmployee,
+  getEmployeeDetail,
   updateEmployee,
   useGetEmployeeDetail,
   useGetMyEmployee,
@@ -61,6 +62,13 @@ export function useMyEmployee() {
 export function useEmployeeDetail(employeeId: number) {
   return useGetEmployeeDetail(employeeId, {
     query: { enabled: Number.isInteger(employeeId) && employeeId > 0 },
+  });
+}
+
+export function useFetchEmployeeDetails() {
+  return useMutation({
+    mutationFn: (employeeIds: number[]) =>
+      Promise.all(employeeIds.map((employeeId) => getEmployeeDetail(employeeId))),
   });
 }
 

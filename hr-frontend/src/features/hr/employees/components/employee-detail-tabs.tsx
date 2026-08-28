@@ -1,3 +1,4 @@
+import { Download } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router";
 
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,7 @@ import { HistoryTab } from "@/features/hr/employees/components/employee-history-
 import { OverviewTab } from "@/features/hr/employees/components/employee-overview-tab";
 import { PersonalTab } from "@/features/hr/employees/components/employee-personal-tab";
 import { ContractsTab } from "@/features/hr/employees/components/employee-contracts-tab";
+import { printEmployeeProfiles } from "@/features/hr/employees/utils/employee-profile-export";
 import type { EmployeeDetail } from "@/lib/api/generated/model";
 
 const TAB_TRIGGER_CLASS =
@@ -63,13 +65,23 @@ export function EmployeeDetailTabs({ emp }: { emp: EmployeeDetail }) {
             </TabsList>
           </div>
 
-          <Button
-            size="sm"
-            onClick={() => navigate(`/hr/employees/${emp.employeeId}/edit`)}
-            className="shrink-0"
-          >
-            Edit Employee
-          </Button>
+          <div className="flex shrink-0 gap-2">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => printEmployeeProfiles([emp])}
+            >
+              <Download className="size-4" />
+              Export Profile
+            </Button>
+
+            <Button
+              size="sm"
+              onClick={() => navigate(`/hr/employees/${emp.employeeId}/edit`)}
+            >
+              Edit Employee
+            </Button>
+          </div>
         </div>
 
         <div className="px-5 pb-5">
