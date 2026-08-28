@@ -39,6 +39,7 @@ export function FunctionalRelationTypeFormDialog({
 }) {
   const editMode = relationType != null;
   const functionalRelationTypeId = relationType?.functionalRelationTypeId ?? 0;
+  const cannotDeactivate = editMode && (relationType?.usageCount ?? 0) > 0;
 
   const createType = useCreateFunctionalRelationType();
   const updateType = useUpdateFunctionalRelationType(functionalRelationTypeId);
@@ -94,7 +95,9 @@ export function FunctionalRelationTypeFormDialog({
       <DialogContent className="sm:max-w-lg gap-0 overflow-hidden p-0">
         <DialogHeader className="border-b border-gray-100 px-6 py-5">
           <DialogTitle className="text-xl text-[#1a2535]">
-            {editMode ? "Edit Functional Relation Type" : "Add Functional Relation Type"}
+            {editMode
+              ? "Edit Functional Relation Type"
+              : "Add Functional Relation Type"}
           </DialogTitle>
 
           <DialogDescription>
@@ -107,15 +110,26 @@ export function FunctionalRelationTypeFormDialog({
         <form onSubmit={submit}>
           <div className="grid grid-cols-1 gap-4 px-6 py-5 sm:grid-cols-2">
             <LabeledField label="Code" error={errors.code?.message}>
-              <Input {...register("code")} placeholder="TEAM_LEADER" />
+              <Input
+                {...register("code")}
+                placeholder="TEAM_LEADER"
+                maxLength={50}
+                disabled={editMode}
+              />
+
+              {editMode && (
+                <p className="mt-1 text-xs text-gray-400">
+                  Code cannot be changed after creation.
+                </p>
+              )}
             </LabeledField>
 
             <LabeledField label="Name (English)" error={errors.nameEn?.message}>
-              <Input {...register("nameEn")} />
+              <Input {...register("nameEn")} maxLength={100} />
             </LabeledField>
 
             <LabeledField label="Name (Arabic)" error={errors.nameAr?.message}>
-              <Input {...register("nameAr")} dir="rtl" />
+              <Input {...register("nameAr")} maxLength={100} dir="rtl" />
             </LabeledField>
 
             <LabeledField label="Approval Relation">
@@ -128,21 +142,44 @@ export function FunctionalRelationTypeFormDialog({
             </LabeledField>
 
             <LabeledField label="Status">
-              <StatusSelectField
-                active={active}
-                onChange={(checked) => setValue("active", checked)}
-              />
+              <div>
+                <StatusSelectField
+                  active={active}
+                  disableInactive={cannotDeactivate}
+                  onChange={(checked) =>
+                    setValue("active", checked, {
+                      shouldDirty: true,
+                      shouldValidate: true,
+                    })
+                  }
+                />
+
+                {cannotDeactivate && (
+                  <p className="mt-1 text-xs leading-5 text-amber-600">
+                    This relation type is used by{" "}
+                    {relationType?.usageCount ?? 0}
+                    active assignment(s) and cannot be deactivated.
+                  </p>
+                )}
+              </div>
             </LabeledField>
 
             <div className="sm:col-span-2">
-              <LabeledField label="Description (Optional)" error={errors.description?.message}>
-                <Input {...register("description")} />
+              <LabeledField
+                label="Description (Optional)"
+                error={errors.description?.message}
+              >
+                <Input {...register("description")} maxLength={1000} />
               </LabeledField>
             </div>
           </div>
 
           <DialogFooter className="border-t border-gray-100 px-6 py-4">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+            >
               Cancel
             </Button>
 

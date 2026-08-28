@@ -96,11 +96,11 @@ export function SkillFormDialog({
         <form onSubmit={submit}>
           <div className="grid grid-cols-1 gap-4 px-6 py-5 sm:grid-cols-2">
             <LabeledField label="Name (English)" error={errors.nameEn?.message}>
-              <Input {...register("nameEn")} />
+              <Input {...register("nameEn")} maxLength={100} />
             </LabeledField>
 
             <LabeledField label="Name (Arabic)" error={errors.nameAr?.message}>
-              <Input {...register("nameAr")} dir="rtl" />
+              <Input {...register("nameAr")} maxLength={100} dir="rtl" />
             </LabeledField>
 
             <LabeledField label="Status">

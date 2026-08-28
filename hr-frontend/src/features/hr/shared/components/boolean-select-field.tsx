@@ -11,11 +11,15 @@ export function BooleanSelectField({
   onChange,
   trueLabel,
   falseLabel,
+  disableTrue = false,
+  disableFalse = false,
 }: {
   value: boolean;
   onChange: (value: boolean) => void;
   trueLabel: string;
   falseLabel: string;
+  disableTrue?: boolean;
+  disableFalse?: boolean;
 }) {
   return (
     <Select
@@ -27,8 +31,13 @@ export function BooleanSelectField({
       </SelectTrigger>
 
       <SelectContent>
-        <SelectItem value="true">{trueLabel}</SelectItem>
-        <SelectItem value="false">{falseLabel}</SelectItem>
+        <SelectItem value="true" disabled={disableTrue}>
+          {trueLabel}
+        </SelectItem>
+
+        <SelectItem value="false" disabled={disableFalse}>
+          {falseLabel}
+        </SelectItem>
       </SelectContent>
     </Select>
   );

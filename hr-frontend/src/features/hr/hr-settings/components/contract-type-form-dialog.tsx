@@ -103,11 +103,21 @@ export function ContractTypeFormDialog({
         <form onSubmit={submit}>
           <div className="grid grid-cols-1 gap-4 px-6 py-5 sm:grid-cols-2">
             <LabeledField label="Code" error={errors.code?.message}>
-              <Input {...register("code")} placeholder="PERM" />
-            </LabeledField>
+              <Input
+                {...register("code")}
+                placeholder="PERM"
+                maxLength={50}
+                disabled={editMode}
+              />
 
+              {editMode && (
+                <p className="mt-1 text-xs text-gray-400">
+                  Code cannot be changed after creation.
+                </p>
+              )}
+            </LabeledField>
             <LabeledField label="Name" error={errors.name?.message}>
-              <Input {...register("name")} />
+              <Input {...register("name")} maxLength={100} />{" "}
             </LabeledField>
 
             <LabeledField label="Status">
@@ -118,14 +128,21 @@ export function ContractTypeFormDialog({
             </LabeledField>
 
             <div className="sm:col-span-2">
-              <LabeledField label="Description (Optional)" error={errors.description?.message}>
-                <Input {...register("description")} />
+              <LabeledField
+                label="Description (Optional)"
+                error={errors.description?.message}
+              >
+                <Input {...register("description")} maxLength={1000} />{" "}
               </LabeledField>
             </div>
           </div>
 
           <DialogFooter className="border-t border-gray-100 px-6 py-4">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+            >
               Cancel
             </Button>
 

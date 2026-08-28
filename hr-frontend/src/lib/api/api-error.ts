@@ -6,42 +6,36 @@ type ApiErrorResponse = {
   error?: string;
 };
 
-export type AppApiError = {
-  message: string;
-  status?: number;
-};
+export class AppApiError extends Error {
+  readonly status?: number;
 
-export function normalizeApiError(
-  error: AxiosError<unknown>,
-): AppApiError {
-  const responseData =
-    error.response?.data as ApiErrorResponse | undefined;
+  constructor(message: string, status?: number) {
+    super(message);
+    this.name = "AppApiError";
+    this.status = status;
+  }
+}
+
+export function normalizeApiError(error: AxiosError<unknown>): AppApiError {
+  const responseData = error.response?.data as ApiErrorResponse | undefined;
 
   if (error.message === "Network Error") {
-    return {
-      message: "Unable to connect to the server",
-    };
+    return new AppApiError("Unable to connect to the server");
   }
 
   if (error.code === "ECONNABORTED") {
-    return {
-      message: "The request timed out",
-    };
+    return new AppApiError("The request timed out");
   }
 
   if (error.code === "ERR_CANCELED") {
-    return {
-      message: "The request was cancelled",
-    };
+    return new AppApiError("The request was cancelled");
   }
 
-  return {
-    message:
-      responseData?.message ??
+  return new AppApiError(
+    responseData?.message ??
       responseData?.detail ??
       responseData?.error ??
       "Something went wrong",
-
-    status: error.response?.status,
-  };
+    error.response?.status,
+  );
 }

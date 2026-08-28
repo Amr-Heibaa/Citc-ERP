@@ -3,9 +3,11 @@ import { BooleanSelectField } from "@/features/hr/shared/components/boolean-sele
 export function StatusSelectField({
   active,
   onChange,
+  disableInactive = false,
 }: {
   active: boolean;
   onChange: (active: boolean) => void;
+  disableInactive?: boolean;
 }) {
   return (
     <BooleanSelectField
@@ -13,6 +15,7 @@ export function StatusSelectField({
       onChange={onChange}
       trueLabel="Active"
       falseLabel="Inactive"
+      disableFalse={disableInactive}
     />
   );
 }
