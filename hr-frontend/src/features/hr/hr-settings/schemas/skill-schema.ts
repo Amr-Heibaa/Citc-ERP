@@ -3,8 +3,17 @@ import { z } from "zod";
 import type { SkillSetting } from "@/lib/api/generated/model";
 
 export const skillSchema = z.object({
-  nameEn: z.string().trim().min(1, "Name (English) is required"),
-  nameAr: z.string().optional(),
+  nameEn: z
+    .string()
+    .trim()
+    .min(1, "Name (English) is required")
+    .max(100, "Name (English) must not exceed 100 characters"),
+
+  nameAr: z
+    .string()
+    .max(100, "Name (Arabic) must not exceed 100 characters")
+    .optional(),
+
   active: z.boolean(),
 });
 

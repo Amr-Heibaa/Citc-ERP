@@ -7,9 +7,20 @@ export const contractTypeSchema = z.object({
     .string()
     .trim()
     .min(1, "Code is required")
+    .max(50, "Code must not exceed 50 characters")
     .regex(/^[A-Za-z0-9][A-Za-z0-9_-]*$/, "Use letters, numbers, _ or -"),
-  name: z.string().trim().min(1, "Name is required"),
-  description: z.string().optional(),
+
+  name: z
+    .string()
+    .trim()
+    .min(1, "Name is required")
+    .max(100, "Name must not exceed 100 characters"),
+
+  description: z
+    .string()
+    .max(1000, "Description must not exceed 1000 characters")
+    .optional(),
+
   active: z.boolean(),
 });
 
