@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { FileUp } from "lucide-react";
+import { FileUp, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router";
 
 import { Button } from "@/components/ui/button";
@@ -88,6 +88,15 @@ export function EmployeesPage() {
           </div>
 
           <div className="flex flex-wrap gap-2">
+            <Button
+              variant="outline"
+              onClick={() => navigate("/hr/employees/deleted")}
+              className="h-10 gap-2"
+            >
+              <Trash2 className="size-4" />
+              Deleted Employees
+            </Button>
+
             <Button
               variant="outline"
               onClick={() => setImportOpen(true)}

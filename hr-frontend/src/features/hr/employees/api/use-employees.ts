@@ -9,10 +9,13 @@ import {
 
 import {
   createEmployee,
+  deleteEmployee,
   getEmployeeDetail,
+  restoreEmployee,
   updateEmployee,
   useGetEmployeeDetail,
   useGetMyEmployee,
+  useListDeletedEmployees,
   useListEmployees,
 } from "@/lib/api/generated/ems/employee-controller/employee-controller";
 
@@ -31,6 +34,8 @@ import {
 
 import type {
   CreateEmployeeRequest,
+  DeleteEmployeeRequest,
+  RestoreEmployeeRequest,
   UpdateEmployeeRequest,
 } from "@/lib/api/generated/model";
 
@@ -126,6 +131,38 @@ export function useUpdateEmployee(employeeId: number) {
 
   return useMutation({
     mutationFn: (data: UpdateEmployeeRequest) => updateEmployee(employeeId, data),
+
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        predicate: (query) => isEmployeeQueryKey(query.queryKey),
+      });
+    },
+  });
+}
+
+export function useDeletedEmployees() {
+  return useListDeletedEmployees();
+}
+
+export function useDeleteEmployee(employeeId: number) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: DeleteEmployeeRequest) => deleteEmployee(employeeId, data),
+
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        predicate: (query) => isEmployeeQueryKey(query.queryKey),
+      });
+    },
+  });
+}
+
+export function useRestoreEmployee(employeeId: number) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: RestoreEmployeeRequest) => restoreEmployee(employeeId, data),
 
     onSuccess: async () => {
       await queryClient.invalidateQueries({

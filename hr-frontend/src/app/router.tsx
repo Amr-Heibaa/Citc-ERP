@@ -9,6 +9,7 @@ import { EmployeesPage } from "@/features/hr/employees/pages/employees-page";
 import { EmployeeDetailPage } from "@/features/hr/employees/pages/employee-detail-page";
 import { EmployeeCreatePage } from "@/features/hr/employees/pages/employee-create-page";
 import { EmployeeEditPage } from "@/features/hr/employees/pages/employee-edit-page";
+import { DeletedEmployeesPage } from "@/features/hr/employees/pages/deleted-employees-page";
 import { OrganizationsPage } from "@/features/hr/organizations/pages/organizations-page";
 import { OrganizationDetailPage } from "@/features/hr/organizations/pages/organization-detail-page";
 import { OrganizationCreatePage } from "@/features/hr/organizations/pages/organization-create-page";
@@ -62,6 +63,7 @@ export const router = createBrowserRouter([
           { path: "hr", element: <HrHomePage /> },
           { path: "hr/employees", element: <EmployeesPage /> },
           { path: "hr/employees/new", element: <EmployeeCreatePage /> },
+          { path: "hr/employees/deleted", element: <DeletedEmployeesPage /> },
           {
             path: "hr/employees/:employeeId/edit",
             element: <EmployeeEditPage />,

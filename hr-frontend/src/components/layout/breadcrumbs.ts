@@ -40,6 +40,10 @@ const rules: Rule[] = [
     build: () => [HR, EMPLOYEES, { label: "Create Employee" }],
   },
   {
+    pattern: /^\/hr\/employees\/deleted$/,
+    build: () => [HR, EMPLOYEES, { label: "Deleted Employees" }],
+  },
+  {
     pattern: /^\/hr\/employees\/(\d+)\/edit$/,
     build: ([id]) => [
       HR,

@@ -1,8 +1,10 @@
-import { Download } from "lucide-react";
+import { Download, Trash2 } from "lucide-react";
+import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DeleteEmployeeDialog } from "@/features/hr/employees/components/delete-employee-dialog";
 import { EmploymentTab } from "@/features/hr/employees/components/employee-employment-tab";
 import { HistoryTab } from "@/features/hr/employees/components/employee-history-tab";
 import { OverviewTab } from "@/features/hr/employees/components/employee-overview-tab";
@@ -19,6 +21,7 @@ const TAB_VALUES = ["overview", "personal", "employment", "contracts", "history"
 export function EmployeeDetailTabs({ emp }: { emp: EmployeeDetail }) {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   const requestedTab = searchParams.get("tab");
   const activeTab = TAB_VALUES.includes(requestedTab ?? "") ? requestedTab! : "overview";
@@ -81,6 +84,16 @@ export function EmployeeDetailTabs({ emp }: { emp: EmployeeDetail }) {
             >
               Edit Employee
             </Button>
+
+            <Button
+              size="sm"
+              variant="outline"
+              className="border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
+              onClick={() => setDeleteOpen(true)}
+            >
+              <Trash2 className="size-4" />
+              Delete
+            </Button>
           </div>
         </div>
 
@@ -106,6 +119,14 @@ export function EmployeeDetailTabs({ emp }: { emp: EmployeeDetail }) {
           </TabsContent>
         </div>
       </Tabs>
+
+      <DeleteEmployeeDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        employeeId={emp.employeeId ?? 0}
+        employeeName={emp.displayName ?? "This employee"}
+        onDeleted={() => navigate("/hr/employees")}
+      />
     </div>
   );
 }
