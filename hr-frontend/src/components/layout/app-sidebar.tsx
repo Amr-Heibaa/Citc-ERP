@@ -48,7 +48,17 @@ export function SidebarContent({ onNavigate }: SidebarContentProps) {
    <div className="flex h-full flex-col bg-[#1a2535]">
       {/* Logo */}
       <div className="flex shrink-0 flex-col gap-4 px-6 pb-6 pt-10">
-        <img src={citoLogo} alt="CITO" className="h-8 w-auto object-contain object-left" />
+        <button
+          type="button"
+          onClick={() => {
+            navigate('/')
+            onNavigate?.()
+          }}
+          aria-label="Go to dashboard"
+          className="w-fit cursor-pointer"
+        >
+          <img src={citoLogo} alt="CITO" className="h-8 w-auto object-contain object-left" />
+        </button>
         <div className="border-t border-[#f5841f]/60" />
       </div>
 

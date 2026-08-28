@@ -3,21 +3,10 @@ import { Bell, ChevronLeft, Menu, Moon, Search, X } from "lucide-react";
 import { Outlet, useLocation, useNavigate } from "react-router";
 
 import { SidebarContent } from "@/components/layout/app-sidebar";
+import { BreadcrumbNav } from "@/components/layout/breadcrumb-nav";
+import { getBreadcrumbs } from "@/components/layout/breadcrumbs";
 import { useUiStore } from "@/stores/ui-store";
 import { useUserStore } from "@/stores/user-store";
-
-const pageTitles: Record<string, string> = {
-  "/": "Dashboard",
-  "/notifications": "Notifications",
-  "/requests": "Requests",
-  "/requests/new": "New Request",
-  "/projects": "Projects",
-  "/reports": "Reports",
-  "/settings": "Settings",
-  "/hr": "HR",
-  "/hr/employees": "HR › Employees",
-  "/hr/employees/new": "HR › Employees › Create Employee",
-};
 
 function initials(name: string) {
   return name
@@ -52,21 +41,9 @@ export function AppLayout() {
     return () => window.removeEventListener("resize", onResize);
   }, [setSidebarOpen]);
 
-  const isEmployeeDetailPage = /^\/hr\/employees\/\d+$/.test(location.pathname);
+  const crumbs = getBreadcrumbs(location.pathname);
 
-  const isEmployeeEditPage = /^\/hr\/employees\/\d+\/edit$/.test(
-  location.pathname,
-);
-
-  const title = isEmployeeDetailPage
-    ? "HR › Employees › Employee Details"
-    : isEmployeeEditPage
-    ? "HR › Employees › Edit Employee"
-    : (pageTitles[location.pathname] ?? "");
-
-  const isSubPage =
-    location.pathname.split("/").filter(Boolean).length > 1 &&
-    !isEmployeeDetailPage;
+  const isSubPage = location.pathname.split("/").filter(Boolean).length > 1;
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-[#f4f6f9]">
@@ -120,9 +97,7 @@ export function AppLayout() {
               </button>
             )}
 
-            <p className="truncate font-['Inter',sans-serif] text-[15px] font-bold text-[#1a2535] md:text-[18px]">
-              {title}
-            </p>
+            <BreadcrumbNav crumbs={crumbs} />
           </div>
 
           <div className="flex shrink-0 items-center gap-2 md:gap-5">
