@@ -3,7 +3,7 @@ import { createBrowserRouter, Navigate } from "react-router";
 import { AppLayout } from "@/components/layout/app-layout";
 import { ProtectedRoute } from "@/app/protected-route";
 import { LoginPage } from "@/features/login/Page/login-page";
-import { DashboardPage } from "@/features/dashboard/pages/dashboard-page";
+import { DashboardRouter } from "@/features/dashboard/pages/dashboard-router";
 import { HrHomePage } from "@/features/hr/pages/hr-home-page";
 import { EmployeesPage } from "@/features/hr/employees/pages/employees-page";
 import { EmployeeDetailPage } from "@/features/hr/employees/pages/employee-detail-page";
@@ -53,7 +53,7 @@ export const router = createBrowserRouter([
         path: "/",
         element: <AppLayout />,
         children: [
-          { index: true, element: <DashboardPage /> },
+          { index: true, element: <DashboardRouter /> },
           {
             path: "notifications",
             element: <Placeholder name="Notifications" />,
