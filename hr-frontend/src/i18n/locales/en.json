@@ -335,5 +335,22 @@
       "renew": "Renew",
       "end": "End"
     }
+  },
+  "organizations": {
+    "title": "Organization",
+    "subtitle": "Manage and view all organization information",
+    "addOrganization": "Add Organization",
+    "searchPlaceholder": "Search for Name, ID...",
+    "allStatus": "All Status",
+    "active": "Active",
+    "inactive": "Inactive",
+    "noOrganizationsToExport": "There are no organizations to export",
+    "exported": "{{count}} organizations exported",
+    "organizationNumber": "Organization #{{code}}",
+    "unableToLoad": "Unable to load organizations",
+    "checkConnection": "Check the server connection and try again.",
+    "tryAgain": "Try again",
+    "noMatches": "No organizations match the current filters.",
+    "showingOf": "Showing {{count}} of {{total}}"
   }
 }

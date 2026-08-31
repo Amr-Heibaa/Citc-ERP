@@ -335,5 +335,22 @@
       "renew": "تجديد",
       "end": "إنهاء"
     }
+  },
+  "organizations": {
+    "title": "المنظمة",
+    "subtitle": "إدارة وعرض بيانات جميع المنظمات",
+    "addOrganization": "إضافة منظمة",
+    "searchPlaceholder": "ابحث بالاسم أو الرقم...",
+    "allStatus": "كل الحالات",
+    "active": "نشط",
+    "inactive": "غير نشط",
+    "noOrganizationsToExport": "لا توجد منظمات للتصدير",
+    "exported": "تم تصدير {{count}} منظمة",
+    "organizationNumber": "منظمة رقم {{code}}",
+    "unableToLoad": "تعذر تحميل بيانات المنظمات",
+    "checkConnection": "تحقق من الاتصال بالخادم وحاول مرة أخرى.",
+    "tryAgain": "حاول مرة أخرى",
+    "noMatches": "لا توجد منظمات مطابقة للفلاتر الحالية.",
+    "showingOf": "عرض {{count}} من {{total}}"
   }
 }
