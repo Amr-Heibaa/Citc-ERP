@@ -61,7 +61,16 @@ export function useEmployees() {
 }
 
 export function useMyEmployee() {
-  return useGetMyEmployee({ query: { retry: false } });
+  return useGetMyEmployee({
+    query: {
+      retry: (failureCount, error) => {
+        const status = (error as { status?: number })?.status;
+        // No linked employee record: retrying won't help.
+        if (status === 404) return false;
+        return failureCount < 2;
+      },
+    },
+  });
 }
 
 export function useEmployeeDetail(employeeId: number) {

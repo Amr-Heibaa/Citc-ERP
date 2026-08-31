@@ -7,6 +7,7 @@ import { useTokenStore } from '@/stores/token-store'
 import { useUserStore } from '@/stores/user-store'
 import { useUiStore } from '@/stores/ui-store'
 import { useGetMyAccess } from '@/lib/api/generated/ems/hr-access-controller/hr-access-controller'
+import { useMyEmployee } from '@/features/hr/employees/api/use-employees'
 import citoLogo from '@/features/dashboard/assets/cito-logo-white.png'
 
 function initials(name: string) {
@@ -34,12 +35,14 @@ export function SidebarContent({ onNavigate }: SidebarContentProps) {
   const roles = useUserStore((s) => s.roles)
   const hrAccess = useGetMyAccess({ query: { retry: false } })
   const canViewHr = hrAccess.data?.canViewHr ?? false
+  const myEmployee = useMyEmployee()
 
   const visibleMenu = sidebarMenu
     .filter((item) => !item.roles || item.roles.some((role) => roles.includes(role)))
     .filter((item) => item.to !== '/hr' || canViewHr)
 
-  const displayName = user?.username ?? t('sidebar.user', { defaultValue: 'User' })
+  const displayName =
+    myEmployee.data?.displayName ?? user?.username ?? t('sidebar.user', { defaultValue: 'User' })
   const roleLabel = role ?? t('sidebar.employee', { defaultValue: 'Employee' })
 
  function handleLogout() {
