@@ -1,9 +1,12 @@
 import { Fragment } from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 
 import type { Crumb } from "@/components/layout/breadcrumbs";
 
 export function BreadcrumbNav({ crumbs }: { crumbs: Crumb[] }) {
+  const { t } = useTranslation();
+
   if (crumbs.length === 0) return null;
 
   return (
@@ -23,11 +26,11 @@ export function BreadcrumbNav({ crumbs }: { crumbs: Crumb[] }) {
                   to={crumb.to}
                   className="truncate font-['Inter',sans-serif] text-[15px] font-bold text-[#6b7280] transition-colors hover:text-[#f5841f] md:text-[18px]"
                 >
-                  {crumb.label}
+                  {t(crumb.label)}
                 </Link>
               ) : (
                 <span className="truncate font-['Inter',sans-serif] text-[15px] font-bold text-[#1a2535] md:text-[18px]">
-                  {crumb.label}
+                  {t(crumb.label)}
                 </span>
               )}
             </Fragment>

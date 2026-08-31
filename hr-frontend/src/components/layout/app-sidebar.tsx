@@ -1,5 +1,6 @@
 import { LogOut } from 'lucide-react'
 import { NavLink, useLocation, useNavigate } from 'react-router'
+import { useTranslation } from 'react-i18next'
 import { clearAllQueriesCache } from '@/lib/api/query-client'
 import { sidebarMenu } from '@/config/sidebar-menu'
 import { useTokenStore } from '@/stores/token-store'
@@ -22,6 +23,7 @@ type SidebarContentProps = {
 }
 
 export function SidebarContent({ onNavigate }: SidebarContentProps) {
+  const { t } = useTranslation()
   const location = useLocation()
   const navigate = useNavigate()
   const clearToken = useTokenStore((s) => s.clearToken)
@@ -37,8 +39,8 @@ export function SidebarContent({ onNavigate }: SidebarContentProps) {
     .filter((item) => !item.roles || item.roles.some((role) => roles.includes(role)))
     .filter((item) => item.to !== '/hr' || canViewHr)
 
-  const displayName = user?.username ?? 'User'
-  const roleLabel = role ?? 'Employee'
+  const displayName = user?.username ?? t('sidebar.user', { defaultValue: 'User' })
+  const roleLabel = role ?? t('sidebar.employee', { defaultValue: 'Employee' })
 
  function handleLogout() {
     clearToken()
@@ -57,7 +59,7 @@ export function SidebarContent({ onNavigate }: SidebarContentProps) {
             navigate('/')
             onNavigate?.()
           }}
-          aria-label="Go to dashboard"
+          aria-label={t('sidebar.goToDashboard')}
           className="w-fit cursor-pointer"
         >
           <img src={citoLogo} alt="CITO" className="h-8 w-auto object-contain object-left" />
@@ -91,7 +93,7 @@ export function SidebarContent({ onNavigate }: SidebarContentProps) {
                   isActive ? 'font-medium text-[#f5841f]' : 'font-normal text-white'
                 }`}
               >
-                {item.label}
+                {t(item.labelKey)}
               </span>
               {item.to === '/notifications' && notificationCount > 0 && (
                 <span className="relative z-10 ml-auto flex size-5 items-center justify-center rounded-full bg-[#e74c3c] text-[11px] font-bold text-white">
@@ -121,7 +123,7 @@ export function SidebarContent({ onNavigate }: SidebarContentProps) {
           </div>
           <button
             onClick={handleLogout}
-            aria-label="Logout"
+            aria-label={t('sidebar.logout')}
             className="shrink-0 cursor-pointer opacity-60 transition-opacity hover:opacity-100"
           >
             <LogOut size={18} className="text-white" />

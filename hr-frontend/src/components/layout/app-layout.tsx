@@ -1,10 +1,12 @@
 import { useEffect } from "react";
 import { Bell, ChevronLeft, Menu, Moon, Search, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Outlet, useLocation, useNavigate } from "react-router";
 
 import { SidebarContent } from "@/components/layout/app-sidebar";
 import { BreadcrumbNav } from "@/components/layout/breadcrumb-nav";
 import { getBreadcrumbs } from "@/components/layout/breadcrumbs";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { useUiStore } from "@/stores/ui-store";
 import { useUserStore } from "@/stores/user-store";
 
@@ -26,6 +28,7 @@ function NotificationDot() {
 }
 
 export function AppLayout() {
+  const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
   const sidebarOpen = useUiStore((s) => s.sidebarOpen);
@@ -63,7 +66,7 @@ export function AppLayout() {
             <SidebarContent onNavigate={() => setSidebarOpen(false)} />
             <button
               onClick={() => setSidebarOpen(false)}
-              aria-label="Close menu"
+              aria-label={t("header.closeMenu")}
               className="absolute right-[-40px] top-4 rounded-full bg-white p-1.5 shadow-lg"
             >
               <X size={18} className="text-[#1a2535]" />
@@ -79,7 +82,7 @@ export function AppLayout() {
           <div className="flex min-w-0 items-center gap-3">
             <button
               onClick={() => setSidebarOpen(true)}
-              aria-label="Open menu"
+              aria-label={t("header.openMenu")}
               className="shrink-0 cursor-pointer rounded-lg p-1.5 transition-colors hover:bg-[#f4f6f9] md:hidden"
             >
               <Menu size={20} className="text-[#1a2535]" />
@@ -90,9 +93,9 @@ export function AppLayout() {
                 onClick={() => navigate(-1)}
                 className="flex shrink-0 cursor-pointer items-center gap-1.5 text-[#6b7280] transition-colors hover:text-[#1a2535]"
               >
-                <ChevronLeft size={18} />
+                <ChevronLeft size={18} className="rtl:rotate-180" />
                 <span className="hidden font-['Inter',sans-serif] text-[14px] sm:inline">
-                  Back
+                  {t("common.back")}
                 </span>
               </button>
             )}
@@ -105,20 +108,22 @@ export function AppLayout() {
             <div className="hidden w-[240px] items-center gap-2 rounded-lg bg-[#f4f6f9] px-3 py-2 lg:flex xl:w-[300px]">
               <Search size={16} className="shrink-0 text-[#6b7280]" />
               <input
-                placeholder="Search modules, projects..."
+                placeholder={t("header.searchPlaceholder")}
                 className="w-full bg-transparent font-['Inter',sans-serif] text-[14px] text-[#6b7280] outline-none"
               />
             </div>
             {/* Search — compact */}
             <button
-              aria-label="Search"
+              aria-label={t("common.search")}
               className="cursor-pointer rounded-lg p-2 transition-colors hover:bg-[#f4f6f9] lg:hidden"
             >
               <Search size={18} className="text-[#6b7280]" />
             </button>
 
+            <LanguageSwitcher />
+
             <button
-              aria-label="Toggle theme"
+              aria-label={t("header.toggleTheme")}
               className="hidden cursor-pointer transition-opacity hover:opacity-70 sm:block"
             >
               <Moon size={22} className="text-[#292929]" />
@@ -126,7 +131,7 @@ export function AppLayout() {
 
             <button
               onClick={() => navigate("/notifications")}
-              aria-label="Notifications"
+              aria-label={t("sidebar.notifications")}
               className="relative cursor-pointer"
             >
               <Bell size={20} className="text-[#1a2535]" />

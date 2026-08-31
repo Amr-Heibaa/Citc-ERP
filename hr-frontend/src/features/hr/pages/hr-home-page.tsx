@@ -1,9 +1,10 @@
 import { Users, FileText, Briefcase, Settings, Building2, BarChart2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 import { useMyEmployee } from "@/features/hr/employees/api/use-employees";
 type ModuleCard = {
   id: string;
-  label: string;
+  labelKey: string;
   icon: React.ReactNode;
   to?: string;
 };
@@ -11,56 +12,57 @@ type ModuleCard = {
 const MODULES: ModuleCard[] = [
   {
     id: "employees",
-    label: "Employees",
+    labelKey: "hrHome.employees",
     icon: <Users size={24} className="text-[#1a2535]" />,
     to: "/hr/employees",
   },
   {
     id: "organization",
-    label: "Organization",
+    labelKey: "hrHome.organization",
     icon: <Building2 size={24} className="text-[#1a2535]" />,
     to: "/hr/organizations",
   },
   {
     id: "jobs",
-    label: "Jobs",
+    labelKey: "hrHome.jobs",
     icon: <Briefcase size={24} className="text-[#1a2535]" />,
     to: "/hr/jobs",
   },
   {
     id: "employment",
-    label: "Employment",
+    labelKey: "hrHome.employment",
     icon: <FileText size={24} className="text-[#1a2535]" />,
     to: "/hr/employment",
   },
   {
     id: "hr-settings",
-    label: "HR Settings",
+    labelKey: "hrHome.hrSettings",
     icon: <Settings size={24} className="text-[#1a2535]" />,
     to: "/hr/settings",
   },
   {
     id: "reports",
-    label: "Reports",
+    labelKey: "hrHome.reports",
     icon: <BarChart2 size={24} className="text-[#1a2535]" />,
     to: "/hr/reports",
   },
 ];
 
-const today = new Date().toLocaleDateString("en-GB", {
-  weekday: "long",
-  day: "2-digit",
-  month: "2-digit",
-  year: "numeric",
-});
-
 export function HrHomePage() {
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { data: me } = useMyEmployee();
 
+  const today = new Date().toLocaleDateString(i18n.language === "ar" ? "ar-EG" : "en-GB", {
+    weekday: "long",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+
   const displayName =
     me?.displayName ??
-    "User";
+    t("sidebar.user", { defaultValue: "User" });
 
   const department =
     me?.currentOrgUnitName ??
@@ -114,7 +116,7 @@ export function HrHomePage() {
       {/* Module Cards */}
       <div className="rounded-xl bg-white p-6">
         <h2 className="mb-8 text-center font-['Inter',sans-serif] text-[18px] font-bold text-[#1a2535]">
-          HR
+          {t("hrHome.title")}
         </h2>
         <div className="mx-auto grid max-w-3xl grid-cols-2 gap-4 sm:grid-cols-3">
           {MODULES.map((mod) => (
@@ -128,7 +130,7 @@ export function HrHomePage() {
                 {mod.icon}
               </div>
               <p className="text-center font-['Inter',sans-serif] text-[13px] font-semibold text-[#1a2535]">
-                {mod.label}
+                {t(mod.labelKey)}
               </p>
             </button>
           ))}

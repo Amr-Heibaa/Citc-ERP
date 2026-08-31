@@ -1,4 +1,5 @@
 import { Briefcase, Clock, DollarSign, FileBarChart2, Settings, ShieldCheck, UserPlus, Users } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 
 import { StatCard } from "@/features/dashboard/components/stat-card";
@@ -10,26 +11,27 @@ import {
 } from "@/lib/api/generated/ems/employee-controller/employee-controller";
 import { useListHistory } from "@/lib/api/generated/ems/hr-settings-controller/hr-settings-controller";
 
-const today = new Date().toLocaleDateString("en-GB", {
-  weekday: "long",
-  day: "2-digit",
-  month: "2-digit",
-  year: "numeric",
-});
-
 const NO_DATA_COLOR = "#9ca3af";
 
 const quickActions = [
-  { id: "add-employee", label: "Add Employee", icon: UserPlus, to: "/hr/employees/new" },
-  { id: "grant-access", label: "Grant HR Access", icon: ShieldCheck, to: "/hr/settings/access-delegation" },
-  { id: "reports", label: "HR Reports", icon: FileBarChart2, to: "/hr/reports" },
-  { id: "settings", label: "HR Settings", icon: Settings, to: "/hr/settings" },
+  { id: "add-employee", labelKey: "dashboard.addEmployee", icon: UserPlus, to: "/hr/employees/new" },
+  { id: "grant-access", labelKey: "dashboard.grantHrAccess", icon: ShieldCheck, to: "/hr/settings/access-delegation" },
+  { id: "reports", labelKey: "dashboard.hrReports", icon: FileBarChart2, to: "/hr/reports" },
+  { id: "settings", labelKey: "dashboard.hrSettings", icon: Settings, to: "/hr/settings" },
 ];
 
 export function AdminDashboardPage() {
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const username = useUserStore((s) => s.user?.username);
   const myEmployee = useGetMyEmployee({ query: { retry: false } });
+
+  const today = new Date().toLocaleDateString(i18n.language === "ar" ? "ar-EG" : "en-GB", {
+    weekday: "long",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
 
   const displayName = myEmployee.data?.displayName ?? username ?? "Admin";
   const employeeNumber = myEmployee.data?.employeeNumber ?? "—";
@@ -59,10 +61,10 @@ export function AdminDashboardPage() {
         <div className="flex flex-col items-start justify-between gap-3 px-5 py-5 sm:flex-row sm:items-center md:h-[120px] md:px-8 md:py-0">
           <div className="flex flex-col gap-1">
             <p className="font-['Inter',sans-serif] text-[20px] font-bold text-white md:text-[28px]">
-              Good Morning, {displayName}!
+              {t("dashboard.goodMorning", { name: displayName })}
             </p>
             <p className="font-['Inter',sans-serif] text-[13px] text-[#a4aab6] md:text-[15px]">
-              Here is what is happening in your organization today.
+              {t("dashboard.orgSubtitle")}
             </p>
           </div>
 
@@ -85,7 +87,7 @@ export function AdminDashboardPage() {
       {/* Stat cards */}
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 md:gap-4">
         <StatCard
-          label="Total Employees"
+          label={t("dashboard.totalEmployees")}
           value={employees.isLoading ? "—" : String((employees.data ?? []).length)}
           color="#f5841f"
           icon={Users}
@@ -93,29 +95,29 @@ export function AdminDashboardPage() {
         />
 
         <StatCard
-          label="Open Projects"
+          label={t("dashboard.openProjects")}
           value="—"
           color={NO_DATA_COLOR}
           icon={Briefcase}
-          subText="No data yet"
+          subText={t("dashboard.noDataYet")}
           subColor={NO_DATA_COLOR}
         />
 
         <StatCard
-          label="Monthly Revenue"
+          label={t("dashboard.monthlyRevenue")}
           value="—"
           color={NO_DATA_COLOR}
           icon={DollarSign}
-          subText="No data yet"
+          subText={t("dashboard.noDataYet")}
           subColor={NO_DATA_COLOR}
         />
 
         <StatCard
-          label="Pending Approvals"
+          label={t("dashboard.pendingApprovals")}
           value="—"
           color={NO_DATA_COLOR}
           icon={Clock}
-          subText="No data yet"
+          subText={t("dashboard.noDataYet")}
           subColor={NO_DATA_COLOR}
         />
       </div>
@@ -125,7 +127,7 @@ export function AdminDashboardPage() {
         <div className="flex flex-col gap-4 rounded-xl bg-white p-4 md:p-6 lg:col-span-2">
           <div className="flex items-center justify-between">
             <p className="font-['Inter',sans-serif] text-[16px] font-bold text-[#1a2535] md:text-[18px]">
-              Recent HR Activity
+              {t("dashboard.recentHrActivity")}
             </p>
 
             <button
@@ -133,14 +135,14 @@ export function AdminDashboardPage() {
               onClick={() => navigate("/hr/settings/history")}
               className="font-['Inter',sans-serif] text-sm font-medium text-[#f5841f] hover:underline"
             >
-              View All
+              {t("common.viewAll")}
             </button>
           </div>
 
           {history.isLoading ? (
-            <p className="font-['Inter',sans-serif] text-sm text-gray-400">Loading activity…</p>
+            <p className="font-['Inter',sans-serif] text-sm text-gray-400">{t("dashboard.loadingActivity")}</p>
           ) : recentEvents.length === 0 ? (
-            <p className="font-['Inter',sans-serif] text-sm text-gray-400">No recent HR activity.</p>
+            <p className="font-['Inter',sans-serif] text-sm text-gray-400">{t("dashboard.noRecentActivity")}</p>
           ) : (
             <div className="flex flex-col divide-y divide-gray-100">
               {recentEvents.map((event) => (
@@ -153,7 +155,7 @@ export function AdminDashboardPage() {
 
                   <div className="min-w-0 flex-1">
                     <p className="truncate font-['Inter',sans-serif] text-sm text-[#1a2535]">
-                      <span className="font-semibold">{event.performedByName ?? "System"}</span>{" "}
+                      <span className="font-semibold">{event.performedByName ?? t("common.system")}</span>{" "}
                       {event.description}
                     </p>
                     <p className="font-['Inter',sans-serif] text-xs text-gray-400">
@@ -168,7 +170,7 @@ export function AdminDashboardPage() {
 
         <div className="flex flex-col gap-4 rounded-xl bg-white p-4 md:p-6">
           <p className="font-['Inter',sans-serif] text-[16px] font-bold text-[#1a2535] md:text-[18px]">
-            Quick Actions
+            {t("dashboard.quickActions")}
           </p>
 
           <div className="grid grid-cols-2 gap-3">
@@ -182,7 +184,7 @@ export function AdminDashboardPage() {
                   <action.icon size={20} className="text-[#1a2535]" />
                 </div>
                 <p className="text-center font-['Inter',sans-serif] text-[11px] font-semibold leading-tight text-[#1a2535]">
-                  {action.label}
+                  {t(action.labelKey)}
                 </p>
               </button>
             ))}
