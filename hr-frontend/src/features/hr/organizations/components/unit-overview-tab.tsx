@@ -3,6 +3,7 @@ import {
   Network,
   Plus,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
 import { OrganizationStatusBadge } from "@/features/hr/organizations/components/organization-status-badge";
@@ -51,6 +52,8 @@ export function UnitOverviewTab({
       | "relationships",
   ) => void;
 }) {
+  const { t } = useTranslation();
+
   function exportUnitReport() {
     downloadUnitCsv(
       `unit-${unit.id ?? "report"}.csv`,
@@ -87,36 +90,36 @@ export function UnitOverviewTab({
     <div className="grid gap-5 py-4 lg:grid-cols-[1.15fr_0.85fr]">
       <section className="rounded-xl border border-gray-200 bg-[#f8f9fb] p-4">
         <h2 className="mb-2 font-['Inter',sans-serif] text-sm font-semibold text-[#1a2535]">
-          Unit Information
+          {t("organizations.unitOverview.unitInformation")}
         </h2>
 
         <DetailRow
-          label="Unit Code"
+          label={t("organizations.unitOverview.unitCode")}
           value={unit.code}
         />
 
         <DetailRow
-          label="Unit Type"
+          label={t("organizations.unitOverview.unitType")}
           value={unit.type}
         />
 
         <DetailRow
-          label="Parent Unit"
+          label={t("organizations.unitOverview.parentUnit")}
           value={unit.parentUnit}
         />
 
         <DetailRow
-          label="Manager"
+          label={t("organizations.unitOverview.manager")}
           value={unit.manager}
         />
 
         <DetailRow
-          label="Name (English)"
+          label={t("organizations.unitOverview.nameEn")}
           value={unit.name}
         />
 
         <DetailRow
-          label="Name (Arabic)"
+          label={t("organizations.unitOverview.nameAr")}
           value={
             unit.nameAr ? (
               <span dir="rtl">
@@ -127,7 +130,7 @@ export function UnitOverviewTab({
         />
 
         <DetailRow
-          label="Status"
+          label={t("common.status")}
           value={
             <OrganizationStatusBadge
               status={unit.status}
@@ -136,21 +139,21 @@ export function UnitOverviewTab({
         />
 
         <DetailRow
-          label="Start Date"
+          label={t("organizations.unitOverview.startDate")}
           value={formatDate(
             unit.startDate,
           )}
         />
 
         <DetailRow
-          label="End Date"
+          label={t("organizations.unitOverview.endDate")}
           value={formatDate(
             unit.endDate,
           )}
         />
 
         <DetailRow
-          label="Description"
+          label={t("common.description")}
           value={unit.description}
         />
       </section>
@@ -158,16 +161,16 @@ export function UnitOverviewTab({
       <div className="flex flex-col gap-4">
         <section className="rounded-xl border border-gray-200 bg-[#f8f9fb] p-4">
           <h2 className="mb-2 font-['Inter',sans-serif] text-sm font-semibold text-[#1a2535]">
-            Summary
+            {t("organizations.unitOverview.summary")}
           </h2>
 
           <OrganizationSummaryRow
-            label="Employees"
+            label={t("organizations.unitOverview.employees")}
             value={unit.employees ?? 0}
           />
 
           <OrganizationSummaryRow
-            label="Active Positions"
+            label={t("organizations.unitOverview.activePositions")}
             value={
               unit.activePositions ??
               0
@@ -175,7 +178,7 @@ export function UnitOverviewTab({
           />
 
           <OrganizationSummaryRow
-            label="Open Positions"
+            label={t("organizations.unitOverview.openPositions")}
             value={
               unit.openPositions ??
               0
@@ -183,7 +186,7 @@ export function UnitOverviewTab({
           />
 
           <OrganizationSummaryRow
-            label="Child Units"
+            label={t("organizations.unitOverview.childUnits")}
             value={
               unit.childUnits ?? 0
             }
@@ -192,7 +195,7 @@ export function UnitOverviewTab({
 
         <section className="rounded-xl border border-gray-200 bg-[#f8f9fb] p-4">
           <h2 className="mb-2 font-['Inter',sans-serif] text-sm font-semibold text-[#1a2535]">
-            Quick Actions
+            {t("organizations.unitOverview.quickActions")}
           </h2>
 
           <div className="flex flex-col items-start">
@@ -207,7 +210,7 @@ export function UnitOverviewTab({
               className="h-8 gap-2 px-1 text-xs text-[#f5841f] hover:bg-transparent hover:text-[#d96f12]"
             >
               <Plus className="size-3.5" />
-              Add Child Unit
+              {t("organizations.unitOverview.addChildUnit")}
             </Button>
 
             <Button
@@ -221,7 +224,7 @@ export function UnitOverviewTab({
               className="h-8 gap-2 px-1 text-xs text-[#f5841f] hover:bg-transparent hover:text-[#d96f12]"
             >
               <GitBranchPlus className="size-3.5" />
-              Add Relationship
+              {t("organizations.unitOverview.addRelationship")}
             </Button>
 
             <Button
@@ -233,7 +236,7 @@ export function UnitOverviewTab({
               className="h-8 gap-2 px-1 text-xs text-[#f5841f] hover:bg-transparent hover:text-[#d96f12]"
             >
               <Network className="size-3.5" />
-              Export Unit Report
+              {t("organizations.unitOverview.exportUnitReport")}
             </Button>
           </div>
         </section>

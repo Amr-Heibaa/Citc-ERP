@@ -1,5 +1,6 @@
 import { Pencil } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -23,6 +24,7 @@ export function OrganizationUnitDetailTabs({
   orgUnitId: number;
   unit: OrganizationUnitDetail;
 }) {
+  const { t } = useTranslation();
   const [editOpen, setEditOpen] = useState(false);
 
   const [activeTab, setActiveTab] = useState("overview");
@@ -36,29 +38,29 @@ export function OrganizationUnitDetailTabs({
             <TabsList className="h-10 w-auto justify-start overflow-x-auto rounded-none bg-transparent p-0">
               {" "}
               <TabsTrigger value="overview" className={TRIGGER_CLASS}>
-                Overview
+                {t("organizations.unitDetail.tabs.overview")}
               </TabsTrigger>
               <TabsTrigger value="employees" className={TRIGGER_CLASS}>
-                Employees
+                {t("organizations.unitDetail.tabs.employees")}
               </TabsTrigger>
               <TabsTrigger value="positions" className={TRIGGER_CLASS}>
-                Positions
+                {t("organizations.unitDetail.tabs.positions")}
               </TabsTrigger>
               <TabsTrigger value="child-units" className={TRIGGER_CLASS}>
-                Child Units
+                {t("organizations.unitDetail.tabs.childUnits")}
               </TabsTrigger>
               <TabsTrigger value="relationships" className={TRIGGER_CLASS}>
-                Relationships
+                {t("organizations.unitDetail.tabs.relationships")}
               </TabsTrigger>
               <TabsTrigger value="history" className={TRIGGER_CLASS}>
-                History
+                {t("organizations.unitDetail.tabs.history")}
               </TabsTrigger>
             </TabsList>
 
             <div className="flex h-10 items-center px-3">
               <Button size="sm" onClick={() => setEditOpen(true)}>
                 <Pencil className="size-4" />
-                Edit Unit
+                {t("organizations.unitDetail.editUnit")}
               </Button>
             </div>
           </div>
