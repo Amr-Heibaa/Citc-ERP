@@ -8,7 +8,6 @@ import {
   useGetMyEmployee,
   useListEmployees,
 } from "@/lib/api/generated/ems/employee-controller/employee-controller";
-import { useGetMyAccess } from "@/lib/api/generated/ems/hr-access-controller/hr-access-controller";
 import { useListHistory } from "@/lib/api/generated/ems/hr-settings-controller/hr-settings-controller";
 
 const today = new Date().toLocaleDateString("en-GB", {
@@ -21,10 +20,10 @@ const today = new Date().toLocaleDateString("en-GB", {
 const NO_DATA_COLOR = "#9ca3af";
 
 const quickActions = [
-  { id: "add-employee", label: "Add Employee", icon: UserPlus, to: "/hr/employees/new", requiresDelegation: false },
-  { id: "grant-access", label: "Grant HR Access", icon: ShieldCheck, to: "/hr/settings/access-delegation", requiresDelegation: true },
-  { id: "reports", label: "HR Reports", icon: FileBarChart2, to: "/hr/reports", requiresDelegation: false },
-  { id: "settings", label: "HR Settings", icon: Settings, to: "/hr/settings", requiresDelegation: false },
+  { id: "add-employee", label: "Add Employee", icon: UserPlus, to: "/hr/employees/new" },
+  { id: "grant-access", label: "Grant HR Access", icon: ShieldCheck, to: "/hr/settings/access-delegation" },
+  { id: "reports", label: "HR Reports", icon: FileBarChart2, to: "/hr/reports" },
+  { id: "settings", label: "HR Settings", icon: Settings, to: "/hr/settings" },
 ];
 
 export function AdminDashboardPage() {
@@ -37,13 +36,8 @@ export function AdminDashboardPage() {
 
   const employees = useListEmployees();
   const history = useListHistory({ size: 5 });
-  const access = useGetMyAccess({ query: { retry: false } });
 
   const recentEvents = history.data?.content ?? [];
-  const canManageDelegation = access.data?.canManageDelegation ?? false;
-  const visibleQuickActions = quickActions.filter(
-    (action) => !action.requiresDelegation || canManageDelegation,
-  );
 
   return (
     <div className="flex flex-col gap-4 p-4 md:gap-6 md:p-6">
@@ -178,7 +172,7 @@ export function AdminDashboardPage() {
           </p>
 
           <div className="grid grid-cols-2 gap-3">
-            {visibleQuickActions.map((action) => (
+            {quickActions.map((action) => (
               <button
                 key={action.id}
                 onClick={() => navigate(action.to)}

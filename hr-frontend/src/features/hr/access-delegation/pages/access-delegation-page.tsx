@@ -70,7 +70,7 @@ export function AccessDelegationPage() {
 
   const [grantOpen, setGrantOpen] = useState(false);
 
-  const canManageDelegation = myAccess.data?.canManageDelegation ?? false;
+  const canGrantAccess = myAccess.data?.canViewHr ?? false;
 
   return (
     <div className="flex flex-col gap-4 p-4 md:p-6">
@@ -93,7 +93,7 @@ export function AccessDelegationPage() {
           </p>
         </div>
 
-        {canManageDelegation && (
+        {canGrantAccess && (
           <Button onClick={() => setGrantOpen(true)}>
             <Plus className="size-4" />
             Grant Access
@@ -101,7 +101,7 @@ export function AccessDelegationPage() {
         )}
       </div>
 
-      {!myAccess.isLoading && !canManageDelegation ? (
+      {!myAccess.isLoading && !canGrantAccess ? (
         <div className="flex h-48 items-center justify-center rounded-xl border border-gray-100 bg-white font-['Inter',sans-serif] text-sm text-gray-400">
           You don&apos;t have permission to manage HR access delegation.
         </div>
