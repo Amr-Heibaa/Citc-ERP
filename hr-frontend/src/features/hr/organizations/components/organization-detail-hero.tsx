@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 import { OrganizationStatusBadge } from "@/features/hr/organizations/components/organization-status-badge";
 import type { OrganizationDetail } from "@/lib/api/generated/model";
 
@@ -6,6 +8,8 @@ export function OrganizationDetailHero({
 }: {
   organization: OrganizationDetail;
 }) {
+  const { t } = useTranslation();
+
   return (
     <div
       className="relative overflow-hidden rounded-2xl"
@@ -23,7 +27,7 @@ export function OrganizationDetailHero({
           {organization.logoDataUrl ? (
             <img
               src={organization.logoDataUrl}
-              alt={organization.nameEn ?? "Organization logo"}
+              alt={organization.nameEn ?? t("organizations.detail.logoFallback")}
               className="h-[82%] w-[82%] object-contain"
             />
           ) : (
@@ -35,7 +39,7 @@ export function OrganizationDetailHero({
 
         <div className="min-w-0 flex-1">
           <p className="truncate font-['Inter',sans-serif] text-2xl font-bold text-white">
-            {organization.nameEn ?? "Organization"}
+            {organization.nameEn ?? t("organizations.detail.nameFallback")}
           </p>
 
           {organization.nameAr && (
@@ -48,7 +52,7 @@ export function OrganizationDetailHero({
           )}
 
           <p className="mt-1 font-['Inter',sans-serif] text-xs text-[#a4aab6]">
-            Organization {organization.code ?? "—"}
+            {t("organizations.detail.codeLabel", { code: organization.code ?? "—" })}
           </p>
         </div>
 

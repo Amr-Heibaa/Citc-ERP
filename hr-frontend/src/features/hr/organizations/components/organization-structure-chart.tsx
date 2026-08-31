@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 import type {
   OrganizationTree,
   OrganizationUnitTreeNode,
@@ -8,13 +10,14 @@ function ChartUnit({
 }: {
   unit: OrganizationUnitTreeNode;
 }) {
+  const { t } = useTranslation();
   const children = unit.children ?? [];
 
   return (
     <div className="flex min-w-max flex-col items-center">
       <div className="min-w-36 rounded-lg border border-sky-300 bg-sky-100 px-4 py-3 text-center">
         <p className="font-['Inter',sans-serif] text-sm font-medium text-sky-700">
-          {unit.name ?? unit.code ?? "Unnamed unit"}
+          {unit.name ?? unit.code ?? t("organizations.structure.chart.unnamedUnit")}
         </p>
 
         {unit.type && (
@@ -51,6 +54,7 @@ export function OrganizationStructureChart({
 }: {
   tree: OrganizationTree;
 }) {
+  const { t } = useTranslation();
   const units = tree.units ?? [];
 
   return (
@@ -58,7 +62,7 @@ export function OrganizationStructureChart({
       <div className="flex min-w-max flex-col items-center">
         <div className="min-w-72 rounded-lg border border-sky-400 bg-sky-100 px-6 py-4 text-center">
           <p className="font-['Inter',sans-serif] text-sm font-semibold text-sky-700">
-            {tree.nameEn ?? tree.code ?? "Organization"}
+            {tree.nameEn ?? tree.code ?? t("organizations.structure.chart.organizationFallback")}
           </p>
 
           {tree.nameAr && (
@@ -93,7 +97,7 @@ export function OrganizationStructureChart({
 
       {units.length === 0 && (
         <div className="flex h-64 items-center justify-center font-['Inter',sans-serif] text-sm text-gray-400">
-          No organization units have been added.
+          {t("organizations.structure.chart.noUnits")}
         </div>
       )}
     </div>

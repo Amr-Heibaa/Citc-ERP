@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router";
 import { toast } from "sonner";
 
@@ -21,6 +22,7 @@ import {
 import type { OrganizationFormValues } from "@/features/hr/organizations/schemas/organization-schema";
 
 export function OrganizationEditPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { organizationId } = useParams();
   const id = Number(organizationId);
@@ -36,13 +38,13 @@ export function OrganizationEditPage() {
     try {
       await updateOrganization.mutateAsync(toUpdateOrganizationRequest(values));
 
-      toast.success("Organization updated successfully");
+      toast.success(t("organizations.editSuccess"));
       close();
     } catch (error) {
       const message =
         typeof error === "object" && error !== null && "message" in error
           ? String(error.message)
-          : "Failed to update organization";
+          : t("organizations.editError");
 
       toast.error(message);
     }
@@ -61,30 +63,30 @@ export function OrganizationEditPage() {
       >
         <DialogHeader className="shrink-0 border-b border-gray-100 px-6 py-5 text-left">
           <DialogTitle className="font-['Inter',sans-serif] text-2xl text-[#1a2535]">
-            Edit Organization
+            {t("organizations.editTitle")}
           </DialogTitle>
 
           <DialogDescription>
-            Update the organization's registration and contact details.
+            {t("organizations.editDescription")}
           </DialogDescription>
         </DialogHeader>
 
         {organization.isLoading ? (
           <div className="flex h-64 items-center justify-center text-sm text-gray-400">
-            Loading organization…
+            {t("organizations.loading")}
           </div>
         ) : organization.isError || !organization.data ? (
           <div className="flex h-64 flex-col items-center justify-center gap-3">
-            <p className="text-sm text-red-600">Organization not found.</p>
+            <p className="text-sm text-red-600">{t("organizations.notFound")}</p>
 
             <Button variant="outline" onClick={() => navigate("/hr/organizations")}>
-              Back to organizations
+              {t("organizations.backToOrganizations")}
             </Button>
           </div>
         ) : (
           <OrganizationForm
             defaultValues={organizationDetailToFormValues(organization.data)}
-            submitLabel="Save Changes"
+            submitLabel={t("organizations.editSubmit")}
             pending={updateOrganization.isPending}
             onCancel={close}
             onSubmit={handleSubmit}

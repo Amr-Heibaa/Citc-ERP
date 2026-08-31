@@ -1,5 +1,6 @@
 import { Pencil, Plus, Upload } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,7 @@ export function OrganizationDetailTabs({
   organizationId: number;
   organization: OrganizationDetail;
 }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState("overview");
@@ -37,13 +39,13 @@ export function OrganizationDetailTabs({
             <TabsList className="h-10 w-auto justify-start overflow-x-auto rounded-none bg-transparent p-0">
               {" "}
               <TabsTrigger value="overview" className={TRIGGER_CLASS}>
-                Overview
+                {t("organizations.detail.tabs.overview")}
               </TabsTrigger>
               <TabsTrigger value="structure" className={TRIGGER_CLASS}>
-                Structure
+                {t("organizations.detail.tabs.structure")}
               </TabsTrigger>
               <TabsTrigger value="units" className={TRIGGER_CLASS}>
-                Organization Unit
+                {t("organizations.detail.tabs.units")}
               </TabsTrigger>
             </TabsList>
 
@@ -57,7 +59,7 @@ export function OrganizationDetailTabs({
                   }
                 >
                   <Pencil className="size-4" />
-                  Edit Organization
+                  {t("organizations.detail.editOrganization")}
                 </Button>
               ) : (
                 <div className="flex items-center gap-2">
@@ -67,12 +69,12 @@ export function OrganizationDetailTabs({
                     onClick={() => setImportUnitsOpen(true)}
                   >
                     <Upload className="size-4" />
-                    Import
+                    {t("organizations.detail.import")}
                   </Button>
 
                   <Button size="sm" onClick={() => setAddUnitOpen(true)}>
                     <Plus className="size-4" />
-                    Add Unit
+                    {t("organizations.detail.addUnit")}
                   </Button>
                 </div>
               )}
