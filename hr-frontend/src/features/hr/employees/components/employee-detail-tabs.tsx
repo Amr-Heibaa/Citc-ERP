@@ -1,5 +1,6 @@
 import { Download, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router";
 
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,7 @@ const TAB_TRIGGER_CLASS =
 const TAB_VALUES = ["overview", "personal", "employment", "contracts", "history"];
 
 export function EmployeeDetailTabs({ emp }: { emp: EmployeeDetail }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -47,23 +49,23 @@ export function EmployeeDetailTabs({ emp }: { emp: EmployeeDetail }) {
           <div className="min-w-0 flex-1 overflow-x-auto">
             <TabsList className="h-auto w-max gap-7 rounded-none bg-transparent p-0">
               <TabsTrigger value="overview" className={TAB_TRIGGER_CLASS}>
-                Overview
+                {t("employees.tabs.overview")}
               </TabsTrigger>
 
               <TabsTrigger value="personal" className={TAB_TRIGGER_CLASS}>
-                Personal Information
+                {t("employees.tabs.personal")}
               </TabsTrigger>
 
               <TabsTrigger value="employment" className={TAB_TRIGGER_CLASS}>
-                Employment
+                {t("employees.tabs.employment")}
               </TabsTrigger>
 
               <TabsTrigger value="contracts" className={TAB_TRIGGER_CLASS}>
-                Contracts
+                {t("employees.tabs.contracts")}
               </TabsTrigger>
 
               <TabsTrigger value="history" className={TAB_TRIGGER_CLASS}>
-                History
+                {t("employees.tabs.history")}
               </TabsTrigger>
             </TabsList>
           </div>
@@ -75,14 +77,14 @@ export function EmployeeDetailTabs({ emp }: { emp: EmployeeDetail }) {
               onClick={() => printEmployeeProfiles([emp])}
             >
               <Download className="size-4" />
-              Export Profile
+              {t("employees.exportProfile")}
             </Button>
 
             <Button
               size="sm"
               onClick={() => navigate(`/hr/employees/${emp.employeeId}/edit`)}
             >
-              Edit Employee
+              {t("employees.editEmployee")}
             </Button>
 
             <Button
@@ -92,7 +94,7 @@ export function EmployeeDetailTabs({ emp }: { emp: EmployeeDetail }) {
               onClick={() => setDeleteOpen(true)}
             >
               <Trash2 className="size-4" />
-              Delete
+              {t("employees.delete")}
             </Button>
           </div>
         </div>
@@ -124,7 +126,7 @@ export function EmployeeDetailTabs({ emp }: { emp: EmployeeDetail }) {
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
         employeeId={emp.employeeId ?? 0}
-        employeeName={emp.displayName ?? "This employee"}
+        employeeName={emp.displayName ?? t("employees.thisEmployee")}
         onDeleted={() => navigate("/hr/employees")}
       />
     </div>

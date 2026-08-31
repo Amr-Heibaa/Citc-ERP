@@ -1,4 +1,5 @@
 import { Download, Search } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,6 +24,7 @@ export function EmployeesFiltersBar({
   statuses: [code: string, name: string][];
   exportDisabled: boolean;
 }) {
+  const { t } = useTranslation();
   const search = useEmployeesFiltersStore((state) => state.search);
   const department = useEmployeesFiltersStore((state) => state.department);
   const status = useEmployeesFiltersStore((state) => state.status);
@@ -43,7 +45,7 @@ export function EmployeesFiltersBar({
         <Input
           value={search}
           onChange={(event) => setSearch(event.target.value)}
-          placeholder="Search for name, ID or email..."
+          placeholder={t("employees.searchPlaceholder")}
           className="h-auto min-w-0 flex-1 border-0 bg-transparent p-0 font-['Inter',sans-serif] text-sm text-gray-600 shadow-none outline-none placeholder:text-gray-400 focus-visible:ring-0"
         />
       </div>
@@ -55,11 +57,11 @@ export function EmployeesFiltersBar({
         }
       >
         <SelectTrigger className="h-10 w-full font-['Inter',sans-serif] text-sm text-gray-600 lg:w-48">
-          <SelectValue placeholder="All Departments" />
+          <SelectValue placeholder={t("employees.allDepartments")} />
         </SelectTrigger>
 
         <SelectContent>
-          <SelectItem value={ALL_DEPARTMENTS}>All Departments</SelectItem>
+          <SelectItem value={ALL_DEPARTMENTS}>{t("employees.allDepartments")}</SelectItem>
 
           {departments.map((item) => (
             <SelectItem key={item} value={item}>
@@ -74,11 +76,11 @@ export function EmployeesFiltersBar({
         onValueChange={(value) => setStatus(value === ALL_STATUSES ? "" : value)}
       >
         <SelectTrigger className="h-10 w-full font-['Inter',sans-serif] text-sm text-gray-600 lg:w-40">
-          <SelectValue placeholder="All Status" />
+          <SelectValue placeholder={t("employees.allStatuses")} />
         </SelectTrigger>
 
         <SelectContent>
-          <SelectItem value={ALL_STATUSES}>All Status</SelectItem>
+          <SelectItem value={ALL_STATUSES}>{t("employees.allStatuses")}</SelectItem>
 
           {statuses.map(([code, name]) => (
             <SelectItem key={code} value={code}>
@@ -94,7 +96,7 @@ export function EmployeesFiltersBar({
         className="h-10 gap-2 bg-[#1a2535] text-white hover:bg-[#243347]"
       >
         <Download size={15} />
-        Export
+        {t("common.export")}
       </Button>
     </div>
   );

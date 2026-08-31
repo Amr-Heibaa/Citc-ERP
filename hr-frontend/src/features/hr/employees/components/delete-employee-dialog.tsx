@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -36,6 +37,7 @@ export function DeleteEmployeeDialog({
   employeeName: string;
   onDeleted: () => void;
 }) {
+  const { t } = useTranslation();
   const deleteEmployee = useDeleteEmployee(employeeId);
 
   const {
@@ -57,12 +59,12 @@ export function DeleteEmployeeDialog({
   const submit = handleSubmit(async (values) => {
     try {
       await deleteEmployee.mutateAsync(toDeleteEmployeeRequest(values));
-      toast.success(`${employeeName} deleted`);
+      toast.success(t("employees.deleteDialog.deleted", { name: employeeName }));
       onOpenChange(false);
       onDeleted();
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Unable to delete employee",
+        error instanceof Error ? error.message : t("employees.deleteDialog.unableToDelete"),
       );
     }
   });
@@ -72,21 +74,20 @@ export function DeleteEmployeeDialog({
       <DialogContent className="sm:max-w-lg gap-0 overflow-hidden p-0">
         <DialogHeader className="border-b border-gray-100 px-6 py-5">
           <DialogTitle className="text-xl text-[#1a2535]">
-            Delete Employee
+            {t("employees.deleteDialog.title")}
           </DialogTitle>
 
           <DialogDescription>
-            {employeeName} will be removed from active records. This can be
-            undone later from the Deleted Employees list.
+            {t("employees.deleteDialog.description", { name: employeeName })}
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={submit}>
           <div className="px-6 py-5">
-            <LabeledField label="Reason" error={errors.reason?.message}>
+            <LabeledField label={t("common.reason")} error={errors.reason?.message}>
               <Input
                 {...register("reason")}
-                placeholder="Why is this employee being deleted?"
+                placeholder={t("employees.deleteDialog.reasonPlaceholder")}
                 autoFocus
               />
             </LabeledField>
@@ -94,11 +95,11 @@ export function DeleteEmployeeDialog({
 
           <DialogFooter className="border-t border-gray-100 px-6 py-4">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
+              {t("common.cancel")}
             </Button>
 
             <Button type="submit" variant="destructive" disabled={deleteEmployee.isPending}>
-              {deleteEmployee.isPending ? "Deleting…" : "Delete Employee"}
+              {deleteEmployee.isPending ? t("employees.deleteDialog.deleting") : t("employees.deleteDialog.deleteEmployee")}
             </Button>
           </DialogFooter>
         </form>

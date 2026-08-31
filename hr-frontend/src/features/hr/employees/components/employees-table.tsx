@@ -1,4 +1,5 @@
 import { AlertCircle, RefreshCw } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
 import { EmployeeStatusBadge } from "@/features/hr/employees/components/employee-status-badge";
@@ -12,13 +13,13 @@ const AVATAR_COLORS = [
   "bg-[#2ecc71]",
 ];
 
-const COLUMNS = [
-  "Employee",
-  "Contact",
-  "Department",
-  "Position",
-  "Status",
-  "Join Date",
+const COLUMN_KEYS = [
+  "employees.table.employee",
+  "employees.table.contact",
+  "employees.table.department",
+  "employees.table.position",
+  "employees.table.status",
+  "employees.table.joinDate",
 ];
 
 function EmployeeRow({
@@ -28,6 +29,7 @@ function EmployeeRow({
   employee: EmployeeSummary;
   onSelect: () => void;
 }) {
+  const { t } = useTranslation();
   const avatarColor =
     AVATAR_COLORS[(employee.employeeId ?? 0) % AVATAR_COLORS.length];
 
@@ -53,7 +55,7 @@ function EmployeeRow({
             {employee.profilePhotoDataUrl ? (
               <img
                 src={employee.profilePhotoDataUrl}
-                alt={employee.displayName ?? "Employee"}
+                alt={employee.displayName ?? t("employees.table.employee")}
                 className="size-full object-cover"
               />
             ) : (
@@ -65,7 +67,7 @@ function EmployeeRow({
 
           <div>
             <p className="font-['Inter',sans-serif] text-sm font-semibold text-[#1a2535]">
-              {employee.displayName ?? "Unnamed employee"}
+              {employee.displayName ?? t("employees.table.unnamedEmployee")}
             </p>
 
             <p className="font-['Inter',sans-serif] text-xs text-gray-400">
@@ -122,6 +124,8 @@ export function EmployeesTable({
   onRetry: () => void;
   onSelect: (employee: EmployeeSummary) => void;
 }) {
+  const { t } = useTranslation();
+
   return (
     <div className="overflow-hidden rounded-xl border border-gray-100 bg-white">
       {isError ? (
@@ -130,17 +134,17 @@ export function EmployeesTable({
 
           <div>
             <p className="font-['Inter',sans-serif] font-semibold text-[#1a2535]">
-              Unable to load employees
+              {t("employees.table.unableToLoad")}
             </p>
 
             <p className="font-['Inter',sans-serif] text-sm text-gray-400">
-              Check the server connection and try again.
+              {t("employees.table.checkConnection")}
             </p>
           </div>
 
           <Button variant="outline" onClick={onRetry}>
             <RefreshCw className="size-4" />
-            Try again
+            {t("employees.table.tryAgain")}
           </Button>
         </div>
       ) : (
@@ -148,14 +152,14 @@ export function EmployeesTable({
           <table className="w-full min-w-[900px]">
             <thead>
               <tr className="border-b border-gray-100">
-                {COLUMNS.map((label) => (
+                {COLUMN_KEYS.map((key, index) => (
                   <th
-                    key={label}
+                    key={key}
                     className={`${
-                      label === "Employee" ? "px-6" : "px-4"
+                      index === 0 ? "px-6" : "px-4"
                     } py-4 text-left font-['Inter',sans-serif] text-sm font-semibold text-gray-600`}
                   >
-                    {label}
+                    {t(key)}
                   </th>
                 ))}
               </tr>
@@ -165,7 +169,7 @@ export function EmployeesTable({
               {isLoading ? (
                 Array.from({ length: 6 }, (_, index) => (
                   <tr key={index} className="border-b border-gray-100">
-                    <td colSpan={COLUMNS.length} className="px-6 py-3">
+                    <td colSpan={COLUMN_KEYS.length} className="px-6 py-3">
                       <div className="h-11 animate-pulse rounded-lg bg-gray-100" />
                     </td>
                   </tr>
@@ -173,10 +177,10 @@ export function EmployeesTable({
               ) : employees.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={COLUMNS.length}
+                    colSpan={COLUMN_KEYS.length}
                     className="py-16 text-center font-['Inter',sans-serif] text-sm text-gray-400"
                   >
-                    No employees match the current filters.
+                    {t("employees.table.noMatches")}
                   </td>
                 </tr>
               ) : (
@@ -195,7 +199,7 @@ export function EmployeesTable({
 
       {!isError && (
         <div className="border-t border-gray-100 px-6 py-3 font-['Inter',sans-serif] text-xs text-gray-400">
-          Showing {employees.length} of {total}
+          {t("employees.table.showingOf", { count: employees.length, total })}
         </div>
       )}
     </div>
