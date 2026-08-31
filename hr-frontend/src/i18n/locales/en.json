@@ -642,5 +642,66 @@
       "startDate": "Start Date",
       "endDate": "End Date"
     }
+  },
+  "jobs": {
+    "home": {
+      "title": "Jobs",
+      "subtitle": "Manage job grades and organizational positions.",
+      "jobPositions": "Job Positions",
+      "jobGrades": "Job Grades",
+      "loading": "Loading…",
+      "positionsSummary": "{{total}} total · {{occupied}} occupied · {{open}} open",
+      "activeGradesSummary": "{{count}} active grades"
+    },
+    "grades": {
+      "backToJobs": "← Back to Jobs",
+      "title": "Job Grades",
+      "subtitle": "Manage the salary/job grade structure used by positions.",
+      "addGrade": "Add Grade",
+      "loading": "Loading grades…",
+      "unableToLoad": "Unable to load job grades.",
+      "noGrades": "No grades yet.",
+      "gradeCode": "Grade Code",
+      "gradeNameEn": "Grade Name (EN)",
+      "gradeNameAr": "Grade Name (AR)",
+      "rank": "Rank",
+      "positions": "Positions",
+      "actions": "Actions",
+      "editGrade": "Edit grade",
+      "form": {
+        "editTitle": "Edit Grade",
+        "addTitle": "Add Grade",
+        "editDescription": "Update the details for {{code}}.",
+        "addDescription": "Create a new job grade.",
+        "editSuccess": "Grade updated successfully",
+        "addSuccess": "Grade added successfully",
+        "saveError": "Unable to save grade",
+        "gradeCode": "Grade Code",
+        "codePlaceholder": "G5",
+        "rank": "Rank",
+        "gradeNameEn": "Grade Name (English)",
+        "gradeNameAr": "Grade Name (Arabic)",
+        "saving": "Saving…",
+        "saveChanges": "Save Changes"
+      }
+    },
+    "positions": {
+      "backToJobs": "← Back to Jobs",
+      "title": "Job Positions",
+      "subtitle": "All organizational positions and their occupancy.",
+      "addPosition": "Add Position",
+      "loading": "Loading positions…",
+      "unableToLoad": "Unable to load job positions.",
+      "noPositions": "No positions found.",
+      "position": "Position",
+      "jobGrade": "Job Grade",
+      "unit": "Unit",
+      "currentEmployee": "Current Employee",
+      "occupancy": "Occupancy",
+      "pageOf": "Page {{page}} of {{totalPages}}",
+      "positionsCount": "{{count}} positions",
+      "previous": "Previous",
+      "next": "Next"
+    }
   }
 }

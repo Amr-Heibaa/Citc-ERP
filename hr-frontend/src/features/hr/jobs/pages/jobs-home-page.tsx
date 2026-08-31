@@ -1,9 +1,11 @@
 import { Layers, Users } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 
 import { useJobPositionStatistics } from "@/features/hr/jobs/api/use-job-positions";
 
 export function JobsHomePage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const statistics = useJobPositionStatistics();
 
@@ -11,11 +13,11 @@ export function JobsHomePage() {
     <div className="flex flex-col gap-4 p-4">
       <div>
         <h1 className="font-['Inter',sans-serif] text-2xl font-bold text-[#1a2535]">
-          Jobs
+          {t("jobs.home.title")}
         </h1>
 
         <p className="mt-0.5 font-['Inter',sans-serif] text-sm text-gray-400">
-          Manage job grades and organizational positions.
+          {t("jobs.home.subtitle")}
         </p>
       </div>
 
@@ -31,15 +33,17 @@ export function JobsHomePage() {
 
           <div>
             <p className="font-['Inter',sans-serif] text-base font-semibold text-[#1a2535]">
-              Job Positions
+              {t("jobs.home.jobPositions")}
             </p>
 
             <p className="mt-0.5 font-['Inter',sans-serif] text-sm text-gray-400">
               {statistics.isLoading
-                ? "Loading…"
-                : `${statistics.data?.totalPositions ?? 0} total · ${
-                    statistics.data?.occupiedPositions ?? 0
-                  } occupied · ${statistics.data?.openPositions ?? 0} open`}
+                ? t("jobs.home.loading")
+                : t("jobs.home.positionsSummary", {
+                    total: statistics.data?.totalPositions ?? 0,
+                    occupied: statistics.data?.occupiedPositions ?? 0,
+                    open: statistics.data?.openPositions ?? 0,
+                  })}
             </p>
           </div>
         </button>
@@ -55,13 +59,13 @@ export function JobsHomePage() {
 
           <div>
             <p className="font-['Inter',sans-serif] text-base font-semibold text-[#1a2535]">
-              Job Grades
+              {t("jobs.home.jobGrades")}
             </p>
 
             <p className="mt-0.5 font-['Inter',sans-serif] text-sm text-gray-400">
               {statistics.isLoading
-                ? "Loading…"
-                : `${statistics.data?.activeGrades ?? 0} active grades`}
+                ? t("jobs.home.loading")
+                : t("jobs.home.activeGradesSummary", { count: statistics.data?.activeGrades ?? 0 })}
             </p>
           </div>
         </button>

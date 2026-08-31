@@ -642,5 +642,66 @@
       "startDate": "تاريخ البدء",
       "endDate": "تاريخ الانتهاء"
     }
+  },
+  "jobs": {
+    "home": {
+      "title": "الوظائف",
+      "subtitle": "إدارة الدرجات الوظيفية والوظائف التنظيمية.",
+      "jobPositions": "الوظائف",
+      "jobGrades": "الدرجات الوظيفية",
+      "loading": "جارٍ التحميل…",
+      "positionsSummary": "{{total}} إجمالي · {{occupied}} مشغولة · {{open}} شاغرة",
+      "activeGradesSummary": "{{count}} درجة نشطة"
+    },
+    "grades": {
+      "backToJobs": "← العودة إلى الوظائف",
+      "title": "الدرجات الوظيفية",
+      "subtitle": "إدارة هيكل الدرجات الوظيفية/الراتب المستخدم في الوظائف.",
+      "addGrade": "إضافة درجة",
+      "loading": "جارٍ تحميل الدرجات…",
+      "unableToLoad": "تعذر تحميل الدرجات الوظيفية.",
+      "noGrades": "لا توجد درجات بعد.",
+      "gradeCode": "رمز الدرجة",
+      "gradeNameEn": "اسم الدرجة (إنجليزي)",
+      "gradeNameAr": "اسم الدرجة (عربي)",
+      "rank": "الترتيب",
+      "positions": "الوظائف",
+      "actions": "الإجراءات",
+      "editGrade": "تعديل الدرجة",
+      "form": {
+        "editTitle": "تعديل الدرجة",
+        "addTitle": "إضافة درجة",
+        "editDescription": "تحديث بيانات {{code}}.",
+        "addDescription": "إنشاء درجة وظيفية جديدة.",
+        "editSuccess": "تم تحديث الدرجة بنجاح",
+        "addSuccess": "تمت إضافة الدرجة بنجاح",
+        "saveError": "تعذر حفظ الدرجة",
+        "gradeCode": "رمز الدرجة",
+        "codePlaceholder": "G5",
+        "rank": "الترتيب",
+        "gradeNameEn": "اسم الدرجة (إنجليزي)",
+        "gradeNameAr": "اسم الدرجة (عربي)",
+        "saving": "جارٍ الحفظ…",
+        "saveChanges": "حفظ التغييرات"
+      }
+    },
+    "positions": {
+      "backToJobs": "← العودة إلى الوظائف",
+      "title": "الوظائف",
+      "subtitle": "جميع الوظائف التنظيمية وحالة شغلها.",
+      "addPosition": "إضافة وظيفة",
+      "loading": "جارٍ تحميل الوظائف…",
+      "unableToLoad": "تعذر تحميل الوظائف.",
+      "noPositions": "لا توجد وظائف.",
+      "position": "الوظيفة",
+      "jobGrade": "الدرجة الوظيفية",
+      "unit": "الوحدة",
+      "currentEmployee": "الموظف الحالي",
+      "occupancy": "الحالة الوظيفية",
+      "pageOf": "صفحة {{page}} من {{totalPages}}",
+      "positionsCount": "{{count}} وظيفة",
+      "previous": "السابق",
+      "next": "التالي"
+    }
   }
 }
