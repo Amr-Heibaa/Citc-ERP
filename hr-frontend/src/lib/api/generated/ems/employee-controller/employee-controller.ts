@@ -25,8 +25,11 @@ import type {
 
 import type {
   CreateEmployeeRequest,
+  DeleteEmployeeRequest,
+  DeletedEmployeeSummary,
   EmployeeDetail,
   EmployeeSummary,
+  RestoreEmployeeRequest,
   UpdateEmployeeRequest
 } from '../../model';
 
@@ -197,6 +200,65 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       > => {
       return useMutation(getUpdateEmployeeMutationOptions(options), queryClient);
     }
+    export const deleteEmployee = (
+    employeeId: number,
+    deleteEmployeeRequest: DeleteEmployeeRequest,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+
+
+      return customInstance<void>(
+      {url: `/api/hr/employees/${employeeId}`, method: 'DELETE',
+      headers: {'Content-Type': 'application/json', },
+      data: deleteEmployeeRequest, signal
+    },
+      options);
+    }
+
+
+
+
+export const getDeleteEmployeeMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteEmployee>>, TError,{employeeId: number;data: DeleteEmployeeRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteEmployee>>, TError,{employeeId: number;data: DeleteEmployeeRequest}, TContext> => {
+
+const mutationKey = ['deleteEmployee'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteEmployee>>, {employeeId: number;data: DeleteEmployeeRequest}> = (props) => {
+          const {employeeId,data} = props ?? {};
+
+          return  deleteEmployee(employeeId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteEmployeeMutationResult = NonNullable<Awaited<ReturnType<typeof deleteEmployee>>>
+    export type DeleteEmployeeMutationBody = DeleteEmployeeRequest
+    export type DeleteEmployeeMutationError = unknown
+
+    export const useDeleteEmployee = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteEmployee>>, TError,{employeeId: number;data: DeleteEmployeeRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteEmployee>>,
+        TError,
+        {employeeId: number;data: DeleteEmployeeRequest},
+        TContext
+      > => {
+      return useMutation(getDeleteEmployeeMutationOptions(options), queryClient);
+    }
     export const listEmployees = (
 
  options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
@@ -341,6 +403,65 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       > => {
       return useMutation(getCreateEmployeeMutationOptions(options), queryClient);
     }
+    export const restoreEmployee = (
+    employeeId: number,
+    restoreEmployeeRequest: RestoreEmployeeRequest,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+
+
+      return customInstance<void>(
+      {url: `/api/hr/employees/${employeeId}/restore`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: restoreEmployeeRequest, signal
+    },
+      options);
+    }
+
+
+
+
+export const getRestoreEmployeeMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof restoreEmployee>>, TError,{employeeId: number;data: RestoreEmployeeRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof restoreEmployee>>, TError,{employeeId: number;data: RestoreEmployeeRequest}, TContext> => {
+
+const mutationKey = ['restoreEmployee'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof restoreEmployee>>, {employeeId: number;data: RestoreEmployeeRequest}> = (props) => {
+          const {employeeId,data} = props ?? {};
+
+          return  restoreEmployee(employeeId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RestoreEmployeeMutationResult = NonNullable<Awaited<ReturnType<typeof restoreEmployee>>>
+    export type RestoreEmployeeMutationBody = RestoreEmployeeRequest
+    export type RestoreEmployeeMutationError = unknown
+
+    export const useRestoreEmployee = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof restoreEmployee>>, TError,{employeeId: number;data: RestoreEmployeeRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof restoreEmployee>>,
+        TError,
+        {employeeId: number;data: RestoreEmployeeRequest},
+        TContext
+      > => {
+      return useMutation(getRestoreEmployeeMutationOptions(options), queryClient);
+    }
     export const getMyEmployee = (
 
  options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
@@ -416,6 +537,92 @@ export function useGetMyEmployee<TData = Awaited<ReturnType<typeof getMyEmployee
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getGetMyEmployeeQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const listDeletedEmployees = (
+
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+
+
+      return customInstance<DeletedEmployeeSummary[]>(
+      {url: `/api/hr/employees/deleted`, method: 'GET', signal
+    },
+      options);
+    }
+
+
+
+
+export const getListDeletedEmployeesQueryKey = () => {
+    return [
+    `/api/hr/employees/deleted`
+    ] as const;
+    }
+
+
+export const getListDeletedEmployeesQueryOptions = <TData = Awaited<ReturnType<typeof listDeletedEmployees>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listDeletedEmployees>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListDeletedEmployeesQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listDeletedEmployees>>> = ({ signal }) => listDeletedEmployees(requestOptions, signal);
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listDeletedEmployees>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ListDeletedEmployeesQueryResult = NonNullable<Awaited<ReturnType<typeof listDeletedEmployees>>>
+export type ListDeletedEmployeesQueryError = unknown
+
+
+export function useListDeletedEmployees<TData = Awaited<ReturnType<typeof listDeletedEmployees>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listDeletedEmployees>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listDeletedEmployees>>,
+          TError,
+          Awaited<ReturnType<typeof listDeletedEmployees>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListDeletedEmployees<TData = Awaited<ReturnType<typeof listDeletedEmployees>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listDeletedEmployees>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listDeletedEmployees>>,
+          TError,
+          Awaited<ReturnType<typeof listDeletedEmployees>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListDeletedEmployees<TData = Awaited<ReturnType<typeof listDeletedEmployees>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listDeletedEmployees>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useListDeletedEmployees<TData = Awaited<ReturnType<typeof listDeletedEmployees>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listDeletedEmployees>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getListDeletedEmployeesQueryOptions(options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

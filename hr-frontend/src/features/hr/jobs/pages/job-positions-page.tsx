@@ -1,5 +1,6 @@
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,7 @@ import { downloadJobPositionsCsv } from "@/features/hr/jobs/utils/job-position-e
 import type { ListPositionsParams } from "@/lib/api/generated/model";
 
 export function JobPositionsPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const search = useJobPositionsFiltersStore((state) => state.search);
@@ -57,21 +59,21 @@ export function JobPositionsPage() {
             onClick={() => navigate("/hr/jobs")}
             className="font-['Inter',sans-serif] text-xs text-gray-400 hover:text-gray-600"
           >
-            ← Back to Jobs
+            {t("jobs.positions.backToJobs")}
           </button>
 
           <h1 className="mt-1 font-['Inter',sans-serif] text-2xl font-bold text-[#1a2535]">
-            Job Positions
+            {t("jobs.positions.title")}
           </h1>
 
           <p className="mt-0.5 font-['Inter',sans-serif] text-sm text-gray-400">
-            All organizational positions and their occupancy.
+            {t("jobs.positions.subtitle")}
           </p>
         </div>
 
         <Button onClick={() => navigate("/hr/jobs/positions/new")}>
           <Plus className="size-4" />
-          Add Position
+          {t("jobs.positions.addPosition")}
         </Button>
       </div>
 
@@ -83,26 +85,26 @@ export function JobPositionsPage() {
       <div className="overflow-hidden rounded-xl border border-gray-100 bg-white">
         {positions.isLoading ? (
           <div className="flex h-48 items-center justify-center font-['Inter',sans-serif] text-sm text-gray-400">
-            Loading positions…
+            {t("jobs.positions.loading")}
           </div>
         ) : positions.isError ? (
           <div className="flex h-48 items-center justify-center font-['Inter',sans-serif] text-sm text-red-600">
-            Unable to load job positions.
+            {t("jobs.positions.unableToLoad")}
           </div>
         ) : rows.length === 0 ? (
           <div className="flex h-48 items-center justify-center font-['Inter',sans-serif] text-sm text-gray-400">
-            No positions found.
+            {t("jobs.positions.noPositions")}
           </div>
         ) : (
           <Table>
             <TableHeader className="bg-[#f4f6f9]">
               <TableRow>
-                <TableHead>Position</TableHead>
-                <TableHead>Job Grade</TableHead>
-                <TableHead>Unit</TableHead>
-                <TableHead>Current Employee</TableHead>
-                <TableHead>Occupancy</TableHead>
-                <TableHead>Status</TableHead>
+                <TableHead>{t("jobs.positions.position")}</TableHead>
+                <TableHead>{t("jobs.positions.jobGrade")}</TableHead>
+                <TableHead>{t("jobs.positions.unit")}</TableHead>
+                <TableHead>{t("jobs.positions.currentEmployee")}</TableHead>
+                <TableHead>{t("jobs.positions.occupancy")}</TableHead>
+                <TableHead>{t("common.status")}</TableHead>
               </TableRow>
             </TableHeader>
 
@@ -154,9 +156,12 @@ export function JobPositionsPage() {
       {positions.data && positions.data.totalPages != null && positions.data.totalPages > 1 && (
         <div className="flex items-center justify-between font-['Inter',sans-serif] text-sm text-gray-500">
           <span>
-            Page {(positions.data.page ?? 0) + 1} of {positions.data.totalPages}
+            {t("jobs.positions.pageOf", {
+              page: (positions.data.page ?? 0) + 1,
+              totalPages: positions.data.totalPages,
+            })}
             {" · "}
-            {positions.data.totalElements} positions
+            {t("jobs.positions.positionsCount", { count: positions.data.totalElements })}
           </span>
 
           <div className="flex gap-2">
@@ -167,7 +172,7 @@ export function JobPositionsPage() {
               onClick={() => setPage(Math.max(0, page - 1))}
             >
               <ChevronLeft className="size-4" />
-              Previous
+              {t("jobs.positions.previous")}
             </Button>
 
             <Button
@@ -176,7 +181,7 @@ export function JobPositionsPage() {
               disabled={positions.data.last}
               onClick={() => setPage(page + 1)}
             >
-              Next
+              {t("jobs.positions.next")}
               <ChevronRight className="size-4" />
             </Button>
           </div>

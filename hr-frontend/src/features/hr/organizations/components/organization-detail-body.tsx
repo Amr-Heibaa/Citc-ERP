@@ -1,5 +1,6 @@
 import { ImageIcon } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
 import { OrganizationLogoDialog } from "@/features/hr/organizations/components/organization-logo-dialog";
@@ -33,6 +34,7 @@ export function OrganizationDetailBody({
 }: {
   organization: OrganizationDetail;
 }) {
+  const { t } = useTranslation();
   const [logoDialogOpen, setLogoDialogOpen] = useState(false);
 
   const summary = organization.summary;
@@ -41,15 +43,15 @@ export function OrganizationDetailBody({
     <>
       <div className="grid gap-5 lg:grid-cols-2">
         <div className="flex flex-col gap-5">
-          <DetailSection title="Organization Information">
-            <InfoRow label="Organization Code" value={organization.code} />
+          <DetailSection title={t("organizations.body.organizationInformation")}>
+            <InfoRow label={t("organizations.body.organizationCode")} value={organization.code} />
 
-            <InfoRow label="Organization Type" value={organization.type} />
+            <InfoRow label={t("organizations.body.organizationType")} value={organization.type} />
 
-            <InfoRow label="Name (English)" value={organization.nameEn} />
+            <InfoRow label={t("organizations.body.nameEn")} value={organization.nameEn} />
 
             <InfoRow
-              label="Name (Arabic)"
+              label={t("organizations.body.nameAr")}
               value={
                 organization.nameAr ? (
                   <span dir="rtl">{organization.nameAr}</span>
@@ -58,33 +60,33 @@ export function OrganizationDetailBody({
             />
 
             <InfoRow
-              label="Status"
+              label={t("common.status")}
               value={<OrganizationStatusBadge status={organization.status} />}
             />
 
             <InfoRow
-              label="Established Date"
+              label={t("organizations.body.establishedDate")}
               value={formatDate(organization.establishedDate)}
             />
 
             <InfoRow
-              label="Registration Number"
+              label={t("organizations.body.registrationNumber")}
               value={organization.registrationNumber}
             />
 
-            <InfoRow label="Tax Number" value={organization.taxNumber} />
+            <InfoRow label={t("organizations.body.taxNumber")} value={organization.taxNumber} />
           </DetailSection>
 
-          <DetailSection title="Address">
-            <InfoRow label="Country" value={organization.country} />
+          <DetailSection title={t("organizations.body.address")}>
+            <InfoRow label={t("organizations.body.country")} value={organization.country} />
 
-            <InfoRow label="State" value={organization.state} />
+            <InfoRow label={t("organizations.body.state")} value={organization.state} />
 
-            <InfoRow label="City" value={organization.city} />
+            <InfoRow label={t("organizations.body.city")} value={organization.city} />
 
-            <InfoRow label="Postal Code" value={organization.postalCode} />
+            <InfoRow label={t("organizations.body.postalCode")} value={organization.postalCode} />
 
-            <InfoRow label="Address" value={organization.address} />
+            <InfoRow label={t("organizations.body.address")} value={organization.address} />
           </DetailSection>
         </div>
 
@@ -97,11 +99,11 @@ export function OrganizationDetailBody({
                 onClick={() => setLogoDialogOpen(true)}
               >
                 <ImageIcon className="size-4" />
-                Change Photo
+                {t("organizations.body.changePhoto")}
               </Button>
 
               <p className="mt-2 font-['Inter',sans-serif] text-xs text-gray-400">
-                JPG or PNG, maximum 2 MB
+                {t("organizations.body.photoHint")}
               </p>
             </div>
 
@@ -113,7 +115,7 @@ export function OrganizationDetailBody({
               {organization.logoDataUrl ? (
                 <img
                   src={organization.logoDataUrl}
-                  alt={organization.nameEn ?? "Organization logo"}
+                  alt={organization.nameEn ?? t("organizations.detail.logoFallback")}
                   className="size-full object-contain"
                 />
               ) : (
@@ -124,36 +126,36 @@ export function OrganizationDetailBody({
             </button>
           </section>
 
-          <DetailSection title="Quick Summary">
+          <DetailSection title={t("organizations.body.quickSummary")}>
             <OrganizationSummaryRow
-              label="Organization Units"
+              label={t("organizations.body.organizationUnits")}
               value={summary?.units ?? 0}
             />
 
             <OrganizationSummaryRow
-              label="Employees"
+              label={t("organizations.body.employees")}
               value={summary?.employees ?? 0}
             />
 
             <OrganizationSummaryRow
-              label="Active Positions"
+              label={t("organizations.body.activePositions")}
               value={summary?.activePositions ?? 0}
             />
 
             <OrganizationSummaryRow
-              label="Open Positions"
+              label={t("organizations.body.openPositions")}
               value={summary?.openPositions ?? 0}
             />
           </DetailSection>
 
-          <DetailSection title="Contact Information">
-            <InfoRow label="Phone" value={organization.phone} />
+          <DetailSection title={t("organizations.body.contactInformation")}>
+            <InfoRow label={t("common.phone")} value={organization.phone} />
 
-            <InfoRow label="Email" value={organization.email} />
+            <InfoRow label={t("common.email")} value={organization.email} />
 
-            <InfoRow label="Fax" value={organization.fax} />
+            <InfoRow label={t("organizations.body.fax")} value={organization.fax} />
 
-            <InfoRow label="Website" value={organization.website} />
+            <InfoRow label={t("organizations.body.website")} value={organization.website} />
           </DetailSection>
         </div>
       </div>

@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   Table,
@@ -22,6 +23,7 @@ export function UnitPositionsTab({
 }: {
   orgUnitId: number;
 }) {
+  const { t } = useTranslation();
   const [search, setSearch] =
     useState("");
 
@@ -87,7 +89,7 @@ export function UnitPositionsTab({
   if (positionsQuery.isLoading) {
     return (
       <div className="flex h-64 items-center justify-center text-sm text-gray-400">
-        Loading unit positions…
+        {t("organizations.unitPositionsTab.loading")}
       </div>
     );
   }
@@ -95,7 +97,7 @@ export function UnitPositionsTab({
   if (positionsQuery.isError) {
     return (
       <div className="flex h-64 items-center justify-center text-sm text-red-600">
-        Unable to load unit positions.
+        {t("organizations.unitPositionsTab.unableToLoad")}
       </div>
     );
   }
@@ -105,7 +107,7 @@ export function UnitPositionsTab({
       <UnitTabToolbar
         search={search}
         onSearchChange={setSearch}
-        placeholder="Search positions..."
+        placeholder={t("organizations.unitPositionsTab.searchPlaceholder")}
         exportDisabled={
           filtered.length === 0
         }
@@ -114,34 +116,34 @@ export function UnitPositionsTab({
 
       {filtered.length === 0 ? (
         <div className="py-16 text-center text-sm text-gray-400">
-          No positions found.
+          {t("organizations.unitPositionsTab.noPositionsFound")}
         </div>
       ) : (
         <Table>
           <TableHeader className="bg-[#f4f6f9]">
             <TableRow>
               <TableHead className="px-4">
-                Position
+                {t("organizations.unitPositionsTab.position")}
               </TableHead>
 
               <TableHead>
-                Grade
+                {t("organizations.unitPositionsTab.grade")}
               </TableHead>
 
               <TableHead>
-                Department
+                {t("organizations.unitPositionsTab.department")}
               </TableHead>
 
               <TableHead>
-                Reports To
+                {t("organizations.unitPositionsTab.reportsTo")}
               </TableHead>
 
               <TableHead>
-                Status
+                {t("common.status")}
               </TableHead>
 
               <TableHead>
-                Employee
+                {t("organizations.unitPositionsTab.employee")}
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -192,7 +194,7 @@ export function UnitPositionsTab({
 
                   <TableCell className="text-sm text-gray-600">
                     {position.employee ??
-                      "Open"}
+                      t("organizations.unitPositionsTab.openFallback")}
                   </TableCell>
                 </TableRow>
               ),

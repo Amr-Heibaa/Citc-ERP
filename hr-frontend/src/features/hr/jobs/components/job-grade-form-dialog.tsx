@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -47,6 +48,7 @@ export function JobGradeFormDialog({
   onOpenChange: (open: boolean) => void;
   grade?: JobGradeResponse;
 }) {
+  const { t } = useTranslation();
   const editMode = grade != null;
   const gradeId = grade?.gradeId ?? 0;
 
@@ -82,16 +84,16 @@ export function JobGradeFormDialog({
     try {
       if (editMode) {
         await updateGrade.mutateAsync(toUpdateJobGradeRequest(values));
-        toast.success("Grade updated successfully");
+        toast.success(t("jobs.grades.form.editSuccess"));
       } else {
         await createGrade.mutateAsync(toCreateJobGradeRequest(values));
-        toast.success("Grade added successfully");
+        toast.success(t("jobs.grades.form.addSuccess"));
       }
 
       onOpenChange(false);
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Unable to save grade",
+        error instanceof Error ? error.message : t("jobs.grades.form.saveError"),
       );
     }
   });
@@ -101,35 +103,35 @@ export function JobGradeFormDialog({
       <DialogContent className="sm:max-w-lg gap-0 overflow-hidden p-0">
         <DialogHeader className="border-b border-gray-100 px-6 py-5">
           <DialogTitle className="text-xl text-[#1a2535]">
-            {editMode ? "Edit Grade" : "Add Grade"}
+            {editMode ? t("jobs.grades.form.editTitle") : t("jobs.grades.form.addTitle")}
           </DialogTitle>
 
           <DialogDescription>
             {editMode
-              ? `Update the details for ${grade.code}.`
-              : "Create a new job grade."}
+              ? t("jobs.grades.form.editDescription", { code: grade.code })
+              : t("jobs.grades.form.addDescription")}
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={submit}>
           <div className="grid grid-cols-1 gap-4 px-6 py-5 sm:grid-cols-2">
-            <LabeledField label="Grade Code" error={errors.code?.message}>
-              <Input {...register("code")} placeholder="G5" />
+            <LabeledField label={t("jobs.grades.form.gradeCode")} error={errors.code?.message}>
+              <Input {...register("code")} placeholder={t("jobs.grades.form.codePlaceholder")} />
             </LabeledField>
 
-            <LabeledField label="Rank" error={errors.rank?.message}>
+            <LabeledField label={t("jobs.grades.form.rank")} error={errors.rank?.message}>
               <Input type="number" {...register("rank", { valueAsNumber: true })} />
             </LabeledField>
 
-            <LabeledField label="Grade Name (English)" error={errors.nameEn?.message}>
+            <LabeledField label={t("jobs.grades.form.gradeNameEn")} error={errors.nameEn?.message}>
               <Input {...register("nameEn")} />
             </LabeledField>
 
-            <LabeledField label="Grade Name (Arabic)" error={errors.nameAr?.message}>
+            <LabeledField label={t("jobs.grades.form.gradeNameAr")} error={errors.nameAr?.message}>
               <Input {...register("nameAr")} dir="rtl" />
             </LabeledField>
 
-            <LabeledField label="Status">
+            <LabeledField label={t("common.status")}>
               <StatusSelectField
                 active={active}
                 onChange={(checked) => setValue("active", checked)}
@@ -139,11 +141,11 @@ export function JobGradeFormDialog({
 
           <DialogFooter className="border-t border-gray-100 px-6 py-4">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
+              {t("common.cancel")}
             </Button>
 
             <Button type="submit" disabled={pending}>
-              {pending ? "Saving…" : editMode ? "Save Changes" : "Add Grade"}
+              {pending ? t("jobs.grades.form.saving") : editMode ? t("jobs.grades.form.saveChanges") : t("jobs.grades.addGrade")}
             </Button>
           </DialogFooter>
         </form>

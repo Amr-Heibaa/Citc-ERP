@@ -1,5 +1,6 @@
 import { Pencil, Plus } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,7 @@ import { JobStatusBadge } from "@/features/hr/jobs/components/job-status-badge";
 import type { JobGradeResponse } from "@/lib/api/generated/model";
 
 export function JobGradesPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const grades = useJobGrades();
 
@@ -42,48 +44,48 @@ export function JobGradesPage() {
             onClick={() => navigate("/hr/jobs")}
             className="font-['Inter',sans-serif] text-xs text-gray-400 hover:text-gray-600"
           >
-            ← Back to Jobs
+            {t("jobs.grades.backToJobs")}
           </button>
 
           <h1 className="mt-1 font-['Inter',sans-serif] text-2xl font-bold text-[#1a2535]">
-            Job Grades
+            {t("jobs.grades.title")}
           </h1>
 
           <p className="mt-0.5 font-['Inter',sans-serif] text-sm text-gray-400">
-            Manage the salary/job grade structure used by positions.
+            {t("jobs.grades.subtitle")}
           </p>
         </div>
 
         <Button onClick={openCreate}>
           <Plus className="size-4" />
-          Add Grade
+          {t("jobs.grades.addGrade")}
         </Button>
       </div>
 
       <div className="overflow-hidden rounded-xl border border-gray-100 bg-white">
         {grades.isLoading ? (
           <div className="flex h-48 items-center justify-center font-['Inter',sans-serif] text-sm text-gray-400">
-            Loading grades…
+            {t("jobs.grades.loading")}
           </div>
         ) : grades.isError ? (
           <div className="flex h-48 items-center justify-center font-['Inter',sans-serif] text-sm text-red-600">
-            Unable to load job grades.
+            {t("jobs.grades.unableToLoad")}
           </div>
         ) : !grades.data || grades.data.length === 0 ? (
           <div className="flex h-48 items-center justify-center font-['Inter',sans-serif] text-sm text-gray-400">
-            No grades yet.
+            {t("jobs.grades.noGrades")}
           </div>
         ) : (
           <Table>
             <TableHeader className="bg-[#f4f6f9]">
               <TableRow>
-                <TableHead>Grade Code</TableHead>
-                <TableHead>Grade Name (EN)</TableHead>
-                <TableHead>Grade Name (AR)</TableHead>
-                <TableHead>Rank</TableHead>
-                <TableHead>Positions</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead>{t("jobs.grades.gradeCode")}</TableHead>
+                <TableHead>{t("jobs.grades.gradeNameEn")}</TableHead>
+                <TableHead>{t("jobs.grades.gradeNameAr")}</TableHead>
+                <TableHead>{t("jobs.grades.rank")}</TableHead>
+                <TableHead>{t("jobs.grades.positions")}</TableHead>
+                <TableHead>{t("common.status")}</TableHead>
+                <TableHead className="text-right">{t("jobs.grades.actions")}</TableHead>
               </TableRow>
             </TableHeader>
 
@@ -118,7 +120,7 @@ export function JobGradesPage() {
                     <Button
                       variant="ghost"
                       size="icon"
-                      title="Edit grade"
+                      title={t("jobs.grades.editGrade")}
                       onClick={() => openEdit(grade)}
                     >
                       <Pencil className="size-4" />

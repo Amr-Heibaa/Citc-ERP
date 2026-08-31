@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -52,6 +53,7 @@ export function OrganizationUnitFormDialog({
   unit?: OrganizationUnitDetail;
   fixedParentUnitId?: number;
 }) {
+  const { t } = useTranslation();
   const unitId = unit?.id ?? 0;
 
   const unitTypes = useOrganizationUnitTypes(open);
@@ -103,17 +105,17 @@ export function OrganizationUnitFormDialog({
 
   const title =
     mode === "edit"
-      ? "Edit Unit"
+      ? t("organizations.unitForm.editTitle")
       : fixedParentUnitId != null
-        ? "Add Child Unit"
-        : "Add Unit";
+        ? t("organizations.unitForm.addChildTitle")
+        : t("organizations.unitForm.addTitle");
 
   const submitLabel =
     mode === "edit"
-      ? "Save Changes"
+      ? t("organizations.unitForm.saveChanges")
       : fixedParentUnitId != null
-        ? "Add Child Unit"
-        : "Add Unit";
+        ? t("organizations.unitForm.addChildTitle")
+        : t("organizations.unitForm.addTitle");
 
   const submit = handleSubmit(async (values) => {
     try {
@@ -122,7 +124,7 @@ export function OrganizationUnitFormDialog({
           toUpdateOrganizationUnitRequest(values),
         );
 
-        toast.success("Unit updated successfully");
+        toast.success(t("organizations.unitForm.editSuccess"));
       } else if (fixedParentUnitId != null) {
         await createChildUnit.mutateAsync(
           toCreateOrganizationUnitRequest({
@@ -131,17 +133,17 @@ export function OrganizationUnitFormDialog({
           }),
         );
 
-        toast.success("Child unit added successfully");
+        toast.success(t("organizations.unitForm.addChildSuccess"));
       } else {
         await createUnit.mutateAsync(toCreateOrganizationUnitRequest(values));
 
-        toast.success("Unit added successfully");
+        toast.success(t("organizations.unitForm.addSuccess"));
       }
 
       onOpenChange(false);
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Unable to save unit",
+        error instanceof Error ? error.message : t("organizations.unitForm.saveError"),
       );
     }
   });
@@ -161,7 +163,7 @@ export function OrganizationUnitFormDialog({
   const parentOptions = [
     {
       value: ROOT_UNIT_VALUE,
-      label: "No parent (root unit)",
+      label: t("organizations.unitForm.noParentRootUnit"),
     },
 
     ...(organizationUnits.data?.flatMap((candidate) => {
@@ -185,7 +187,7 @@ export function OrganizationUnitFormDialog({
           <DialogTitle className="text-xl text-[#1a2535]">{title}</DialogTitle>
 
           <DialogDescription>
-            Enter the organization unit information.
+            {t("organizations.unitForm.description")}
           </DialogDescription>
         </DialogHeader>
 
@@ -196,50 +198,50 @@ export function OrganizationUnitFormDialog({
           <div className="flex min-h-0 flex-1 overflow-y-auto">
             <div className="grid flex-1 grid-cols-1 content-start gap-5 px-6 py-5 md:grid-cols-2">
               <LabeledField
-                label="Parent Unit"
+                label={t("organizations.unitForm.parentUnit")}
                 error={errors.parentOrgUnitId?.message}
               >
                 <SelectField
                   control={control}
                   name="parentOrgUnitId"
-                  placeholder="Select parent unit"
+                  placeholder={t("organizations.unitForm.selectParentUnit")}
                   options={parentOptions}
                   disabled={fixedParentUnitId != null}
                 />
               </LabeledField>
 
-              <LabeledField label="Unit Type" error={errors.unitTypeId?.message}>
+              <LabeledField label={t("organizations.unitForm.unitType")} error={errors.unitTypeId?.message}>
                 <SelectField
                   control={control}
                   name="unitTypeId"
-                  placeholder="Select unit type"
+                  placeholder={t("organizations.unitForm.selectUnitType")}
                   options={typeOptions}
                 />
               </LabeledField>
 
-              <LabeledField label="Unit Code" error={errors.code?.message}>
+              <LabeledField label={t("organizations.unitForm.unitCode")} error={errors.code?.message}>
                 <Input {...register("code")} />
               </LabeledField>
 
               <div aria-hidden />
 
-              <LabeledField label="Name (English)" error={errors.nameEn?.message}>
+              <LabeledField label={t("organizations.unitForm.nameEn")} error={errors.nameEn?.message}>
                 <Input {...register("nameEn")} />
               </LabeledField>
 
-              <LabeledField label="Name (Arabic)" error={errors.nameAr?.message}>
+              <LabeledField label={t("organizations.unitForm.nameAr")} error={errors.nameAr?.message}>
                 <Input {...register("nameAr")} dir="rtl" />
               </LabeledField>
 
-              <LabeledField label="Start Date" error={errors.startDate?.message}>
+              <LabeledField label={t("organizations.unitForm.startDate")} error={errors.startDate?.message}>
                 <Input type="date" {...register("startDate")} />
               </LabeledField>
 
-              <LabeledField label="Description">
+              <LabeledField label={t("common.description")}>
                 <Textarea {...register("description")} rows={4} />
               </LabeledField>
 
-              <LabeledField label="Status">
+              <LabeledField label={t("common.status")}>
                 <StatusSelectField
                   active={active}
                   onChange={(checked) => setValue("active", checked)}
@@ -260,11 +262,11 @@ export function OrganizationUnitFormDialog({
               variant="outline"
               onClick={() => onOpenChange(false)}
             >
-              Cancel
+              {t("common.cancel")}
             </Button>
 
             <Button type="submit" disabled={pending}>
-              {pending ? "Saving…" : submitLabel}
+              {pending ? t("organizations.form.saving") : submitLabel}
             </Button>
           </DialogFooter>
         </form>

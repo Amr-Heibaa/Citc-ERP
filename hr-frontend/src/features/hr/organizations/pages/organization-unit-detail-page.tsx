@@ -1,4 +1,5 @@
 import { ArrowLeft, ChevronRight } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router";
 
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,7 @@ import { OrganizationUnitDetailHero } from "@/features/hr/organizations/componen
 import { OrganizationUnitDetailTabs } from "@/features/hr/organizations/components/organization-unit-detail-tabs";
 
 export function OrganizationUnitDetailPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const { organizationId, orgUnitId } = useParams();
@@ -28,7 +30,7 @@ export function OrganizationUnitDetailPage() {
   if (isLoading) {
     return (
       <div className="flex h-64 items-center justify-center text-sm text-gray-400">
-        Loading organization unit…
+        {t("organizations.unit.loading")}
       </div>
     );
   }
@@ -36,10 +38,10 @@ export function OrganizationUnitDetailPage() {
   if (isError || !unit) {
     return (
       <div className="flex flex-col items-start gap-3 p-6">
-        <p className="text-red-600">Organization unit not found.</p>
+        <p className="text-red-600">{t("organizations.unit.notFound")}</p>
 
         <Button variant="outline" onClick={backToOrganization}>
-          Back to organization
+          {t("organizations.unit.backToOrganization")}
         </Button>
       </div>
     );
@@ -57,7 +59,7 @@ export function OrganizationUnitDetailPage() {
           onClick={() => navigate("/hr/organizations")}
           className="hover:text-[#1a2535]"
         >
-          Organizations
+          {t("organizations.title")}
         </button>
 
         <ChevronRight className="size-3" />
@@ -67,13 +69,13 @@ export function OrganizationUnitDetailPage() {
           onClick={backToOrganization}
           className="hover:text-[#1a2535]"
         >
-          Organization Details
+          {t("organizations.unit.organizationDetails")}
         </button>
 
         <ChevronRight className="size-3" />
 
         <span className="font-medium text-[#1a2535]">
-          {unit.name ?? "Unit Details"}
+          {unit.name ?? t("organizations.unit.unitDetailsFallback")}
         </span>
       </div>
       <OrganizationUnitDetailHero unit={unit} />

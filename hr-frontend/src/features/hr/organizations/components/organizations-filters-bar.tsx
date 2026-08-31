@@ -2,6 +2,7 @@ import {
   Download,
   Search,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,6 +25,7 @@ export function OrganizationsFiltersBar({
   onExport: () => void;
   exportDisabled: boolean;
 }) {
+  const { t } = useTranslation();
   const search =
     useOrganizationsFiltersStore(
       (state) => state.search,
@@ -58,7 +60,7 @@ export function OrganizationsFiltersBar({
               event.target.value,
             )
           }
-          placeholder="Search for Name, ID..."
+          placeholder={t("organizations.searchPlaceholder")}
           className="border-0 bg-transparent px-0 shadow-none focus-visible:ring-0"
         />
       </div>
@@ -80,7 +82,7 @@ export function OrganizationsFiltersBar({
         }
       >
         <SelectTrigger className="h-10 w-full lg:w-44">
-          <SelectValue placeholder="All Status" />
+          <SelectValue placeholder={t("organizations.allStatus")} />
         </SelectTrigger>
 
         <SelectContent>
@@ -89,15 +91,15 @@ export function OrganizationsFiltersBar({
               ALL_STATUSES
             }
           >
-            All Status
+            {t("organizations.allStatus")}
           </SelectItem>
 
           <SelectItem value="Active">
-            Active
+            {t("organizations.active")}
           </SelectItem>
 
           <SelectItem value="Inactive">
-            Inactive
+            {t("organizations.inactive")}
           </SelectItem>
         </SelectContent>
       </Select>
@@ -108,7 +110,7 @@ export function OrganizationsFiltersBar({
         className="h-10 gap-2 bg-[#1a2535] text-white hover:bg-[#243347]"
       >
         <Download className="size-4" />
-        Export
+        {t("common.export")}
       </Button>
     </div>
   );

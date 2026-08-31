@@ -1,12 +1,17 @@
+import { Download, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router";
 
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DeleteEmployeeDialog } from "@/features/hr/employees/components/delete-employee-dialog";
 import { EmploymentTab } from "@/features/hr/employees/components/employee-employment-tab";
 import { HistoryTab } from "@/features/hr/employees/components/employee-history-tab";
 import { OverviewTab } from "@/features/hr/employees/components/employee-overview-tab";
 import { PersonalTab } from "@/features/hr/employees/components/employee-personal-tab";
 import { ContractsTab } from "@/features/hr/employees/components/employee-contracts-tab";
+import { printEmployeeProfiles } from "@/features/hr/employees/utils/employee-profile-export";
 import type { EmployeeDetail } from "@/lib/api/generated/model";
 
 const TAB_TRIGGER_CLASS =
@@ -15,8 +20,10 @@ const TAB_TRIGGER_CLASS =
 const TAB_VALUES = ["overview", "personal", "employment", "contracts", "history"];
 
 export function EmployeeDetailTabs({ emp }: { emp: EmployeeDetail }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   const requestedTab = searchParams.get("tab");
   const activeTab = TAB_VALUES.includes(requestedTab ?? "") ? requestedTab! : "overview";
@@ -42,34 +49,54 @@ export function EmployeeDetailTabs({ emp }: { emp: EmployeeDetail }) {
           <div className="min-w-0 flex-1 overflow-x-auto">
             <TabsList className="h-auto w-max gap-7 rounded-none bg-transparent p-0">
               <TabsTrigger value="overview" className={TAB_TRIGGER_CLASS}>
-                Overview
+                {t("employees.tabs.overview")}
               </TabsTrigger>
 
               <TabsTrigger value="personal" className={TAB_TRIGGER_CLASS}>
-                Personal Information
+                {t("employees.tabs.personal")}
               </TabsTrigger>
 
               <TabsTrigger value="employment" className={TAB_TRIGGER_CLASS}>
-                Employment
+                {t("employees.tabs.employment")}
               </TabsTrigger>
 
               <TabsTrigger value="contracts" className={TAB_TRIGGER_CLASS}>
-                Contracts
+                {t("employees.tabs.contracts")}
               </TabsTrigger>
 
               <TabsTrigger value="history" className={TAB_TRIGGER_CLASS}>
-                History
+                {t("employees.tabs.history")}
               </TabsTrigger>
             </TabsList>
           </div>
 
-          <Button
-            size="sm"
-            onClick={() => navigate(`/hr/employees/${emp.employeeId}/edit`)}
-            className="shrink-0"
-          >
-            Edit Employee
-          </Button>
+          <div className="flex shrink-0 gap-2">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => printEmployeeProfiles([emp])}
+            >
+              <Download className="size-4" />
+              {t("employees.exportProfile")}
+            </Button>
+
+            <Button
+              size="sm"
+              onClick={() => navigate(`/hr/employees/${emp.employeeId}/edit`)}
+            >
+              {t("employees.editEmployee")}
+            </Button>
+
+            <Button
+              size="sm"
+              variant="outline"
+              className="border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
+              onClick={() => setDeleteOpen(true)}
+            >
+              <Trash2 className="size-4" />
+              {t("employees.delete")}
+            </Button>
+          </div>
         </div>
 
         <div className="px-5 pb-5">
@@ -94,6 +121,14 @@ export function EmployeeDetailTabs({ emp }: { emp: EmployeeDetail }) {
           </TabsContent>
         </div>
       </Tabs>
+
+      <DeleteEmployeeDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        employeeId={emp.employeeId ?? 0}
+        employeeName={emp.displayName ?? t("employees.thisEmployee")}
+        onDeleted={() => navigate("/hr/employees")}
+      />
     </div>
   );
 }

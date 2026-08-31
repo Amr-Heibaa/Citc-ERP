@@ -7,6 +7,7 @@ import {
   Upload,
   XCircle,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
@@ -42,6 +43,7 @@ export function OrganizationUnitImportDialog({
   onOpenChange,
   organizationId,
 }: OrganizationUnitImportDialogProps) {
+  const { t } = useTranslation();
   const [file, setFile] = useState<File | null>(null);
   const [filter, setFilter] = useState<RowFilter>("ALL");
 
@@ -86,16 +88,16 @@ export function OrganizationUnitImportDialog({
 
   async function handlePreview() {
     if (!file) {
-      toast.error("Select an Excel file first");
+      toast.error(t("organizations.importDialog.selectExcelFirst"));
       return;
     }
 
     try {
       await previewMutation.mutateAsync(file);
-      toast.success("Excel file validated successfully");
+      toast.success(t("organizations.importDialog.excelValidated"));
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Unable to preview the Excel file",
+        error instanceof Error ? error.message : t("organizations.importDialog.unableToPreviewExcel"),
       );
     }
   }
@@ -110,16 +112,21 @@ export function OrganizationUnitImportDialog({
 
       if ((importResult.failedRows ?? 0) > 0) {
         toast.warning(
-          `${importResult.importedRows ?? 0} imported, ${importResult.failedRows} failed`,
+          t("organizations.importDialog.importedFailed", {
+            imported: importResult.importedRows ?? 0,
+            failed: importResult.failedRows,
+          }),
         );
       } else {
         toast.success(
-          `${importResult.importedRows ?? 0} units imported successfully`,
+          t("organizations.importDialog.unitsImportedSuccess", {
+            count: importResult.importedRows ?? 0,
+          }),
         );
       }
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Unable to import units",
+        error instanceof Error ? error.message : t("organizations.importDialog.unableToImportUnits"),
       );
     }
   }
@@ -140,12 +147,11 @@ export function OrganizationUnitImportDialog({
         <DialogHeader className="shrink-0 border-b border-gray-100 px-6 py-5 text-left">
           <DialogTitle className="flex items-center gap-2 text-xl text-[#1a2535]">
             <FileSpreadsheet className="size-5 text-[#f5841f]" />
-            Import Organization Units
+            {t("organizations.importDialog.title")}
           </DialogTitle>
 
           <DialogDescription>
-            Upload the organization structure Excel file, review validation
-            results, then confirm the import.
+            {t("organizations.importDialog.description")}
           </DialogDescription>
         </DialogHeader>
 
@@ -158,13 +164,13 @@ export function OrganizationUnitImportDialog({
 
               <div className="min-w-0 flex-1">
                 <p className="font-['Inter',sans-serif] text-sm font-semibold text-[#1a2535]">
-                  Organization structure Excel file
+                  {t("organizations.importDialog.excelFileLabel")}
                 </p>
 
                 <p className="truncate font-['Inter',sans-serif] text-xs text-gray-400">
                   {file
                     ? `${file.name} · ${(file.size / 1024 / 1024).toFixed(2)} MB`
-                    : "Select an .xlsx or .xls file, maximum 10 MB"}
+                    : t("organizations.importDialog.selectFileMax10")}
                 </p>
               </div>
 
@@ -189,25 +195,25 @@ export function OrganizationUnitImportDialog({
             <>
               <div className="grid shrink-0 grid-cols-2 gap-3 lg:grid-cols-4">
                 <SummaryCard
-                  label="Total Rows"
+                  label={t("organizations.importDialog.totalRows")}
                   value={preview.totalRows ?? 0}
                   color="text-[#1a2535]"
                 />
 
                 <SummaryCard
-                  label="Valid"
+                  label={t("organizations.importDialog.valid")}
                   value={preview.validRows ?? 0}
                   color="text-emerald-600"
                 />
 
                 <SummaryCard
-                  label="Invalid"
+                  label={t("organizations.importDialog.invalid")}
                   value={preview.invalidRows ?? 0}
                   color="text-red-600"
                 />
 
                 <SummaryCard
-                  label="With Warnings"
+                  label={t("organizations.importDialog.withWarnings")}
                   value={preview.rowsWithWarnings ?? 0}
                   color="text-amber-600"
                 />
@@ -218,21 +224,21 @@ export function OrganizationUnitImportDialog({
                   active={filter === "ALL"}
                   onClick={() => setFilter("ALL")}
                 >
-                  All ({preview.totalRows ?? 0})
+                  {t("organizations.importDialog.all", { count: preview.totalRows ?? 0 })}
                 </FilterButton>
 
                 <FilterButton
                   active={filter === "ERRORS"}
                   onClick={() => setFilter("ERRORS")}
                 >
-                  Errors ({preview.invalidRows ?? 0})
+                  {t("organizations.importDialog.errorsCount", { count: preview.invalidRows ?? 0 })}
                 </FilterButton>
 
                 <FilterButton
                   active={filter === "WARNINGS"}
                   onClick={() => setFilter("WARNINGS")}
                 >
-                  Warnings ({preview.rowsWithWarnings ?? 0})
+                  {t("organizations.importDialog.warningsCount", { count: preview.rowsWithWarnings ?? 0 })}
                 </FilterButton>
               </div>
 
@@ -241,13 +247,13 @@ export function OrganizationUnitImportDialog({
                   <thead className="sticky top-0 z-10 bg-[#f4f6f9]">
                     <tr>
                       {[
-                        "Row",
-                        "Unit",
-                        "Type",
-                        "Parent Unit",
-                        "Start Date",
-                        "Status",
-                        "Messages",
+                        t("organizations.importDialog.tableHeaders.row"),
+                        t("organizations.importDialog.tableHeaders.unit"),
+                        t("organizations.importDialog.tableHeaders.type"),
+                        t("organizations.importDialog.tableHeaders.parentUnit"),
+                        t("organizations.importDialog.tableHeaders.startDate"),
+                        t("organizations.importDialog.tableHeaders.status"),
+                        t("organizations.importDialog.tableHeaders.messages"),
                       ].map((heading) => (
                         <th
                           key={heading}
@@ -279,12 +285,11 @@ export function OrganizationUnitImportDialog({
 
               <div>
                 <p className="font-semibold text-[#1a2535]">
-                  Select the organization structure workbook
+                  {t("organizations.importDialog.selectWorkbook")}
                 </p>
 
                 <p className="mt-1 max-w-md text-sm text-gray-400">
-                  The file will be validated first. No database changes occur
-                  until you confirm the import.
+                  {t("organizations.importDialog.workbookDescription")}
                 </p>
               </div>
             </div>
@@ -297,7 +302,7 @@ export function OrganizationUnitImportDialog({
             disabled={pending}
             onClick={() => handleOpenChange(false)}
           >
-            {result ? "Done" : "Cancel"}
+            {result ? t("organizations.importDialog.done") : t("common.cancel")}
           </Button>
 
           {!preview && !result && (
@@ -312,7 +317,7 @@ export function OrganizationUnitImportDialog({
                 <FileSpreadsheet className="size-4" />
               )}
 
-              Preview File
+              {t("organizations.importDialog.previewFile")}
             </Button>
           )}
 
@@ -328,7 +333,7 @@ export function OrganizationUnitImportDialog({
                 <Upload className="size-4" />
               )}
 
-              Import {preview.validRows ?? 0} Units
+              {t("organizations.importDialog.importNUnits", { count: preview.validRows ?? 0 })}
             </Button>
           )}
         </DialogFooter>
@@ -338,6 +343,8 @@ export function OrganizationUnitImportDialog({
 }
 
 function PreviewTableRow({ row }: { row: OrganizationUnitImportPreviewRow }) {
+  const { t } = useTranslation();
+
   return (
     <tr className="border-b border-gray-100 align-top">
       <td className="px-3 py-3 text-xs text-gray-400">{row.rowNumber}</td>
@@ -360,12 +367,12 @@ function PreviewTableRow({ row }: { row: OrganizationUnitImportPreviewRow }) {
         {row.unitType || "—"}
 
         {!row.unitTypeId && row.unitType && (
-          <p className="mt-1 text-[11px] text-amber-600">Not matched</p>
+          <p className="mt-1 text-[11px] text-amber-600">{t("organizations.importDialog.notMatched")}</p>
         )}
       </td>
 
       <td className="px-3 py-3 text-xs text-gray-600">
-        {row.parentUnitCode || "— (root unit)"}
+        {row.parentUnitCode || t("organizations.importDialog.rootUnitFallback")}
       </td>
 
       <td className="px-3 py-3 text-xs text-gray-600">{row.startDate || "—"}</td>
@@ -374,12 +381,12 @@ function PreviewTableRow({ row }: { row: OrganizationUnitImportPreviewRow }) {
         {row.valid ? (
           <Badge className="border-0 bg-emerald-100 text-emerald-700">
             <CheckCircle2 />
-            Valid
+            {t("organizations.importDialog.valid")}
           </Badge>
         ) : (
           <Badge className="border-0 bg-red-100 text-red-700">
             <XCircle />
-            Invalid
+            {t("organizations.importDialog.invalid")}
           </Badge>
         )}
       </td>
@@ -398,7 +405,7 @@ function PreviewTableRow({ row }: { row: OrganizationUnitImportPreviewRow }) {
         ))}
 
         {(row.errors?.length ?? 0) === 0 && (row.warnings?.length ?? 0) === 0 && (
-          <span className="text-xs text-gray-400">Ready to import</span>
+          <span className="text-xs text-gray-400">{t("organizations.importDialog.readyToImport")}</span>
         )}
       </td>
     </tr>
@@ -446,37 +453,43 @@ function FilterButton({
 }
 
 function ImportResultView({ result }: { result: OrganizationUnitImportResult }) {
+  const { t } = useTranslation();
+
   return (
     <>
       <div className="grid shrink-0 grid-cols-2 gap-3 lg:grid-cols-4">
-        <SummaryCard label="Total" value={result.totalRows ?? 0} color="text-[#1a2535]" />
+        <SummaryCard label={t("organizations.importDialog.resultTotal")} value={result.totalRows ?? 0} color="text-[#1a2535]" />
 
         <SummaryCard
-          label="Imported"
+          label={t("organizations.importDialog.imported")}
           value={result.importedRows ?? 0}
           color="text-emerald-600"
         />
 
         <SummaryCard
-          label="Skipped"
+          label={t("organizations.importDialog.skipped")}
           value={result.skippedRows ?? 0}
           color="text-amber-600"
         />
 
-        <SummaryCard label="Failed" value={result.failedRows ?? 0} color="text-red-600" />
+        <SummaryCard label={t("organizations.importDialog.failed")} value={result.failedRows ?? 0} color="text-red-600" />
       </div>
 
       <div className="flex items-center gap-2 rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
         <CheckCircle2 className="size-5 shrink-0" />
-        The import finished. Imported units are now available in the
-        organization structure.
+        {t("organizations.importDialog.importFinishedNotice")}
       </div>
 
       <div className="min-h-0 flex-1 overflow-auto rounded-xl border border-gray-100">
         <table className="w-full min-w-[800px]">
           <thead className="sticky top-0 bg-[#f4f6f9]">
             <tr>
-              {["Row", "Unit Code", "Status", "Message"].map((heading) => (
+              {[
+                t("organizations.importDialog.resultTableHeaders.row"),
+                t("organizations.importDialog.resultTableHeaders.unitCode"),
+                t("organizations.importDialog.resultTableHeaders.status"),
+                t("organizations.importDialog.resultTableHeaders.message"),
+              ].map((heading) => (
                 <th
                   key={heading}
                   className="border-b border-gray-200 px-4 py-3 text-left text-xs font-semibold text-gray-500"

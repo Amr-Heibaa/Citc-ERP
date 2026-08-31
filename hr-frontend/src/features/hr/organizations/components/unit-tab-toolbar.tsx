@@ -2,6 +2,7 @@ import {
   Download,
   Search,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,6 +24,8 @@ export function UnitTabToolbar({
   onExport: () => void;
   children?: React.ReactNode;
 }) {
+  const { t } = useTranslation();
+
   return (
     <div className="flex flex-col gap-3 border-b border-gray-100 p-4 lg:flex-row lg:items-center">
       <div className="flex min-w-0 flex-1 items-center gap-2 rounded-lg bg-[#f4f6f9] px-3">
@@ -48,7 +51,7 @@ export function UnitTabToolbar({
         className="gap-2 bg-[#1a2535] text-white hover:bg-[#243347]"
       >
         <Download className="size-4" />
-        Export
+        {t("common.export")}
       </Button>
     </div>
   );

@@ -7,6 +7,7 @@ import {
   useMemo,
   useState,
 } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import {
@@ -48,6 +49,7 @@ export function UnitRelationshipsTab({
   organizationId: number;
   orgUnitId: number;
 }) {
+  const { t } = useTranslation();
   const [search, setSearch] =
     useState("");
 
@@ -165,7 +167,7 @@ export function UnitRelationshipsTab({
       );
 
       toast.success(
-        "Relationship removed successfully",
+        t("organizations.unitRelationshipsTab.removeSuccess"),
       );
 
       setRemovingRelationship(
@@ -175,7 +177,7 @@ export function UnitRelationshipsTab({
       toast.error(
         error instanceof Error
           ? error.message
-          : "Unable to remove relationship",
+          : t("organizations.unitRelationshipsTab.removeError"),
       );
     }
   }
@@ -185,7 +187,7 @@ export function UnitRelationshipsTab({
   ) {
     return (
       <div className="flex h-64 items-center justify-center text-sm text-gray-400">
-        Loading unit relationships…
+        {t("organizations.unitRelationshipsTab.loading")}
       </div>
     );
   }
@@ -195,7 +197,7 @@ export function UnitRelationshipsTab({
   ) {
     return (
       <div className="flex h-64 items-center justify-center text-sm text-red-600">
-        Unable to load unit relationships.
+        {t("organizations.unitRelationshipsTab.unableToLoad")}
       </div>
     );
   }
@@ -208,7 +210,7 @@ export function UnitRelationshipsTab({
           onSearchChange={
             setSearch
           }
-          placeholder="Search relationships..."
+          placeholder={t("organizations.unitRelationshipsTab.searchPlaceholder")}
           exportDisabled={
             filtered.length === 0
           }
@@ -223,44 +225,44 @@ export function UnitRelationshipsTab({
             className="gap-2 bg-[#1a2535] text-white hover:bg-[#243347]"
           >
             <Plus className="size-4" />
-            Add Relationship
+            {t("organizations.unitOverview.addRelationship")}
           </Button>
         </UnitTabToolbar>
 
         {filtered.length === 0 ? (
           <div className="py-16 text-center text-sm text-gray-400">
-            No relationships found.
+            {t("organizations.unitRelationshipsTab.noRelationshipsFound")}
           </div>
         ) : (
           <Table>
             <TableHeader className="bg-[#f4f6f9]">
               <TableRow>
                 <TableHead className="px-4">
-                  From Unit
+                  {t("organizations.unitRelationshipsTab.fromUnit")}
                 </TableHead>
 
                 <TableHead>
-                  Relationship Type
+                  {t("organizations.unitRelationshipsTab.relationshipType")}
                 </TableHead>
 
                 <TableHead>
-                  To Unit
+                  {t("organizations.unitRelationshipsTab.toUnit")}
                 </TableHead>
 
                 <TableHead>
-                  Start Date
+                  {t("organizations.unitRelationshipsTab.startDate")}
                 </TableHead>
 
                 <TableHead>
-                  End Date
+                  {t("organizations.unitRelationshipsTab.endDate")}
                 </TableHead>
 
                 <TableHead>
-                  Status
+                  {t("common.status")}
                 </TableHead>
 
                 <TableHead className="text-right">
-                  Actions
+                  {t("organizations.unitRelationshipsTab.actions")}
                 </TableHead>
               </TableRow>
             </TableHeader>
@@ -321,7 +323,7 @@ export function UnitRelationshipsTab({
                             relationship.id ==
                             null
                           }
-                          title="Edit relationship"
+                          title={t("organizations.unitRelationshipsTab.editRelationship")}
                           onClick={() =>
                             openEdit(
                               relationship,
@@ -338,7 +340,7 @@ export function UnitRelationshipsTab({
                             relationship.id ==
                             null
                           }
-                          title="Remove relationship"
+                          title={t("organizations.unitRelationshipsTab.removeRelationship")}
                           onClick={() =>
                             setRemovingRelationship(
                               relationship,
@@ -392,20 +394,17 @@ export function UnitRelationshipsTab({
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              Remove relationship?
+              {t("organizations.unitRelationshipsTab.removeDialogTitle")}
             </AlertDialogTitle>
 
             <AlertDialogDescription>
-              This relationship
-              will be marked as
-              inactive and removed
-              from the active list.
+              {t("organizations.unitRelationshipsTab.removeDialogDescription")}
             </AlertDialogDescription>
           </AlertDialogHeader>
 
           <AlertDialogFooter>
             <AlertDialogCancel>
-              Cancel
+              {t("common.cancel")}
             </AlertDialogCancel>
 
             <AlertDialogAction
@@ -418,8 +417,8 @@ export function UnitRelationshipsTab({
               className="bg-red-600 text-white hover:bg-red-700"
             >
               {removeRelationship.isPending
-                ? "Removing…"
-                : "Remove"}
+                ? t("organizations.unitRelationshipsTab.removing")
+                : t("organizations.unitRelationshipsTab.remove")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

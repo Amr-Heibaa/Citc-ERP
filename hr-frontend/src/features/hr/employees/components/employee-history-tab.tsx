@@ -1,14 +1,17 @@
 import { Award, Briefcase } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/features/hr/shared/utils/format";
 import type { HistoryEntry } from "@/lib/api/generated/model";
 
 export function HistoryTab({ history }: { history: HistoryEntry[] }) {
+  const { t } = useTranslation();
+
   if (history.length === 0) {
     return (
       <div className="py-8 text-center font-['Inter',sans-serif] text-gray-400">
-        No history records.
+        {t("employees.historyTab.noHistory")}
       </div>
     );
   }
@@ -45,7 +48,7 @@ export function HistoryTab({ history }: { history: HistoryEntry[] }) {
 
                       {entry.reportingToName && (
                         <p className="mt-1.5 font-['Inter',sans-serif] text-xs text-gray-400">
-                          Reports to {entry.reportingToName}
+                          {t("employees.fields.reportsToName", { name: entry.reportingToName })}
                         </p>
                       )}
                     </div>
@@ -53,12 +56,12 @@ export function HistoryTab({ history }: { history: HistoryEntry[] }) {
                     <div className="flex shrink-0 flex-col items-end gap-1">
                       <span className="whitespace-nowrap font-['Inter',sans-serif] text-xs text-gray-400">
                         {formatDate(entry.startDate)} →{" "}
-                        {entry.endDate ? formatDate(entry.endDate) : "Present"}
+                        {entry.endDate ? formatDate(entry.endDate) : t("employees.fields.present")}
                       </span>
 
                       {entry.current && (
                         <Badge className="border-0 bg-emerald-100 text-emerald-700">
-                          Current
+                          {t("employees.fields.current")}
                         </Badge>
                       )}
                     </div>

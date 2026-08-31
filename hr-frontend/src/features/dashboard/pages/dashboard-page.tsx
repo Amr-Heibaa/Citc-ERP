@@ -1,37 +1,38 @@
 import { Bell, Briefcase, FileText, UserPlus } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import { useUserStore } from '@/stores/user-store'
 import { useMyEmployee } from "@/features/hr/employees/api/use-employees";
 
-const today = new Date().toLocaleDateString('en-US', {
-  weekday: 'long',
-  day: '2-digit',
-  month: '2-digit',
-  year: 'numeric',
-})
-
-
 const statCards = [
-  { id: '1', label: 'Total Requests', value: '769', color: '#f5841f', sub: 'This period', to: '/requests' },
-  { id: '2', label: 'Pending Approvals', value: '12', color: '#72cfe9', sub: 'Awaiting action', to: '/requests' },
-  { id: '3', label: 'Active Projects', value: '3', color: '#2ecc71', sub: 'In progress', to: '/projects' },
-  { id: '4', label: 'Notifications', value: '3', color: '#e74c3c', sub: 'Unread', to: '/notifications' },
+  { id: '1', labelKey: 'dashboard.totalRequests', value: '769', color: '#f5841f', subKey: 'dashboard.thisPeriod', to: '/requests' },
+  { id: '2', labelKey: 'dashboard.pendingApprovals', value: '12', color: '#72cfe9', subKey: 'dashboard.awaitingAction', to: '/requests' },
+  { id: '3', labelKey: 'dashboard.activeProjects', value: '3', color: '#2ecc71', subKey: 'dashboard.inProgress', to: '/projects' },
+  { id: '4', labelKey: 'dashboard.notifications', value: '3', color: '#e74c3c', subKey: 'dashboard.unread', to: '/notifications' },
 ]
 
 const quickActions = [
-  { id: 'rest', label: 'Request for rest allowance', icon: UserPlus, to: '/requests' },
-  { id: 'submitted', label: 'Requests submitted to you', icon: FileText, to: '/requests' },
-  { id: 'notifications', label: 'View Notifications', icon: Bell, to: '/notifications' },
-  { id: 'projects', label: 'View Projects', icon: Briefcase, to: '/projects' },
+  { id: 'rest', labelKey: 'dashboard.requestRestAllowance', icon: UserPlus, to: '/requests' },
+  { id: 'submitted', labelKey: 'dashboard.requestsSubmittedToYou', icon: FileText, to: '/requests' },
+  { id: 'notifications', labelKey: 'dashboard.viewNotifications', icon: Bell, to: '/notifications' },
+  { id: 'projects', labelKey: 'dashboard.viewProjects', icon: Briefcase, to: '/projects' },
 ]
 
 export function DashboardPage() {
+  const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const username = useUserStore((s) => s.user?.username)
 const myEmployee = useMyEmployee();
 
+  const today = new Date().toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : 'en-US', {
+    weekday: 'long',
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  })
+
   // fall back to the username until the employee record loads
-  const displayName = myEmployee.data?.displayName ?? username ?? 'User'
+  const displayName = myEmployee.data?.displayName ?? username ?? t('sidebar.user', { defaultValue: 'User' })
   const department = myEmployee.data?.currentOrgUnitName ?? ''
   const employeeNumber = myEmployee.data?.employeeNumber ?? '—'
 
@@ -91,10 +92,10 @@ const myEmployee = useMyEmployee();
             </p>
             <div>
               <p className="font-['Inter',sans-serif] text-[12px] font-semibold text-[#1a2535] md:text-[13px]">
-                {card.label}
+                {t(card.labelKey)}
               </p>
               <p className="font-['Inter',sans-serif] text-[11px] text-[#6b7280] md:text-[12px]">
-                {card.sub}
+                {t(card.subKey)}
               </p>
             </div>
           </button>
@@ -104,7 +105,7 @@ const myEmployee = useMyEmployee();
       {/* Quick actions */}
       <div className="flex flex-col gap-5 rounded-xl bg-white p-4 md:gap-8 md:p-6">
         <p className="font-['Inter',sans-serif] text-[16px] font-bold text-[#1a2535] md:text-[18px]">
-          Quick Actions
+          {t('dashboard.quickActions')}
         </p>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 md:gap-4">
           {quickActions.map((action) => (
@@ -117,7 +118,7 @@ const myEmployee = useMyEmployee();
                 <action.icon size={24} className="text-[#1a2535]" />
               </div>
               <p className="text-center font-['Inter',sans-serif] text-[12px] font-semibold leading-tight text-[#1a2535] md:text-[13px]">
-                {action.label}
+                {t(action.labelKey)}
               </p>
             </button>
           ))}

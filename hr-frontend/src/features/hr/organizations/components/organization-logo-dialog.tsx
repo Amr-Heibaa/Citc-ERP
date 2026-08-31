@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,7 @@ export function OrganizationLogoDialog({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
+  const { t } = useTranslation();
   const [file, setFile] = useState<File | null>(null);
   const updateLogo = useUpdateOrganizationLogo(organizationId);
 
@@ -40,11 +42,11 @@ export function OrganizationLogoDialog({
 
     try {
       await updateLogo.mutateAsync(file);
-      toast.success("Logo updated successfully");
+      toast.success(t("organizations.logoDialog.success"));
       handleOpenChange(false);
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : "Failed to update logo";
+        error instanceof Error ? error.message : t("organizations.logoDialog.error");
 
       toast.error(message);
     }
@@ -54,9 +56,9 @@ export function OrganizationLogoDialog({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-[420px]">
         <DialogHeader>
-          <DialogTitle>Change Logo</DialogTitle>
+          <DialogTitle>{t("organizations.logoDialog.title")}</DialogTitle>
 
-          <DialogDescription>PNG or JPEG, maximum 2 MB.</DialogDescription>
+          <DialogDescription>{t("organizations.logoDialog.description")}</DialogDescription>
         </DialogHeader>
 
         <Input
@@ -67,11 +69,11 @@ export function OrganizationLogoDialog({
 
         <DialogFooter>
           <Button variant="outline" onClick={() => handleOpenChange(false)}>
-            Cancel
+            {t("common.cancel")}
           </Button>
 
           <Button disabled={!file || updateLogo.isPending} onClick={handleSave}>
-            {updateLogo.isPending ? "Saving…" : "Save"}
+            {updateLogo.isPending ? t("organizations.form.saving") : t("common.save")}
           </Button>
         </DialogFooter>
       </DialogContent>

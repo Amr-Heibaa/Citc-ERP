@@ -1,4 +1,5 @@
 import { Building2, ChevronRight } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import type { OrganizationUnitTreeNode } from "@/lib/api/generated/model";
 
@@ -43,6 +44,7 @@ function TreeNode({
   selectedId?: number;
   onSelect?: (unitId: number) => void;
 }) {
+  const { t } = useTranslation();
   const unitId = unit.id;
   const selected = unitId != null && unitId === selectedId;
   const children = unit.children ?? [];
@@ -62,7 +64,7 @@ function TreeNode({
         <ChevronRight className="size-3.5 shrink-0 text-gray-400" />
 
         <span className="min-w-0 flex-1 truncate">
-          {unit.name ?? unit.code ?? "Unnamed unit"}
+          {unit.name ?? unit.code ?? t("organizations.structure.chart.unnamedUnit")}
         </span>
       </button>
 

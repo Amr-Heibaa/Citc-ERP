@@ -1,5 +1,6 @@
 import { useMemo } from "react";
-import { FileUp } from "lucide-react";
+import { FileUp, Trash2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 
 import { Button } from "@/components/ui/button";
@@ -14,6 +15,7 @@ import type { EmployeeSummary } from "@/lib/api/generated/model";
 const NO_EMPLOYEES: EmployeeSummary[] = [];
 
 export function EmployeesPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const employeesQuery = useEmployees();
   const employees = employeesQuery.data ?? NO_EMPLOYEES;
@@ -79,29 +81,38 @@ export function EmployeesPage() {
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <h1 className="font-['Inter',sans-serif] text-2xl font-bold text-[#1a2535]">
-              Employees
+              {t("employees.title")}
             </h1>
 
             <p className="font-['Inter',sans-serif] text-sm text-gray-400">
-              Manage and view all employee information
+              {t("employees.subtitle")}
             </p>
           </div>
 
           <div className="flex flex-wrap gap-2">
             <Button
               variant="outline"
+              onClick={() => navigate("/hr/employees/deleted")}
+              className="h-10 gap-2"
+            >
+              <Trash2 className="size-4" />
+              {t("employees.deletedEmployees")}
+            </Button>
+
+            <Button
+              variant="outline"
               onClick={() => setImportOpen(true)}
               className="h-10 gap-2"
             >
               <FileUp className="size-4" />
-              Import Employees
+              {t("employees.importEmployees")}
             </Button>
 
             <Button
               onClick={() => navigate("/hr/employees/new")}
               className="h-10 bg-[#1a2535] text-white hover:bg-[#243347]"
             >
-              Add Employee
+              {t("employees.addEmployee")}
             </Button>
           </div>
         </div>

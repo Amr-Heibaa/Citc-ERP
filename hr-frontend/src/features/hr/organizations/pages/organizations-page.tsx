@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { Plus } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 
@@ -15,6 +16,7 @@ const NO_ORGANIZATIONS:
   OrganizationSummary[] = [];
 
 export function OrganizationsPage() {
+  const { t } = useTranslation();
   const navigate =
     useNavigate();
 
@@ -75,7 +77,7 @@ export function OrganizationsPage() {
       filtered.length === 0
     ) {
       toast.error(
-        "There are no organizations to export",
+        t("organizations.noOrganizationsToExport"),
       );
       return;
     }
@@ -85,7 +87,7 @@ export function OrganizationsPage() {
     );
 
     toast.success(
-      `${filtered.length} organizations exported`,
+      t("organizations.exported", { count: filtered.length }),
     );
   }
 
@@ -94,11 +96,11 @@ export function OrganizationsPage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h1 className="font-['Inter',sans-serif] text-2xl font-bold text-[#1a2535]">
-            Organization
+            {t("organizations.title")}
           </h1>
 
           <p className="font-['Inter',sans-serif] text-sm text-gray-400">
-            Manage and view all organization information
+            {t("organizations.subtitle")}
           </p>
         </div>
 
@@ -111,7 +113,7 @@ export function OrganizationsPage() {
           className="h-10 gap-2 bg-[#1a2535] text-white hover:bg-[#243347]"
         >
           <Plus className="size-4" />
-          Add Organization
+          {t("organizations.addOrganization")}
         </Button>
       </div>
 

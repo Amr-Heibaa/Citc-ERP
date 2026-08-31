@@ -1,4 +1,5 @@
 import { Download } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -19,14 +20,24 @@ import {
   downloadExcel,
   printEmployees,
 } from "@/features/hr/employees/utils/employee-export";
+import { useFetchEmployeeDetails } from "@/features/hr/employees/api/use-employees";
+import { printEmployeeProfiles } from "@/features/hr/employees/utils/employee-profile-export";
 import type { EmployeeSummary } from "@/lib/api/generated/model";
 
-const FORMATS: EmployeeExportFormat[] = ["CSV", "Excel", "PDF"];
+const FORMATS: EmployeeExportFormat[] = ["CSV", "Excel", "PDF", "Full Profile PDF"];
 
-const FORMAT_DESCRIPTIONS: Record<EmployeeExportFormat, string> = {
-  CSV: "Comma-separated values",
-  Excel: "Microsoft Excel workbook",
-  PDF: "Open a print-ready view to save as PDF",
+const FORMAT_LABEL_KEYS: Record<EmployeeExportFormat, string> = {
+  CSV: "employees.export.csv",
+  Excel: "employees.export.excel",
+  PDF: "employees.export.pdf",
+  "Full Profile PDF": "employees.export.fullProfilePdf",
+};
+
+const FORMAT_DESCRIPTION_KEYS: Record<EmployeeExportFormat, string> = {
+  CSV: "employees.export.csvDescription",
+  Excel: "employees.export.excelDescription",
+  PDF: "employees.export.pdfDescription",
+  "Full Profile PDF": "employees.export.fullProfilePdfDescription",
 };
 
 export function EmployeesExportDialog({
@@ -34,6 +45,7 @@ export function EmployeesExportDialog({
 }: {
   employees: EmployeeSummary[];
 }) {
+  const { t } = useTranslation();
   const exportOpen = useEmployeesFiltersStore((state) => state.exportOpen);
   const setExportOpen = useEmployeesFiltersStore(
     (state) => state.setExportOpen,
@@ -43,9 +55,11 @@ export function EmployeesExportDialog({
     (state) => state.setExportFormat,
   );
 
+  const fetchDetails = useFetchEmployeeDetails();
+
   async function handleExport() {
     if (employees.length === 0) {
-      toast.error("There are no employees to export");
+      toast.error(t("employees.export.noEmployeesToExport"));
       return;
     }
 
@@ -54,16 +68,27 @@ export function EmployeesExportDialog({
         downloadCsv(employees);
       } else if (exportFormat === "Excel") {
         await downloadExcel(employees);
-      } else {
+      } else if (exportFormat === "PDF") {
         printEmployees(employees);
+      } else {
+        const employeeIds = employees
+          .map((employee) => employee.employeeId)
+          .filter((id): id is number => Number.isInteger(id));
+
+        const details = await fetchDetails.mutateAsync(employeeIds);
+
+        printEmployeeProfiles(details, {
+          title: t("employees.export.employeeProfiles"),
+          subtitle: t("employees.export.employeeRecordsCount", { count: details.length }),
+        });
       }
 
       setExportOpen(false);
 
-      toast.success(`${employees.length} employees exported`);
+      toast.success(t("employees.export.exported", { count: employees.length }));
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : "Unable to export employees";
+        error instanceof Error ? error.message : t("employees.export.unableToExport");
 
       toast.error(message);
     }
@@ -73,11 +98,10 @@ export function EmployeesExportDialog({
     <Dialog open={exportOpen} onOpenChange={setExportOpen}>
       <DialogContent className="sm:max-w-[430px]">
         <DialogHeader>
-          <DialogTitle>Export Employees</DialogTitle>
+          <DialogTitle>{t("employees.export.title")}</DialogTitle>
 
           <DialogDescription>
-            Export {employees.length} employee records using your preferred
-            format.
+            {t("employees.export.description", { count: employees.length })}
           </DialogDescription>
         </DialogHeader>
 
@@ -101,11 +125,11 @@ export function EmployeesExportDialog({
 
               <div>
                 <p className="font-['Inter',sans-serif] text-sm font-semibold text-[#1a2535]">
-                  {format}
+                  {t(FORMAT_LABEL_KEYS[format])}
                 </p>
 
                 <p className="font-['Inter',sans-serif] text-xs text-gray-400">
-                  {FORMAT_DESCRIPTIONS[format]}
+                  {t(FORMAT_DESCRIPTION_KEYS[format])}
                 </p>
               </div>
             </label>
@@ -114,15 +138,18 @@ export function EmployeesExportDialog({
 
         <DialogFooter>
           <Button variant="outline" onClick={() => setExportOpen(false)}>
-            Cancel
+            {t("common.cancel")}
           </Button>
 
           <Button
             onClick={handleExport}
+            disabled={fetchDetails.isPending}
             className="bg-[#1a2535] text-white hover:bg-[#243347]"
           >
             <Download className="size-4" />
-            Export {exportFormat}
+            {fetchDetails.isPending
+              ? t("employees.export.preparing")
+              : t("employees.export.exportButton", { format: t(FORMAT_LABEL_KEYS[exportFormat]) })}
           </Button>
         </DialogFooter>
       </DialogContent>

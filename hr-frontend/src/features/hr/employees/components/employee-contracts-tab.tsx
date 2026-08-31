@@ -1,5 +1,6 @@
 import { FileSpreadsheet, Pencil, RefreshCw, XCircle } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -33,6 +34,7 @@ function ContractValue({
 }
 
 export function ContractsTab({ emp }: { emp: EmployeeDetail }) {
+  const { t } = useTranslation();
   const employeeId = emp.employeeId ?? 0;
 
   const [importOpen, setImportOpen] = useState(false);
@@ -50,14 +52,14 @@ export function ContractsTab({ emp }: { emp: EmployeeDetail }) {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="text-sm font-semibold text-[#1a2535]">
-            Employee Contracts
+            {t("employees.contractsTab.employeeContracts")}
           </p>
 
-          <p className="text-xs text-gray-400">{rows.length} contract(s)</p>
+          <p className="text-xs text-gray-400">{t("employees.contractsTab.contractCount", { count: rows.length })}</p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <ContractExportMenu employeeId={employeeId} label="Export All" />
+          <ContractExportMenu employeeId={employeeId} label={t("employees.contractsTab.exportAll")} />
 
           <Button
             type="button"
@@ -66,7 +68,7 @@ export function ContractsTab({ emp }: { emp: EmployeeDetail }) {
             onClick={() => setImportOpen(true)}
           >
             <FileSpreadsheet className="mr-2 size-4" />
-            Import Contracts
+            {t("employees.contractsTab.importContracts")}
           </Button>
 
           <Button
@@ -75,7 +77,7 @@ export function ContractsTab({ emp }: { emp: EmployeeDetail }) {
             disabled={hasActiveContract}
             title={
               hasActiveContract
-                ? "This employee already has an active contract — use Renew instead"
+                ? t("employees.contractsTab.hasActiveContractTitle")
                 : undefined
             }
             onClick={() => {
@@ -83,26 +85,24 @@ export function ContractsTab({ emp }: { emp: EmployeeDetail }) {
               setFormOpen(true);
             }}
           >
-            Add Contract
+            {t("employees.contractsTab.addContract")}
           </Button>
         </div>
       </div>
 
       {hasActiveContract && (
         <p className="font-['Inter',sans-serif] text-xs text-gray-400">
-          Only one active contract is allowed per employee. To replace the
-          active contract, use <span className="font-medium">Renew</span> on
-          it below instead of adding a new one.
+          {t("employees.contractsTab.renewNotice")}
         </p>
       )}
 
       {contracts.isLoading ? (
         <div className="rounded-xl border border-dashed py-10 text-center font-['Inter',sans-serif] text-sm text-gray-400">
-          Loading…
+          {t("employees.contractsTab.loading")}
         </div>
       ) : rows.length === 0 ? (
         <div className="rounded-xl border border-dashed py-10 text-center font-['Inter',sans-serif] text-sm text-gray-400">
-          No contracts on file.
+          {t("employees.contractsTab.noContracts")}
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -114,7 +114,7 @@ export function ContractsTab({ emp }: { emp: EmployeeDetail }) {
               <div className="mb-1 flex items-start justify-between gap-2">
                 <div>
                   <p className="font-['Inter',sans-serif] font-semibold text-[#1a2535]">
-                    Contract #{contract.contractNumber ?? contract.contractId}
+                    {t("employees.contractsTab.contractNumber", { number: contract.contractNumber ?? contract.contractId })}
                   </p>
 
                   {contract.contractTypeName && (
@@ -125,7 +125,7 @@ export function ContractsTab({ emp }: { emp: EmployeeDetail }) {
 
                   {contract.salary != null && (
                     <p className="mt-1 font-['Inter',sans-serif] text-xs text-gray-500">
-                      Salary : {contract.salary} {contract.salaryCurrency}
+                      {t("employees.contractsTab.salary", { amount: contract.salary, currency: contract.salaryCurrency })}
                     </p>
                   )}
                 </div>
@@ -137,43 +137,43 @@ export function ContractsTab({ emp }: { emp: EmployeeDetail }) {
                       : "bg-gray-200 text-gray-500"
                   }`}
                 >
-                  {contract.active ? "Active" : "Inactive"}
+                  {contract.active ? t("employees.contractsTab.active") : t("employees.contractsTab.inactive")}
                 </Badge>
               </div>
 
               <div className="mt-3 flex items-center gap-1 font-['Inter',sans-serif] text-xs text-gray-400">
                 📅 {formatDate(contract.startDate)} -{" "}
-                {contract.endDate ? formatDate(contract.endDate) : "Ongoing"}
+                {contract.endDate ? formatDate(contract.endDate) : t("employees.contractsTab.ongoing")}
               </div>
 
               <div className="mt-3 grid grid-cols-2 gap-2">
                 <ContractValue
-                  label="Work Type"
+                  label={t("employees.contractsTab.workType")}
                   value={
                     contract.fulltime == null
                       ? "—"
                       : contract.fulltime
-                        ? "Full Time"
-                        : "Part Time"
+                        ? t("employees.contractsTab.fullTime")
+                        : t("employees.contractsTab.partTime")
                   }
                 />
 
                 <ContractValue
-                  label="Probation"
+                  label={t("employees.contractsTab.probation")}
                   value={
                     contract.probationPeriodDays != null
-                      ? `${contract.probationPeriodDays} days`
+                      ? t("employees.contractsTab.probationDays", { count: contract.probationPeriodDays })
                       : "—"
                   }
                 />
 
                 <ContractValue
-                  label="Hours / Week"
+                  label={t("employees.contractsTab.hoursPerWeek")}
                   value={contract.workingHoursPerWeek ?? "—"}
                 />
 
                 <ContractValue
-                  label="Hours / Month"
+                  label={t("employees.contractsTab.hoursPerMonth")}
                   value={contract.workingHoursPerMonth ?? "—"}
                 />
               </div>
@@ -194,7 +194,7 @@ export function ContractsTab({ emp }: { emp: EmployeeDetail }) {
                   className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 font-['Inter',sans-serif] text-xs font-medium text-[#f5841f] transition-colors hover:bg-[#f5841f]/10"
                 >
                   <Pencil className="size-3.5" />
-                  Edit
+                  {t("employees.contractsTab.edit")}
                 </button>
 
                 {contract.active && (
@@ -205,7 +205,7 @@ export function ContractsTab({ emp }: { emp: EmployeeDetail }) {
                       className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 font-['Inter',sans-serif] text-xs font-medium text-[#f5841f] transition-colors hover:bg-[#f5841f]/10"
                     >
                       <RefreshCw className="size-3.5" />
-                      Renew
+                      {t("employees.contractsTab.renew")}
                     </button>
 
                     <button
@@ -214,7 +214,7 @@ export function ContractsTab({ emp }: { emp: EmployeeDetail }) {
                       className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 font-['Inter',sans-serif] text-xs font-medium text-red-600 transition-colors hover:bg-red-50"
                     >
                       <XCircle className="size-3.5" />
-                      End
+                      {t("employees.contractsTab.end")}
                     </button>
                   </>
                 )}

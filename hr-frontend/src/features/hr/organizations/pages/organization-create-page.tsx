@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 
@@ -35,6 +36,7 @@ const EMPTY_DEFAULTS: OrganizationFormValues = {
 };
 
 export function OrganizationCreatePage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const createOrganization = useCreateOrganization();
 
@@ -51,13 +53,13 @@ export function OrganizationCreatePage() {
         toCreateOrganizationRequest(values, logo ?? undefined),
       );
 
-      toast.success("Organization created successfully");
+      toast.success(t("organizations.createSuccess"));
       navigate(`/hr/organizations/${created.id}`);
     } catch (error) {
       const message =
         typeof error === "object" && error !== null && "message" in error
           ? String(error.message)
-          : "Failed to create organization";
+          : t("organizations.createError");
 
       toast.error(message);
     }
@@ -76,18 +78,18 @@ export function OrganizationCreatePage() {
       >
         <DialogHeader className="shrink-0 border-b border-gray-100 px-6 py-5 text-left">
           <DialogTitle className="font-['Inter',sans-serif] text-2xl text-[#1a2535]">
-            Create Organization
+            {t("organizations.createTitle")}
           </DialogTitle>
 
           <DialogDescription>
-            Add a new organization with its registration and contact details.
+            {t("organizations.createDescription")}
           </DialogDescription>
         </DialogHeader>
 
         <OrganizationForm
           defaultValues={EMPTY_DEFAULTS}
           showLogoPicker
-          submitLabel="Create Organization"
+          submitLabel={t("organizations.createSubmit")}
           pending={createOrganization.isPending}
           onCancel={close}
           onSubmit={handleSubmit}

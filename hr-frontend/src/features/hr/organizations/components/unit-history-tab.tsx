@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { useOrganizationUnitHistory } from "@/features/hr/organizations/api/use-organization-units";
 import { UnitTabToolbar } from "@/features/hr/organizations/components/unit-tab-toolbar";
@@ -46,6 +47,7 @@ export function UnitHistoryTab({
 }: {
   orgUnitId: number;
 }) {
+  const { t } = useTranslation();
   const [search, setSearch] = useState("");
 
   const historyQuery =
@@ -102,7 +104,7 @@ export function UnitHistoryTab({
   if (historyQuery.isLoading) {
     return (
       <div className="flex h-64 items-center justify-center text-sm text-gray-400">
-        Loading unit history…
+        {t("organizations.unitHistoryTab.loading")}
       </div>
     );
   }
@@ -110,7 +112,7 @@ export function UnitHistoryTab({
   if (historyQuery.isError) {
     return (
       <div className="flex h-64 items-center justify-center text-sm text-red-600">
-        Unable to load unit history.
+        {t("organizations.unitHistoryTab.unableToLoad")}
       </div>
     );
   }
@@ -120,19 +122,19 @@ export function UnitHistoryTab({
       <UnitTabToolbar
         search={search}
         onSearchChange={setSearch}
-        placeholder="Search history..."
+        placeholder={t("organizations.unitHistoryTab.searchPlaceholder")}
         exportDisabled={filtered.length === 0}
         onExport={handleExport}
       />
 
       <div className="p-5">
         <h3 className="mb-5 font-['Inter',sans-serif] text-sm font-semibold text-[#1a2535]">
-          Unit History
+          {t("organizations.unitHistoryTab.title")}
         </h3>
 
         {filtered.length === 0 ? (
           <div className="py-12 text-center text-sm text-gray-400">
-            No history records found.
+            {t("organizations.unitHistoryTab.noHistoryFound")}
           </div>
         ) : (
           <div className="relative">
@@ -143,7 +145,7 @@ export function UnitHistoryTab({
                 const title =
                   event.kind ??
                   event.eventType ??
-                  "Unit Updated";
+                  t("organizations.unitHistoryTab.unitUpdatedFallback");
 
                 return (
                   <div
@@ -173,9 +175,9 @@ export function UnitHistoryTab({
                           </p>
 
                           <p className="mt-1 font-['Inter',sans-serif] text-[11px] text-gray-400">
-                            By{" "}
-                            {event.by ??
-                              "System"}
+                            {t("organizations.unitHistoryTab.by", {
+                              name: event.by ?? t("organizations.unitHistoryTab.systemFallback"),
+                            })}
                           </p>
                         </div>
 

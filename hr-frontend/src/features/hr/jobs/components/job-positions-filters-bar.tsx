@@ -1,4 +1,5 @@
 import { Download, Search } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,6 +28,7 @@ export function JobPositionsFiltersBar({
   onExport: () => void;
   exportDisabled: boolean;
 }) {
+  const { t } = useTranslation();
   const search = useJobPositionsFiltersStore((state) => state.search);
   const organizationId = useJobPositionsFiltersStore((state) => state.organizationId);
   const orgUnitId = useJobPositionsFiltersStore((state) => state.orgUnitId);
@@ -55,7 +57,7 @@ export function JobPositionsFiltersBar({
         <Input
           value={search}
           onChange={(event) => setSearch(event.target.value)}
-          placeholder="Search for Positions…"
+          placeholder={t("jobs.positions.searchPlaceholder")}
           className="border-0 bg-transparent px-0 shadow-none focus-visible:ring-0"
         />
       </div>
@@ -67,11 +69,11 @@ export function JobPositionsFiltersBar({
         }
       >
         <SelectTrigger className="h-10 w-full lg:w-44">
-          <SelectValue placeholder="All Organizations" />
+          <SelectValue placeholder={t("jobs.positions.allOrganizations")} />
         </SelectTrigger>
 
         <SelectContent>
-          <SelectItem value={ALL_VALUE}>All Organizations</SelectItem>
+          <SelectItem value={ALL_VALUE}>{t("jobs.positions.allOrganizations")}</SelectItem>
 
           {organizations.data?.map((org) => (
             <SelectItem key={org.id} value={String(org.id)}>
@@ -87,11 +89,11 @@ export function JobPositionsFiltersBar({
         disabled={!organizationId}
       >
         <SelectTrigger className="h-10 w-full lg:w-44">
-          <SelectValue placeholder="All Units" />
+          <SelectValue placeholder={t("jobs.positions.allUnits")} />
         </SelectTrigger>
 
         <SelectContent>
-          <SelectItem value={ALL_VALUE}>All Units</SelectItem>
+          <SelectItem value={ALL_VALUE}>{t("jobs.positions.allUnits")}</SelectItem>
 
           {orgUnits.data?.map((unit) => (
             <SelectItem key={unit.id} value={String(unit.id)}>
@@ -106,11 +108,11 @@ export function JobPositionsFiltersBar({
         onValueChange={(value) => setGradeId(value === ALL_VALUE ? "" : value)}
       >
         <SelectTrigger className="h-10 w-full lg:w-36">
-          <SelectValue placeholder="All Grades" />
+          <SelectValue placeholder={t("jobs.positions.allGrades")} />
         </SelectTrigger>
 
         <SelectContent>
-          <SelectItem value={ALL_VALUE}>All Grades</SelectItem>
+          <SelectItem value={ALL_VALUE}>{t("jobs.positions.allGrades")}</SelectItem>
 
           {grades.data?.map((grade) => (
             <SelectItem key={grade.gradeId} value={String(grade.gradeId)}>
@@ -125,13 +127,13 @@ export function JobPositionsFiltersBar({
         onValueChange={(value) => setOccupancy(value === ALL_VALUE ? "" : value)}
       >
         <SelectTrigger className="h-10 w-full lg:w-40">
-          <SelectValue placeholder="All Occupancy" />
+          <SelectValue placeholder={t("jobs.positions.allOccupancy")} />
         </SelectTrigger>
 
         <SelectContent>
-          <SelectItem value={ALL_VALUE}>All Occupancy</SelectItem>
-          <SelectItem value="occupied">Occupied</SelectItem>
-          <SelectItem value="open">Open</SelectItem>
+          <SelectItem value={ALL_VALUE}>{t("jobs.positions.allOccupancy")}</SelectItem>
+          <SelectItem value="occupied">{t("jobs.positions.occupied")}</SelectItem>
+          <SelectItem value="open">{t("jobs.positions.open")}</SelectItem>
         </SelectContent>
       </Select>
 
@@ -140,13 +142,13 @@ export function JobPositionsFiltersBar({
         onValueChange={(value) => setStatus(value === ALL_VALUE ? "" : value)}
       >
         <SelectTrigger className="h-10 w-full lg:w-36">
-          <SelectValue placeholder="All Status" />
+          <SelectValue placeholder={t("organizations.allStatus")} />
         </SelectTrigger>
 
         <SelectContent>
-          <SelectItem value={ALL_VALUE}>All Status</SelectItem>
-          <SelectItem value="active">Active</SelectItem>
-          <SelectItem value="inactive">Inactive</SelectItem>
+          <SelectItem value={ALL_VALUE}>{t("organizations.allStatus")}</SelectItem>
+          <SelectItem value="active">{t("common.active")}</SelectItem>
+          <SelectItem value="inactive">{t("common.inactive")}</SelectItem>
         </SelectContent>
       </Select>
 
@@ -156,7 +158,7 @@ export function JobPositionsFiltersBar({
         className="h-10 gap-2 bg-[#1a2535] text-white hover:bg-[#243347]"
       >
         <Download className="size-4" />
-        Export
+        {t("common.export")}
       </Button>
     </div>
   );

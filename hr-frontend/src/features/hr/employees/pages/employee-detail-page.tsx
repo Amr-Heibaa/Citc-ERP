@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router";
 
 import { Button } from "@/components/ui/button";
@@ -6,6 +7,7 @@ import { EmployeeDetailHero } from "@/features/hr/employees/components/employee-
 import { EmployeeDetailTabs } from "@/features/hr/employees/components/employee-detail-tabs";
 
 export function EmployeeDetailPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { employeeId } = useParams();
   const id = Number(employeeId);
@@ -14,7 +16,7 @@ export function EmployeeDetailPage() {
   if (isLoading) {
     return (
       <div className="flex h-64 items-center justify-center font-['Inter',sans-serif] text-gray-400">
-        Loading employee…
+        {t("employees.loadingEmployee")}
       </div>
     );
   }
@@ -22,10 +24,10 @@ export function EmployeeDetailPage() {
   if (isError || !emp) {
     return (
       <div className="flex flex-col items-start gap-3 p-6">
-        <p className="text-[#c0392b]">Employee not found.</p>
+        <p className="text-[#c0392b]">{t("employees.employeeNotFound")}</p>
 
         <Button variant="outline" onClick={() => navigate("/hr/employees")}>
-          Back to list
+          {t("employees.backToList")}
         </Button>
       </div>
     );

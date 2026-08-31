@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import { useJobGradesSummary } from "@/features/hr/hr-settings/api/use-job-grades-summary";
 import { useHrSettingsSummary } from "@/features/hr/hr-settings/api/use-settings-summary";
 import { HrSettingSummaryCard } from "@/features/hr/hr-settings/components/hr-setting-summary-card";
+import { useGetMyAccess } from "@/lib/api/generated/ems/hr-access-controller/hr-access-controller";
 
 export function HrSettingsHomePage() {
   const navigate = useNavigate();
@@ -12,6 +13,9 @@ export function HrSettingsHomePage() {
   const grades = useJobGradesSummary();
   const gradeRows = grades.data ?? [];
   const activeGradesCount = gradeRows.filter((grade) => grade.active).length;
+
+  const myAccess = useGetMyAccess({ query: { retry: false } });
+  const canManageDelegation = myAccess.data?.canManageDelegation ?? false;
 
   return (
     <div className="flex flex-col gap-4 p-4 md:p-6">
@@ -26,13 +30,25 @@ export function HrSettingsHomePage() {
           </p>
         </div>
 
-        <button
-          type="button"
-          onClick={() => navigate("/hr/settings/history")}
-          className="font-['Inter',sans-serif] text-sm font-medium text-[#f5841f] hover:underline"
-        >
-          View History →
-        </button>
+        <div className="flex gap-4">
+          {canManageDelegation && (
+            <button
+              type="button"
+              onClick={() => navigate("/hr/settings/access-delegation")}
+              className="font-['Inter',sans-serif] text-sm font-medium text-[#f5841f] hover:underline"
+            >
+              Access Delegation →
+            </button>
+          )}
+
+          <button
+            type="button"
+            onClick={() => navigate("/hr/settings/history")}
+            className="font-['Inter',sans-serif] text-sm font-medium text-[#f5841f] hover:underline"
+          >
+            View History →
+          </button>
+        </div>
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">

@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -39,6 +40,7 @@ export function OrganizationForm({
     logo: { base64: string; contentType: string } | null,
   ) => void;
 }) {
+  const { t } = useTranslation();
   const organizationTypes = useOrganizationTypes();
   const countries = useCountries();
 
@@ -95,16 +97,16 @@ export function OrganizationForm({
   return (
     <form onSubmit={submit} className="flex min-h-0 flex-1 flex-col overflow-hidden">
       <div className="flex-1 space-y-5 overflow-y-auto px-6 py-5">
-        <EditSection title="Identity">
-          <LabeledField label="Organization Code">
-            <Input {...register("code")} placeholder="Auto-generated if left blank" />
+        <EditSection title={t("organizations.form.identity")}>
+          <LabeledField label={t("organizations.form.organizationCode")}>
+            <Input {...register("code")} placeholder={t("organizations.form.codePlaceholder")} />
           </LabeledField>
 
-          <LabeledField label="Organization Type" error={errors.organizationTypeId?.message}>
+          <LabeledField label={t("organizations.form.organizationType")} error={errors.organizationTypeId?.message}>
             <SelectField
               control={control}
               name="organizationTypeId"
-              placeholder="Select type"
+              placeholder={t("organizations.form.selectType")}
               options={
                 organizationTypes.data?.map((type) => ({
                   value: String(type.id),
@@ -114,19 +116,19 @@ export function OrganizationForm({
             />
           </LabeledField>
 
-          <LabeledField label="Name (English)" error={errors.nameEn?.message}>
+          <LabeledField label={t("organizations.form.nameEn")} error={errors.nameEn?.message}>
             <Input {...register("nameEn")} />
           </LabeledField>
 
-          <LabeledField label="Name (Arabic)" error={errors.nameAr?.message}>
+          <LabeledField label={t("organizations.form.nameAr")} error={errors.nameAr?.message}>
             <Input {...register("nameAr")} dir="rtl" />
           </LabeledField>
 
-          <LabeledField label="Established Date" error={errors.establishedDate?.message}>
+          <LabeledField label={t("organizations.form.establishedDate")} error={errors.establishedDate?.message}>
             <Input {...register("establishedDate")} type="date" />
           </LabeledField>
 
-          <LabeledField label="Status">
+          <LabeledField label={t("common.status")}>
             <div className="flex h-10 items-center gap-2">
               <Switch
                 checked={active}
@@ -134,19 +136,19 @@ export function OrganizationForm({
               />
 
               <span className="font-['Inter',sans-serif] text-sm text-gray-600">
-                {active ? "Active" : "Inactive"}
+                {active ? t("common.active") : t("common.inactive")}
               </span>
             </div>
           </LabeledField>
 
           {showLogoPicker && (
             <div className="md:col-span-2">
-              <LabeledField label="Logo">
+              <LabeledField label={t("organizations.form.logo")}>
                 <div className="flex items-center gap-4">
                   {logo && (
                     <img
                       src={logo.dataUrl}
-                      alt="Organization logo preview"
+                      alt={t("organizations.form.logoPreviewAlt")}
                       className="size-16 shrink-0 rounded-xl border border-gray-100 object-contain"
                     />
                   )}
@@ -163,7 +165,7 @@ export function OrganizationForm({
                         setLogo(picked);
                       } catch (error) {
                         toast.error(
-                          error instanceof Error ? error.message : "Invalid logo",
+                          error instanceof Error ? error.message : t("organizations.form.invalidLogo"),
                         );
 
                         event.target.value = "";
@@ -172,49 +174,49 @@ export function OrganizationForm({
                   />
                 </div>
 
-                <p className="mt-1 text-xs text-gray-400">PNG or JPEG, maximum 2 MB.</p>
+                <p className="mt-1 text-xs text-gray-400">{t("organizations.form.logoHint")}</p>
               </LabeledField>
             </div>
           )}
         </EditSection>
 
-        <EditSection title="Registration">
+        <EditSection title={t("organizations.form.registration")}>
           <LabeledField
-            label="Registration Number"
+            label={t("organizations.form.registrationNumber")}
             error={errors.registrationNumber?.message}
           >
             <Input {...register("registrationNumber")} />
           </LabeledField>
 
-          <LabeledField label="Tax Number" error={errors.taxNumber?.message}>
+          <LabeledField label={t("organizations.form.taxNumber")} error={errors.taxNumber?.message}>
             <Input {...register("taxNumber")} />
           </LabeledField>
         </EditSection>
 
-        <EditSection title="Contact">
-          <LabeledField label="Phone" error={errors.phone?.message}>
+        <EditSection title={t("organizations.form.contact")}>
+          <LabeledField label={t("common.phone")} error={errors.phone?.message}>
             <Input {...register("phone")} />
           </LabeledField>
 
-          <LabeledField label="Email" error={errors.email?.message}>
+          <LabeledField label={t("common.email")} error={errors.email?.message}>
             <Input {...register("email")} type="email" />
           </LabeledField>
 
-          <LabeledField label="Fax">
+          <LabeledField label={t("organizations.form.fax")}>
             <Input {...register("fax")} />
           </LabeledField>
 
-          <LabeledField label="Website">
-            <Input {...register("website")} placeholder="https://" />
+          <LabeledField label={t("organizations.form.website")}>
+            <Input {...register("website")} placeholder={t("organizations.form.websitePlaceholder")} />
           </LabeledField>
         </EditSection>
 
-        <EditSection title="Address">
-          <LabeledField label="Country" error={errors.countryId?.message}>
+        <EditSection title={t("organizations.form.address")}>
+          <LabeledField label={t("organizations.form.country")} error={errors.countryId?.message}>
             <SelectField
               control={control}
               name="countryId"
-              placeholder="Select country"
+              placeholder={t("organizations.form.selectCountry")}
               options={
                 countries.data?.map((country) => ({
                   value: String(country.id),
@@ -224,11 +226,11 @@ export function OrganizationForm({
             />
           </LabeledField>
 
-          <LabeledField label="State" error={errors.stateId?.message}>
+          <LabeledField label={t("organizations.form.state")} error={errors.stateId?.message}>
             <SelectField
               control={control}
               name="stateId"
-              placeholder="Select state"
+              placeholder={t("organizations.form.selectState")}
               disabled={!countryId}
               options={
                 states.data?.map((state) => ({
@@ -239,11 +241,11 @@ export function OrganizationForm({
             />
           </LabeledField>
 
-          <LabeledField label="City" error={errors.cityId?.message}>
+          <LabeledField label={t("organizations.form.city")} error={errors.cityId?.message}>
             <SelectField
               control={control}
               name="cityId"
-              placeholder="Select city"
+              placeholder={t("organizations.form.selectCity")}
               disabled={!stateId}
               options={
                 cities.data?.map((city) => ({
@@ -254,18 +256,18 @@ export function OrganizationForm({
             />
           </LabeledField>
 
-          <LabeledField label="Postal Code">
+          <LabeledField label={t("organizations.form.postalCode")}>
             <Input {...register("postalCode")} />
           </LabeledField>
 
           <div className="md:col-span-2">
-            <LabeledField label="Address Line 1" error={errors.addressLine1?.message}>
+            <LabeledField label={t("organizations.form.addressLine1")} error={errors.addressLine1?.message}>
               <Input {...register("addressLine1")} />
             </LabeledField>
           </div>
 
           <div className="md:col-span-2">
-            <LabeledField label="Address Line 2">
+            <LabeledField label={t("organizations.form.addressLine2")}>
               <Input {...register("addressLine2")} />
             </LabeledField>
           </div>
@@ -274,11 +276,11 @@ export function OrganizationForm({
 
       <div className="flex justify-end gap-3 border-t border-gray-100 px-6 py-4">
         <Button type="button" variant="outline" onClick={onCancel}>
-          Cancel
+          {t("common.cancel")}
         </Button>
 
         <Button type="submit" disabled={pending}>
-          {pending ? "Saving…" : submitLabel}
+          {pending ? t("organizations.form.saving") : submitLabel}
         </Button>
       </div>
     </form>

@@ -3,6 +3,7 @@ import {
   CalendarDays,
   RefreshCw,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
 import { OrganizationStatusBadge } from "@/features/hr/organizations/components/organization-status-badge";
@@ -16,6 +17,8 @@ function OrganizationCard({
   organization: OrganizationSummary;
   onSelect: () => void;
 }) {
+  const { t } = useTranslation();
+
   return (
     <button
       type="button"
@@ -25,9 +28,7 @@ function OrganizationCard({
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
           <p className="truncate font-['Inter',sans-serif] text-lg font-semibold text-[#1a2535] group-hover:text-[#f5841f]">
-            Organization #
-            {organization.code ??
-              "—"}
+            {t("organizations.organizationNumber", { code: organization.code ?? "—" })}
           </p>
 
           <p className="mt-1 truncate font-['Inter',sans-serif] text-sm text-gray-500">
@@ -82,6 +83,8 @@ export function OrganizationsGrid({
       OrganizationSummary,
   ) => void;
 }) {
+  const { t } = useTranslation();
+
   return (
     <div className="min-h-[420px] rounded-xl border border-gray-100 bg-white p-4">
       {isError ? (
@@ -90,11 +93,11 @@ export function OrganizationsGrid({
 
           <div>
             <p className="font-semibold text-[#1a2535]">
-              Unable to load organizations
+              {t("organizations.unableToLoad")}
             </p>
 
             <p className="text-sm text-gray-400">
-              Check the server connection and try again.
+              {t("organizations.checkConnection")}
             </p>
           </div>
 
@@ -103,7 +106,7 @@ export function OrganizationsGrid({
             onClick={onRetry}
           >
             <RefreshCw className="size-4" />
-            Try again
+            {t("organizations.tryAgain")}
           </Button>
         </div>
       ) : isLoading ? (
@@ -121,7 +124,7 @@ export function OrganizationsGrid({
       ) : organizations.length ===
         0 ? (
         <div className="flex min-h-72 items-center justify-center text-sm text-gray-400">
-          No organizations match the current filters.
+          {t("organizations.noMatches")}
         </div>
       ) : (
         <>
@@ -146,9 +149,7 @@ export function OrganizationsGrid({
           </div>
 
           <p className="mt-4 text-xs text-gray-400">
-            Showing{" "}
-            {organizations.length}{" "}
-            of {total}
+            {t("organizations.showingOf", { count: organizations.length, total })}
           </p>
         </>
       )}

@@ -3,12 +3,13 @@ import { createBrowserRouter, Navigate } from "react-router";
 import { AppLayout } from "@/components/layout/app-layout";
 import { ProtectedRoute } from "@/app/protected-route";
 import { LoginPage } from "@/features/login/Page/login-page";
-import { DashboardPage } from "@/features/dashboard/pages/dashboard-page";
+import { DashboardRouter } from "@/features/dashboard/pages/dashboard-router";
 import { HrHomePage } from "@/features/hr/pages/hr-home-page";
 import { EmployeesPage } from "@/features/hr/employees/pages/employees-page";
 import { EmployeeDetailPage } from "@/features/hr/employees/pages/employee-detail-page";
 import { EmployeeCreatePage } from "@/features/hr/employees/pages/employee-create-page";
 import { EmployeeEditPage } from "@/features/hr/employees/pages/employee-edit-page";
+import { DeletedEmployeesPage } from "@/features/hr/employees/pages/deleted-employees-page";
 import { OrganizationsPage } from "@/features/hr/organizations/pages/organizations-page";
 import { OrganizationDetailPage } from "@/features/hr/organizations/pages/organization-detail-page";
 import { OrganizationCreatePage } from "@/features/hr/organizations/pages/organization-create-page";
@@ -28,6 +29,11 @@ import { ContractTypesPage } from "@/features/hr/hr-settings/pages/contract-type
 import { SkillsPage } from "@/features/hr/hr-settings/pages/skills-page";
 import { FunctionalRelationTypesPage } from "@/features/hr/hr-settings/pages/functional-relation-types-page";
 import { SettingsHistoryPage } from "@/features/hr/hr-settings/pages/settings-history-page";
+import { HrReportsHomePage } from "@/features/hr/reports/pages/hr-reports-home-page";
+import { HiresResignationsReportPage } from "@/features/hr/reports/pages/hires-resignations-report-page";
+import { ContractTypesReportPage } from "@/features/hr/reports/pages/contract-types-report-page";
+import { HrAccessGate } from "@/features/hr/access-delegation/components/hr-access-gate";
+import { AccessDelegationPage } from "@/features/hr/access-delegation/pages/access-delegation-page";
 function Placeholder({ name }: { name: string }) {
   return (
     <div className="p-6">
@@ -47,7 +53,7 @@ export const router = createBrowserRouter([
         path: "/",
         element: <AppLayout />,
         children: [
-          { index: true, element: <DashboardPage /> },
+          { index: true, element: <DashboardRouter /> },
           {
             path: "notifications",
             element: <Placeholder name="Notifications" />,
@@ -56,60 +62,80 @@ export const router = createBrowserRouter([
           { path: "projects", element: <Placeholder name="Projects" /> },
           { path: "reports", element: <Placeholder name="Reports" /> },
           { path: "settings", element: <Placeholder name="Settings" /> },
-          { path: "hr", element: <HrHomePage /> },
-          { path: "hr/employees", element: <EmployeesPage /> },
-          { path: "hr/employees/new", element: <EmployeeCreatePage /> },
           {
-            path: "hr/employees/:employeeId/edit",
-            element: <EmployeeEditPage />,
-          },
-          {
-            path: "hr/employees/:employeeId",
-            element: <EmployeeDetailPage />,
-          },
-          { path: "hr/organizations", element: <OrganizationsPage /> },
-          { path: "hr/organizations/new", element: <OrganizationCreatePage /> },
-          {
-            path: "hr/organizations/:organizationId/edit",
-            element: <OrganizationEditPage />,
-          },
-          {
-            path: "hr/organizations/:organizationId",
-            element: <OrganizationDetailPage />,
-          },
+            path: "hr",
+            element: <HrAccessGate />,
+            children: [
+              { index: true, element: <HrHomePage /> },
+              { path: "employees", element: <EmployeesPage /> },
+              { path: "employees/new", element: <EmployeeCreatePage /> },
+              { path: "employees/deleted", element: <DeletedEmployeesPage /> },
+              {
+                path: "employees/:employeeId/edit",
+                element: <EmployeeEditPage />,
+              },
+              {
+                path: "employees/:employeeId",
+                element: <EmployeeDetailPage />,
+              },
+              { path: "organizations", element: <OrganizationsPage /> },
+              { path: "organizations/new", element: <OrganizationCreatePage /> },
+              {
+                path: "organizations/:organizationId/edit",
+                element: <OrganizationEditPage />,
+              },
+              {
+                path: "organizations/:organizationId",
+                element: <OrganizationDetailPage />,
+              },
+              {
+                path: "organizations/:organizationId/units/:orgUnitId",
+                element: <OrganizationUnitDetailPage />,
+              },
 
-          {
-            path: "hr/organizations/:organizationId/units/:orgUnitId",
-            element: <OrganizationUnitDetailPage />,
-          },
+              { path: "jobs", element: <JobsHomePage /> },
+              { path: "jobs/grades", element: <JobGradesPage /> },
+              { path: "jobs/positions", element: <JobPositionsPage /> },
+              { path: "jobs/positions/new", element: <JobPositionCreatePage /> },
+              {
+                path: "jobs/positions/:positionId/edit",
+                element: <JobPositionEditPage />,
+              },
+              {
+                path: "jobs/positions/:positionId",
+                element: <JobPositionDetailPage />,
+              },
 
-          { path: "hr/jobs", element: <JobsHomePage /> },
-          { path: "hr/jobs/grades", element: <JobGradesPage /> },
-          { path: "hr/jobs/positions", element: <JobPositionsPage /> },
-          { path: "hr/jobs/positions/new", element: <JobPositionCreatePage /> },
-          {
-            path: "hr/jobs/positions/:positionId/edit",
-            element: <JobPositionEditPage />,
-          },
-          {
-            path: "hr/jobs/positions/:positionId",
-            element: <JobPositionDetailPage />,
-          },
+              { path: "employment", element: <EmploymentHomePage /> },
+              { path: "employment/records", element: <EmploymentRecordsPage /> },
 
-          { path: "hr/employment", element: <EmploymentHomePage /> },
-          { path: "hr/employment/records", element: <EmploymentRecordsPage /> },
+              { path: "settings", element: <HrSettingsHomePage /> },
+              { path: "settings/history", element: <SettingsHistoryPage /> },
+              {
+                path: "settings/employee-statuses",
+                element: <EmployeeStatusesPage />,
+              },
+              { path: "settings/contract-types", element: <ContractTypesPage /> },
+              { path: "settings/skills", element: <SkillsPage /> },
+              {
+                path: "settings/functional-relation-types",
+                element: <FunctionalRelationTypesPage />,
+              },
+              {
+                path: "settings/access-delegation",
+                element: <AccessDelegationPage />,
+              },
 
-          { path: "hr/settings", element: <HrSettingsHomePage /> },
-          { path: "hr/settings/history", element: <SettingsHistoryPage /> },
-          {
-            path: "hr/settings/employee-statuses",
-            element: <EmployeeStatusesPage />,
-          },
-          { path: "hr/settings/contract-types", element: <ContractTypesPage /> },
-          { path: "hr/settings/skills", element: <SkillsPage /> },
-          {
-            path: "hr/settings/functional-relation-types",
-            element: <FunctionalRelationTypesPage />,
+              { path: "reports", element: <HrReportsHomePage /> },
+              {
+                path: "reports/hires-resignations",
+                element: <HiresResignationsReportPage />,
+              },
+              {
+                path: "reports/contract-types",
+                element: <ContractTypesReportPage />,
+              },
+            ],
           },
         ],
       },

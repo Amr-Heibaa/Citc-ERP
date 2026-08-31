@@ -1,5 +1,6 @@
 import { ArrowLeftRight, Power, PowerOff, RotateCcw } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { AssignmentChangeDialog } from "@/features/hr/employees/components/assignment-change-dialog";
 import { ChangeStatusDialog } from "@/features/hr/employees/components/change-status-dialog";
@@ -43,6 +44,7 @@ function QuickActionButton({
 }
 
 export function EmploymentTab({ emp }: { emp: EmployeeDetail }) {
+  const { t } = useTranslation();
   const employeeId = emp.employeeId ?? 0;
 
   const [statusOpen, setStatusOpen] = useState(false);
@@ -57,7 +59,7 @@ export function EmploymentTab({ emp }: { emp: EmployeeDetail }) {
   if (overview.isLoading || !overview.data) {
     return (
       <div className="flex h-48 items-center justify-center font-['Inter',sans-serif] text-sm text-gray-400">
-        Loading employment overview…
+        {t("employees.employmentTab.loadingOverview")}
       </div>
     );
   }
@@ -70,74 +72,74 @@ export function EmploymentTab({ emp }: { emp: EmployeeDetail }) {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <div className="flex flex-col gap-6">
           <div>
-            <SectionTitle>Current Employment</SectionTitle>
+            <SectionTitle>{t("employees.sections.currentEmployment")}</SectionTitle>
 
             <div className="flex flex-col gap-2">
-              <InfoRow label="Status" value={data.statusName} accent={!isTerminal} />
-              <InfoRow label="Hire Date" value={formatDate(data.hireDate)} />
-              <InfoRow label="Start Date" value={formatDate(data.startDate)} />
+              <InfoRow label={t("employees.fields.status")} value={data.statusName} accent={!isTerminal} />
+              <InfoRow label={t("employees.fields.hireDate")} value={formatDate(data.hireDate)} />
+              <InfoRow label={t("employees.fields.startDate")} value={formatDate(data.startDate)} />
               <InfoRow
-                label="Termination Date"
+                label={t("employees.fields.terminationDate")}
                 value={formatDate(data.terminationDate)}
               />
             </div>
           </div>
 
           <div>
-            <SectionTitle>Position & Organization</SectionTitle>
+            <SectionTitle>{t("employees.sections.positionAndOrganization")}</SectionTitle>
 
             <div className="flex flex-col gap-2">
-              <InfoRow label="Organization" value={data.organizationNameEn} />
-              <InfoRow label="Organization Unit" value={data.orgUnitName} />
-              <InfoRow label="Position" value={data.positionTitle} />
-              <InfoRow label="Grade" value={data.gradeName} />
-              <InfoRow label="Assignment Type" value={data.assignmentTypeName} />
+              <InfoRow label={t("employees.fields.organization")} value={data.organizationNameEn} />
+              <InfoRow label={t("employees.fields.organizationUnit")} value={data.orgUnitName} />
+              <InfoRow label={t("employees.fields.position")} value={data.positionTitle} />
+              <InfoRow label={t("employees.fields.grade")} value={data.gradeName} />
+              <InfoRow label={t("employees.fields.assignmentType")} value={data.assignmentTypeName} />
               <InfoRow
-                label="Assignment Start"
+                label={t("employees.fields.assignmentStart")}
                 value={formatDate(data.assignmentStartDate)}
               />
             </div>
           </div>
 
           <div>
-            <SectionTitle>Management</SectionTitle>
+            <SectionTitle>{t("employees.sections.management")}</SectionTitle>
 
             <div className="flex flex-col gap-2">
-              <InfoRow label="Team Leader" value={data.teamLeaderName} />
-              <InfoRow label="Manager" value={data.managerName} />
-              <InfoRow label="Reports To Position" value={data.reportsToPositionTitle} />
-              <InfoRow label="Reports To Employee" value={data.reportsToEmployeeName} />
+              <InfoRow label={t("employees.fields.teamLeader")} value={data.teamLeaderName} />
+              <InfoRow label={t("employees.fields.manager")} value={data.managerName} />
+              <InfoRow label={t("employees.fields.reportsToPosition")} value={data.reportsToPositionTitle} />
+              <InfoRow label={t("employees.fields.reportsToEmployee")} value={data.reportsToEmployeeName} />
             </div>
           </div>
         </div>
 
         <div>
-          <SectionTitle>Quick Actions</SectionTitle>
+          <SectionTitle>{t("employees.sections.quickActions")}</SectionTitle>
 
           <div className="flex flex-col gap-1">
             {isTerminal ? (
               <QuickActionButton
                 icon={RotateCcw}
-                label="Reactivate Employment"
+                label={t("employees.actions.reactivateEmployment")}
                 onClick={() => setReactivateOpen(true)}
               />
             ) : (
               <>
                 <QuickActionButton
                   icon={Power}
-                  label="Change Status"
+                  label={t("employees.actions.changeStatus")}
                   onClick={() => setStatusOpen(true)}
                 />
 
                 <QuickActionButton
                   icon={ArrowLeftRight}
-                  label="Transfer / Promote / Demote"
+                  label={t("employees.actions.transferPromoteDemote")}
                   onClick={() => setAssignmentOpen(true)}
                 />
 
                 <QuickActionButton
                   icon={PowerOff}
-                  label="Terminate Employment"
+                  label={t("employees.actions.terminateEmployment")}
                   destructive
                   onClick={() => setTerminateOpen(true)}
                 />
@@ -148,31 +150,37 @@ export function EmploymentTab({ emp }: { emp: EmployeeDetail }) {
       </div>
 
       <div>
-        <SectionTitle>Employment History</SectionTitle>
+        <SectionTitle>{t("employees.sections.employmentHistory")}</SectionTitle>
 
         <div className="overflow-hidden rounded-xl border border-gray-100">
           {history.isLoading ? (
             <div className="flex h-24 items-center justify-center font-['Inter',sans-serif] text-sm text-gray-400">
-              Loading…
+              {t("employees.employmentTab.loading")}
             </div>
           ) : !history.data || history.data.content?.length === 0 ? (
             <div className="flex h-24 items-center justify-center font-['Inter',sans-serif] text-sm text-gray-400">
-              No employment periods recorded yet.
+              {t("employees.employmentTab.noEmploymentPeriods")}
             </div>
           ) : (
             <table className="w-full text-left">
               <thead className="bg-[#f4f6f9]">
                 <tr>
-                  {["Type", "Unit", "Position", "Reports To", "Start", "End", "Current"].map(
-                    (label) => (
-                      <th
-                        key={label}
-                        className="px-4 py-2 font-['Inter',sans-serif] text-xs font-semibold uppercase tracking-wide text-gray-500"
-                      >
-                        {label}
-                      </th>
-                    ),
-                  )}
+                  {[
+                    t("employees.fields.type"),
+                    t("employees.fields.unit"),
+                    t("employees.fields.position"),
+                    t("employees.fields.reportsTo"),
+                    t("employees.fields.start"),
+                    t("employees.fields.end"),
+                    t("employees.fields.current"),
+                  ].map((label) => (
+                    <th
+                      key={label}
+                      className="px-4 py-2 font-['Inter',sans-serif] text-xs font-semibold uppercase tracking-wide text-gray-500"
+                    >
+                      {label}
+                    </th>
+                  ))}
                 </tr>
               </thead>
 
@@ -204,7 +212,7 @@ export function EmploymentTab({ emp }: { emp: EmployeeDetail }) {
                     </td>
 
                     <td className="px-4 py-2 font-['Inter',sans-serif] text-sm text-gray-600">
-                      {row.current ? "Yes" : "No"}
+                      {row.current ? t("employees.fields.yes") : t("employees.fields.no")}
                     </td>
                   </tr>
                 ))}
@@ -215,16 +223,16 @@ export function EmploymentTab({ emp }: { emp: EmployeeDetail }) {
       </div>
 
       <div>
-        <SectionTitle>Employment Timeline</SectionTitle>
+        <SectionTitle>{t("employees.sections.employmentTimeline")}</SectionTitle>
 
         <div className="overflow-hidden rounded-xl border border-gray-100">
           {timeline.isLoading ? (
             <div className="flex h-24 items-center justify-center font-['Inter',sans-serif] text-sm text-gray-400">
-              Loading…
+              {t("employees.employmentTab.loading")}
             </div>
           ) : !timeline.data || timeline.data.items?.length === 0 ? (
             <div className="flex h-24 items-center justify-center font-['Inter',sans-serif] text-sm text-gray-400">
-              No traceable events yet.
+              {t("employees.employmentTab.noTraceableEvents")}
             </div>
           ) : (
             <ol className="relative ml-2 border-l border-gray-200 p-4">
@@ -247,7 +255,7 @@ export function EmploymentTab({ emp }: { emp: EmployeeDetail }) {
                   </p>
 
                   <p className="font-['Inter',sans-serif] text-xs text-gray-400">
-                    by {event.performedByName ?? "System"}
+                    {t("employees.employmentTab.by", { name: event.performedByName ?? t("common.system") })}
                   </p>
                 </li>
               ))}

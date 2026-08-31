@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 import { OrganizationStatusBadge } from "@/features/hr/organizations/components/organization-status-badge";
 import type { OrganizationUnitDetail } from "@/lib/api/generated/model";
 
@@ -6,6 +8,8 @@ export function OrganizationUnitDetailHero({
 }: {
   unit: OrganizationUnitDetail;
 }) {
+  const { t } = useTranslation();
+
   return (
     <div
       className="relative min-h-[104px] overflow-hidden rounded-xl"
@@ -26,7 +30,7 @@ export function OrganizationUnitDetailHero({
         <div className="min-w-0 flex-1">
           <h1 className="truncate font-['Inter',sans-serif] text-xl font-bold text-white">
             {unit.name ??
-              "Organization Unit"}
+              t("organizations.unitDetail.nameFallback")}
           </h1>
 
           <p className="mt-1 truncate font-['Inter',sans-serif] text-xs text-[#a4aab6]">

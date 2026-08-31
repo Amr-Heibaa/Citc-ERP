@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export type EmployeeExportFormat = "CSV" | "Excel" | "PDF";
+export type EmployeeExportFormat = "CSV" | "Excel" | "PDF" | "Full Profile PDF";
 
 type EmployeesFiltersStore = {
   search: string;

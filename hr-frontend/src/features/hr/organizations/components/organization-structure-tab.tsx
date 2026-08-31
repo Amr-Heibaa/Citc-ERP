@@ -1,5 +1,6 @@
 import { Search } from "lucide-react";
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { Input } from "@/components/ui/input";
 import { useOrganizationTree } from "@/features/hr/organizations/api/use-organization-units";
@@ -14,6 +15,7 @@ export function OrganizationStructureTab({
 }: {
   organizationId: number;
 }) {
+  const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const treeQuery = useOrganizationTree(organizationId);
 
@@ -29,7 +31,7 @@ export function OrganizationStructureTab({
   if (treeQuery.isLoading) {
     return (
       <div className="flex h-72 items-center justify-center text-sm text-gray-400">
-        Loading organization structure…
+        {t("organizations.structure.loading")}
       </div>
     );
   }
@@ -37,7 +39,7 @@ export function OrganizationStructureTab({
   if (treeQuery.isError || !treeQuery.data) {
     return (
       <div className="flex h-72 items-center justify-center text-sm text-red-600">
-        Unable to load organization structure.
+        {t("organizations.structure.unableToLoad")}
       </div>
     );
   }
@@ -45,17 +47,17 @@ export function OrganizationStructureTab({
   const organizationName =
     treeQuery.data.nameEn ??
     treeQuery.data.code ??
-    "Organization";
+    t("organizations.structure.chart.organizationFallback");
 
   return (
     <div className="py-4">
       <div className="mb-4">
         <h2 className="font-['Inter',sans-serif] text-base font-semibold text-[#1a2535]">
-          Organization Structure
+          {t("organizations.structure.title")}
         </h2>
 
         <p className="font-['Inter',sans-serif] text-xs text-gray-400">
-          Visualize and manage the organization hierarchy
+          {t("organizations.structure.subtitle")}
         </p>
       </div>
 
@@ -67,7 +69,7 @@ export function OrganizationStructureTab({
             <Input
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              placeholder="Search units"
+              placeholder={t("organizations.structure.searchUnits")}
               className="border-0 bg-transparent px-0 shadow-none focus-visible:ring-0"
             />
           </div>
@@ -79,7 +81,7 @@ export function OrganizationStructureTab({
             />
           ) : (
             <p className="py-8 text-center text-xs text-gray-400">
-              No matching units.
+              {t("organizations.structure.noMatchingUnits")}
             </p>
           )}
         </div>
