@@ -1,15 +1,13 @@
-import { FileBarChart2, Settings, ShieldCheck, UserPlus, Users, UserX } from "lucide-react";
+import { Briefcase, Clock, DollarSign, FileBarChart2, Settings, ShieldCheck, UserPlus, Users } from "lucide-react";
 import { useNavigate } from "react-router";
 
 import { StatCard } from "@/features/dashboard/components/stat-card";
-import { formatDate } from "@/features/hr/shared/utils/format";
+import { formatDate, initials } from "@/features/hr/shared/utils/format";
 import { useUserStore } from "@/stores/user-store";
 import {
   useGetMyEmployee,
   useListEmployees,
-  useListDeletedEmployees,
 } from "@/lib/api/generated/ems/employee-controller/employee-controller";
-import { useListGrants } from "@/lib/api/generated/ems/hr-access-controller/hr-access-controller";
 import { useListHistory } from "@/lib/api/generated/ems/hr-settings-controller/hr-settings-controller";
 
 const today = new Date().toLocaleDateString("en-GB", {
@@ -18,6 +16,8 @@ const today = new Date().toLocaleDateString("en-GB", {
   month: "2-digit",
   year: "numeric",
 });
+
+const NO_DATA_COLOR = "#9ca3af";
 
 const quickActions = [
   { id: "add-employee", label: "Add Employee", icon: UserPlus, to: "/hr/employees/new" },
@@ -35,11 +35,8 @@ export function AdminDashboardPage() {
   const employeeNumber = myEmployee.data?.employeeNumber ?? "—";
 
   const employees = useListEmployees();
-  const deletedEmployees = useListDeletedEmployees();
-  const grants = useListGrants();
   const history = useListHistory({ size: 5 });
 
-  const activeGrants = (grants.data ?? []).filter((grant) => grant.effective).length;
   const recentEvents = history.data?.content ?? [];
 
   return (
@@ -86,7 +83,7 @@ export function AdminDashboardPage() {
       </div>
 
       {/* Stat cards */}
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 md:gap-4">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 md:gap-4">
         <StatCard
           label="Total Employees"
           value={employees.isLoading ? "—" : String((employees.data ?? []).length)}
@@ -96,81 +93,100 @@ export function AdminDashboardPage() {
         />
 
         <StatCard
-          label="Active HR Delegations"
-          value={grants.isLoading ? "—" : String(activeGrants)}
-          color="#2ecc71"
-          icon={ShieldCheck}
-          onClick={() => navigate("/hr/settings/access-delegation")}
+          label="Open Projects"
+          value="—"
+          color={NO_DATA_COLOR}
+          icon={Briefcase}
+          subText="No data yet"
+          subColor={NO_DATA_COLOR}
         />
 
         <StatCard
-          label="Deleted Employees"
-          value={deletedEmployees.isLoading ? "—" : String((deletedEmployees.data ?? []).length)}
-          color="#e74c3c"
-          icon={UserX}
-          onClick={() => navigate("/hr/employees/deleted")}
+          label="Monthly Revenue"
+          value="—"
+          color={NO_DATA_COLOR}
+          icon={DollarSign}
+          subText="No data yet"
+          subColor={NO_DATA_COLOR}
+        />
+
+        <StatCard
+          label="Pending Approvals"
+          value="—"
+          color={NO_DATA_COLOR}
+          icon={Clock}
+          subText="No data yet"
+          subColor={NO_DATA_COLOR}
         />
       </div>
 
-      {/* Recent Activity */}
-      <div className="flex flex-col gap-4 rounded-xl bg-white p-4 md:p-6">
-        <div className="flex items-center justify-between">
-          <p className="font-['Inter',sans-serif] text-[16px] font-bold text-[#1a2535] md:text-[18px]">
-            Recent HR Activity
-          </p>
+      {/* Recent Activity + Quick Actions */}
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 md:gap-6">
+        <div className="flex flex-col gap-4 rounded-xl bg-white p-4 md:p-6 lg:col-span-2">
+          <div className="flex items-center justify-between">
+            <p className="font-['Inter',sans-serif] text-[16px] font-bold text-[#1a2535] md:text-[18px]">
+              Recent HR Activity
+            </p>
 
-          <button
-            type="button"
-            onClick={() => navigate("/hr/settings/history")}
-            className="font-['Inter',sans-serif] text-sm font-medium text-[#f5841f] hover:underline"
-          >
-            View All
-          </button>
+            <button
+              type="button"
+              onClick={() => navigate("/hr/settings/history")}
+              className="font-['Inter',sans-serif] text-sm font-medium text-[#f5841f] hover:underline"
+            >
+              View All
+            </button>
+          </div>
+
+          {history.isLoading ? (
+            <p className="font-['Inter',sans-serif] text-sm text-gray-400">Loading activity…</p>
+          ) : recentEvents.length === 0 ? (
+            <p className="font-['Inter',sans-serif] text-sm text-gray-400">No recent HR activity.</p>
+          ) : (
+            <div className="flex flex-col divide-y divide-gray-100">
+              {recentEvents.map((event) => (
+                <div key={event.hrSettingEventId} className="flex items-center gap-3 py-3">
+                  <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#1a2535]">
+                    <span className="font-['Inter',sans-serif] text-[11px] font-bold text-white">
+                      {initials(event.performedByName)}
+                    </span>
+                  </div>
+
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate font-['Inter',sans-serif] text-sm text-[#1a2535]">
+                      <span className="font-semibold">{event.performedByName ?? "System"}</span>{" "}
+                      {event.description}
+                    </p>
+                    <p className="font-['Inter',sans-serif] text-xs text-gray-400">
+                      {formatDate(event.createdAt)}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
-        {history.isLoading ? (
-          <p className="font-['Inter',sans-serif] text-sm text-gray-400">Loading activity…</p>
-        ) : recentEvents.length === 0 ? (
-          <p className="font-['Inter',sans-serif] text-sm text-gray-400">No recent HR activity.</p>
-        ) : (
-          <div className="flex flex-col divide-y divide-gray-100">
-            {recentEvents.map((event) => (
-              <div key={event.hrSettingEventId} className="flex items-center justify-between gap-3 py-3">
-                <div className="min-w-0">
-                  <p className="truncate font-['Inter',sans-serif] text-sm text-[#1a2535]">
-                    <span className="font-semibold">{event.performedByName ?? "System"}</span>{" "}
-                    {event.description}
-                  </p>
-                  <p className="font-['Inter',sans-serif] text-xs text-gray-400">
-                    {formatDate(event.createdAt)}
-                  </p>
+        <div className="flex flex-col gap-4 rounded-xl bg-white p-4 md:p-6">
+          <p className="font-['Inter',sans-serif] text-[16px] font-bold text-[#1a2535] md:text-[18px]">
+            Quick Actions
+          </p>
+
+          <div className="grid grid-cols-2 gap-3">
+            {quickActions.map((action) => (
+              <button
+                key={action.id}
+                onClick={() => navigate(action.to)}
+                className="flex h-[110px] cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border border-[#e5e7eb] bg-[#f4f6f9] p-3 transition-all hover:-translate-y-0.5 hover:border-[#f5841f]/50 hover:bg-[#f5841f]/5 hover:shadow-sm"
+              >
+                <div className="flex size-9 items-center justify-center rounded-xl bg-white shadow-sm">
+                  <action.icon size={20} className="text-[#1a2535]" />
                 </div>
-              </div>
+                <p className="text-center font-['Inter',sans-serif] text-[11px] font-semibold leading-tight text-[#1a2535]">
+                  {action.label}
+                </p>
+              </button>
             ))}
           </div>
-        )}
-      </div>
-
-      {/* Quick actions */}
-      <div className="flex flex-col gap-5 rounded-xl bg-white p-4 md:gap-8 md:p-6">
-        <p className="font-['Inter',sans-serif] text-[16px] font-bold text-[#1a2535] md:text-[18px]">
-          Quick Actions
-        </p>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 md:gap-4">
-          {quickActions.map((action) => (
-            <button
-              key={action.id}
-              onClick={() => navigate(action.to)}
-              className="flex h-[130px] cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border border-[#e5e7eb] bg-[#f4f6f9] p-4 transition-all hover:-translate-y-0.5 hover:border-[#f5841f]/50 hover:bg-[#f5841f]/5 hover:shadow-sm md:h-[152px]"
-            >
-              <div className="flex size-10 items-center justify-center rounded-xl bg-white shadow-sm md:size-11">
-                <action.icon size={24} className="text-[#1a2535]" />
-              </div>
-              <p className="text-center font-['Inter',sans-serif] text-[12px] font-semibold leading-tight text-[#1a2535] md:text-[13px]">
-                {action.label}
-              </p>
-            </button>
-          ))}
         </div>
       </div>
     </div>
