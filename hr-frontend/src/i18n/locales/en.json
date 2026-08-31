@@ -701,7 +701,14 @@
       "pageOf": "Page {{page}} of {{totalPages}}",
       "positionsCount": "{{count}} positions",
       "previous": "Previous",
-      "next": "Next"
+      "next": "Next",
+      "searchPlaceholder": "Search for Positions…",
+      "allOrganizations": "All Organizations",
+      "allUnits": "All Units",
+      "allGrades": "All Grades",
+      "allOccupancy": "All Occupancy",
+      "occupied": "Occupied",
+      "open": "Open"
     }
   }
 }

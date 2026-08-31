@@ -701,7 +701,14 @@
       "pageOf": "صفحة {{page}} من {{totalPages}}",
       "positionsCount": "{{count}} وظيفة",
       "previous": "السابق",
-      "next": "التالي"
+      "next": "التالي",
+      "searchPlaceholder": "ابحث عن وظائف…",
+      "allOrganizations": "كل المنظمات",
+      "allUnits": "كل الوحدات",
+      "allGrades": "كل الدرجات",
+      "allOccupancy": "كل الحالات",
+      "occupied": "مشغولة",
+      "open": "شاغرة"
     }
   }
 }
