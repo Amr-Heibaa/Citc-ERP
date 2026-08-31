@@ -4,6 +4,7 @@ import {
   useForm,
   useWatch,
 } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -52,6 +53,7 @@ export function UnitRelationshipFormDialog({
   orgUnitId: number;
   relationship?: UnitRelationship;
 }) {
+  const { t } = useTranslation();
   const relationId =
     relationship?.id ?? 0;
 
@@ -167,7 +169,7 @@ export function UnitRelationshipFormDialog({
             );
 
             toast.success(
-              "Relationship updated successfully",
+              t("organizations.unitRelationshipForm.editSuccess"),
             );
           } else {
             await createRelationship.mutateAsync(
@@ -177,7 +179,7 @@ export function UnitRelationshipFormDialog({
             );
 
             toast.success(
-              "Relationship added successfully",
+              t("organizations.unitRelationshipForm.addSuccess"),
             );
           }
 
@@ -186,7 +188,7 @@ export function UnitRelationshipFormDialog({
           toast.error(
             error instanceof Error
               ? error.message
-              : "Unable to save relationship",
+              : t("organizations.unitRelationshipForm.saveError"),
           );
         }
       },
@@ -203,14 +205,12 @@ export function UnitRelationshipFormDialog({
         <DialogHeader className="border-b border-gray-100 px-6 py-5">
           <DialogTitle className="text-xl text-[#1a2535]">
             {editMode
-              ? "Edit Relationship"
-              : "Add Relationship"}
+              ? t("organizations.unitRelationshipForm.editTitle")
+              : t("organizations.unitRelationshipForm.addTitle")}
           </DialogTitle>
 
           <DialogDescription>
-            Define the relationship
-            between two organization
-            units.
+            {t("organizations.unitRelationshipForm.description")}
           </DialogDescription>
         </DialogHeader>
 
@@ -218,7 +218,7 @@ export function UnitRelationshipFormDialog({
           <div className="flex min-h-0 flex-1 overflow-y-auto">
             <div className="grid flex-1 grid-cols-1 content-start gap-5 px-6 py-5 md:grid-cols-2">
               <LabeledField
-                label="From Unit"
+                label={t("organizations.unitRelationshipForm.fromUnit")}
                 error={
                   errors
                     .fromUnitId
@@ -228,7 +228,7 @@ export function UnitRelationshipFormDialog({
                 <SelectField
                   control={control}
                   name="fromUnitId"
-                  placeholder="Select from unit"
+                  placeholder={t("organizations.unitRelationshipForm.selectFromUnit")}
                   options={
                     unitOptions
                   }
@@ -236,7 +236,7 @@ export function UnitRelationshipFormDialog({
               </LabeledField>
 
               <LabeledField
-                label="Relationship Type"
+                label={t("organizations.unitRelationshipForm.relationshipType")}
                 error={
                   errors
                     .relationTypeId
@@ -246,7 +246,7 @@ export function UnitRelationshipFormDialog({
                 <SelectField
                   control={control}
                   name="relationTypeId"
-                  placeholder="Select relationship type"
+                  placeholder={t("organizations.unitRelationshipForm.selectRelationshipType")}
                   options={
                     relationTypeOptions
                   }
@@ -254,7 +254,7 @@ export function UnitRelationshipFormDialog({
               </LabeledField>
 
               <LabeledField
-                label="To Unit"
+                label={t("organizations.unitRelationshipForm.toUnit")}
                 error={
                   errors
                     .toUnitId
@@ -264,14 +264,14 @@ export function UnitRelationshipFormDialog({
                 <SelectField
                   control={control}
                   name="toUnitId"
-                  placeholder="Select to unit"
+                  placeholder={t("organizations.unitRelationshipForm.selectToUnit")}
                   options={
                     unitOptions
                   }
                 />
               </LabeledField>
 
-              <LabeledField label="Status">
+              <LabeledField label={t("common.status")}>
                 <StatusSelectField
                   active={active}
                   onChange={(checked) =>
@@ -284,7 +284,7 @@ export function UnitRelationshipFormDialog({
               </LabeledField>
 
               <LabeledField
-                label="Start Date"
+                label={t("organizations.unitRelationshipForm.startDate")}
                 error={
                   errors
                     .startDate
@@ -300,7 +300,7 @@ export function UnitRelationshipFormDialog({
               </LabeledField>
 
               <LabeledField
-                label="End Date"
+                label={t("organizations.unitRelationshipForm.endDate")}
                 error={
                   errors
                     .endDate
@@ -329,7 +329,7 @@ export function UnitRelationshipFormDialog({
                 onOpenChange(false)
               }
             >
-              Cancel
+              {t("common.cancel")}
             </Button>
 
             <Button
@@ -337,10 +337,10 @@ export function UnitRelationshipFormDialog({
               disabled={pending}
             >
               {pending
-                ? "Saving…"
+                ? t("organizations.form.saving")
                 : editMode
-                  ? "Save Changes"
-                  : "Add Relationship"}
+                  ? t("organizations.unitForm.saveChanges")
+                  : t("organizations.unitOverview.addRelationship")}
             </Button>
           </DialogFooter>
         </form>

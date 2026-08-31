@@ -560,6 +560,87 @@
       "addChildUnit": "إضافة وحدة فرعية",
       "addRelationship": "إضافة علاقة",
       "exportUnitReport": "تصدير تقرير الوحدة"
+    },
+    "unitEmployeesTab": {
+      "loading": "جارٍ تحميل موظفي الوحدة…",
+      "unableToLoad": "تعذر تحميل موظفي الوحدة.",
+      "searchPlaceholder": "ابحث بالاسم أو الرمز أو القسم...",
+      "noEmployeesFound": "لا يوجد موظفون.",
+      "employee": "الموظف",
+      "contact": "التواصل",
+      "department": "القسم",
+      "position": "الوظيفة",
+      "joinDate": "تاريخ الالتحاق"
+    },
+    "unitPositionsTab": {
+      "loading": "جارٍ تحميل وظائف الوحدة…",
+      "unableToLoad": "تعذر تحميل وظائف الوحدة.",
+      "searchPlaceholder": "ابحث عن وظيفة...",
+      "noPositionsFound": "لا توجد وظائف.",
+      "position": "الوظيفة",
+      "grade": "الدرجة",
+      "department": "القسم",
+      "reportsTo": "يتبع",
+      "employee": "الموظف",
+      "openFallback": "شاغرة"
+    },
+    "unitChildUnitsTab": {
+      "loading": "جارٍ تحميل الوحدات الفرعية…",
+      "unableToLoad": "تعذر تحميل الوحدات الفرعية.",
+      "searchPlaceholder": "ابحث عن وحدة فرعية...",
+      "noChildUnitsFound": "لا توجد وحدات فرعية.",
+      "unit": "الوحدة",
+      "unitType": "نوع الوحدة",
+      "manager": "المدير",
+      "employees": "الموظفون",
+      "actions": "الإجراءات",
+      "openUnitDetails": "فتح بيانات الوحدة"
+    },
+    "unitHistoryTab": {
+      "loading": "جارٍ تحميل سجل الوحدة…",
+      "unableToLoad": "تعذر تحميل سجل الوحدة.",
+      "searchPlaceholder": "ابحث في السجل...",
+      "title": "سجل الوحدة",
+      "noHistoryFound": "لا توجد سجلات.",
+      "unitUpdatedFallback": "تم تحديث الوحدة",
+      "by": "بواسطة {{name}}",
+      "systemFallback": "النظام"
+    },
+    "unitRelationshipsTab": {
+      "loading": "جارٍ تحميل علاقات الوحدة…",
+      "unableToLoad": "تعذر تحميل علاقات الوحدة.",
+      "searchPlaceholder": "ابحث عن علاقة...",
+      "noRelationshipsFound": "لا توجد علاقات.",
+      "fromUnit": "من الوحدة",
+      "relationshipType": "نوع العلاقة",
+      "toUnit": "إلى الوحدة",
+      "startDate": "تاريخ البدء",
+      "endDate": "تاريخ الانتهاء",
+      "actions": "الإجراءات",
+      "editRelationship": "تعديل العلاقة",
+      "removeRelationship": "إزالة العلاقة",
+      "removeSuccess": "تمت إزالة العلاقة بنجاح",
+      "removeError": "تعذر إزالة العلاقة",
+      "removeDialogTitle": "إزالة العلاقة؟",
+      "removeDialogDescription": "سيتم وضع علامة على هذه العلاقة كغير نشطة وإزالتها من القائمة النشطة.",
+      "removing": "جارٍ الإزالة…",
+      "remove": "إزالة"
+    },
+    "unitRelationshipForm": {
+      "editTitle": "تعديل العلاقة",
+      "addTitle": "إضافة علاقة",
+      "description": "حدد العلاقة بين وحدتين تنظيميتين.",
+      "editSuccess": "تم تحديث العلاقة بنجاح",
+      "addSuccess": "تمت إضافة العلاقة بنجاح",
+      "saveError": "تعذر حفظ العلاقة",
+      "fromUnit": "من الوحدة",
+      "selectFromUnit": "اختر الوحدة المصدر",
+      "relationshipType": "نوع العلاقة",
+      "selectRelationshipType": "اختر نوع العلاقة",
+      "toUnit": "إلى الوحدة",
+      "selectToUnit": "اختر الوحدة الهدف",
+      "startDate": "تاريخ البدء",
+      "endDate": "تاريخ الانتهاء"
     }
   }
 }

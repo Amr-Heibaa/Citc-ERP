@@ -1,5 +1,6 @@
 import { ExternalLink, Plus } from "lucide-react";
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,7 @@ export function UnitChildUnitsTab({
   organizationId: number;
   orgUnitId: number;
 }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [addChildUnitOpen, setAddChildUnitOpen] = useState(false);
@@ -71,7 +73,7 @@ export function UnitChildUnitsTab({
   if (childUnitsQuery.isLoading) {
     return (
       <div className="flex h-64 items-center justify-center text-sm text-gray-400">
-        Loading child units…
+        {t("organizations.unitChildUnitsTab.loading")}
       </div>
     );
   }
@@ -79,7 +81,7 @@ export function UnitChildUnitsTab({
   if (childUnitsQuery.isError) {
     return (
       <div className="flex h-64 items-center justify-center text-sm text-red-600">
-        Unable to load child units.
+        {t("organizations.unitChildUnitsTab.unableToLoad")}
       </div>
     );
   }
@@ -90,7 +92,7 @@ export function UnitChildUnitsTab({
         <UnitTabToolbar
           search={search}
           onSearchChange={setSearch}
-          placeholder="Search child units..."
+          placeholder={t("organizations.unitChildUnitsTab.searchPlaceholder")}
           exportDisabled={filtered.length === 0}
           onExport={handleExport}
         >
@@ -99,29 +101,29 @@ export function UnitChildUnitsTab({
             className="gap-2 bg-[#1a2535] text-white hover:bg-[#243347]"
           >
             <Plus className="size-4" />
-            Add Child Unit
+            {t("organizations.unitOverview.addChildUnit")}
           </Button>
         </UnitTabToolbar>
 
         {filtered.length === 0 ? (
           <div className="py-16 text-center text-sm text-gray-400">
-            No child units found.
+            {t("organizations.unitChildUnitsTab.noChildUnitsFound")}
           </div>
         ) : (
           <Table>
             <TableHeader className="bg-[#f4f6f9]">
               <TableRow>
-                <TableHead className="px-4">Unit</TableHead>
+                <TableHead className="px-4">{t("organizations.unitChildUnitsTab.unit")}</TableHead>
 
-                <TableHead>Unit Type</TableHead>
+                <TableHead>{t("organizations.unitChildUnitsTab.unitType")}</TableHead>
 
-                <TableHead>Manager</TableHead>
+                <TableHead>{t("organizations.unitChildUnitsTab.manager")}</TableHead>
 
-                <TableHead>Employees</TableHead>
+                <TableHead>{t("organizations.unitChildUnitsTab.employees")}</TableHead>
 
-                <TableHead>Status</TableHead>
+                <TableHead>{t("common.status")}</TableHead>
 
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead className="text-right">{t("organizations.unitChildUnitsTab.actions")}</TableHead>
               </TableRow>
             </TableHeader>
 
@@ -157,7 +159,7 @@ export function UnitChildUnitsTab({
                       variant="ghost"
                       size="icon"
                       disabled={unit.id == null}
-                      title="Open unit details"
+                      title={t("organizations.unitChildUnitsTab.openUnitDetails")}
                       onClick={() => {
                         if (unit.id == null) {
                           return;

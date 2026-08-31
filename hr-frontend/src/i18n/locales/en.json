@@ -560,6 +560,87 @@
       "addChildUnit": "Add Child Unit",
       "addRelationship": "Add Relationship",
       "exportUnitReport": "Export Unit Report"
+    },
+    "unitEmployeesTab": {
+      "loading": "Loading unit employees…",
+      "unableToLoad": "Unable to load unit employees.",
+      "searchPlaceholder": "Search for name, code, department...",
+      "noEmployeesFound": "No employees found.",
+      "employee": "Employee",
+      "contact": "Contact",
+      "department": "Department",
+      "position": "Position",
+      "joinDate": "Join Date"
+    },
+    "unitPositionsTab": {
+      "loading": "Loading unit positions…",
+      "unableToLoad": "Unable to load unit positions.",
+      "searchPlaceholder": "Search positions...",
+      "noPositionsFound": "No positions found.",
+      "position": "Position",
+      "grade": "Grade",
+      "department": "Department",
+      "reportsTo": "Reports To",
+      "employee": "Employee",
+      "openFallback": "Open"
+    },
+    "unitChildUnitsTab": {
+      "loading": "Loading child units…",
+      "unableToLoad": "Unable to load child units.",
+      "searchPlaceholder": "Search child units...",
+      "noChildUnitsFound": "No child units found.",
+      "unit": "Unit",
+      "unitType": "Unit Type",
+      "manager": "Manager",
+      "employees": "Employees",
+      "actions": "Actions",
+      "openUnitDetails": "Open unit details"
+    },
+    "unitHistoryTab": {
+      "loading": "Loading unit history…",
+      "unableToLoad": "Unable to load unit history.",
+      "searchPlaceholder": "Search history...",
+      "title": "Unit History",
+      "noHistoryFound": "No history records found.",
+      "unitUpdatedFallback": "Unit Updated",
+      "by": "By {{name}}",
+      "systemFallback": "System"
+    },
+    "unitRelationshipsTab": {
+      "loading": "Loading unit relationships…",
+      "unableToLoad": "Unable to load unit relationships.",
+      "searchPlaceholder": "Search relationships...",
+      "noRelationshipsFound": "No relationships found.",
+      "fromUnit": "From Unit",
+      "relationshipType": "Relationship Type",
+      "toUnit": "To Unit",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "actions": "Actions",
+      "editRelationship": "Edit relationship",
+      "removeRelationship": "Remove relationship",
+      "removeSuccess": "Relationship removed successfully",
+      "removeError": "Unable to remove relationship",
+      "removeDialogTitle": "Remove relationship?",
+      "removeDialogDescription": "This relationship will be marked as inactive and removed from the active list.",
+      "removing": "Removing…",
+      "remove": "Remove"
+    },
+    "unitRelationshipForm": {
+      "editTitle": "Edit Relationship",
+      "addTitle": "Add Relationship",
+      "description": "Define the relationship between two organization units.",
+      "editSuccess": "Relationship updated successfully",
+      "addSuccess": "Relationship added successfully",
+      "saveError": "Unable to save relationship",
+      "fromUnit": "From Unit",
+      "selectFromUnit": "Select from unit",
+      "relationshipType": "Relationship Type",
+      "selectRelationshipType": "Select relationship type",
+      "toUnit": "To Unit",
+      "selectToUnit": "Select to unit",
+      "startDate": "Start Date",
+      "endDate": "End Date"
     }
   }
 }

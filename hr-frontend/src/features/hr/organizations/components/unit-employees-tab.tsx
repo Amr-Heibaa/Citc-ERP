@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   Table,
@@ -38,6 +39,7 @@ export function UnitEmployeesTab({
 }: {
   orgUnitId: number;
 }) {
+  const { t } = useTranslation();
   const [search, setSearch] =
     useState("");
 
@@ -103,7 +105,7 @@ export function UnitEmployeesTab({
   if (employeesQuery.isLoading) {
     return (
       <div className="flex h-64 items-center justify-center text-sm text-gray-400">
-        Loading unit employees…
+        {t("organizations.unitEmployeesTab.loading")}
       </div>
     );
   }
@@ -111,7 +113,7 @@ export function UnitEmployeesTab({
   if (employeesQuery.isError) {
     return (
       <div className="flex h-64 items-center justify-center text-sm text-red-600">
-        Unable to load unit employees.
+        {t("organizations.unitEmployeesTab.unableToLoad")}
       </div>
     );
   }
@@ -121,7 +123,7 @@ export function UnitEmployeesTab({
       <UnitTabToolbar
         search={search}
         onSearchChange={setSearch}
-        placeholder="Search for name, code, department..."
+        placeholder={t("organizations.unitEmployeesTab.searchPlaceholder")}
         exportDisabled={
           filtered.length === 0
         }
@@ -130,34 +132,34 @@ export function UnitEmployeesTab({
 
       {filtered.length === 0 ? (
         <div className="py-16 text-center text-sm text-gray-400">
-          No employees found.
+          {t("organizations.unitEmployeesTab.noEmployeesFound")}
         </div>
       ) : (
         <Table>
           <TableHeader className="bg-[#f4f6f9]">
             <TableRow>
               <TableHead className="px-4">
-                Employee
+                {t("organizations.unitEmployeesTab.employee")}
               </TableHead>
 
               <TableHead>
-                Contact
+                {t("organizations.unitEmployeesTab.contact")}
               </TableHead>
 
               <TableHead>
-                Department
+                {t("organizations.unitEmployeesTab.department")}
               </TableHead>
 
               <TableHead>
-                Position
+                {t("organizations.unitEmployeesTab.position")}
               </TableHead>
 
               <TableHead>
-                Status
+                {t("common.status")}
               </TableHead>
 
               <TableHead>
-                Join Date
+                {t("organizations.unitEmployeesTab.joinDate")}
               </TableHead>
             </TableRow>
           </TableHeader>
