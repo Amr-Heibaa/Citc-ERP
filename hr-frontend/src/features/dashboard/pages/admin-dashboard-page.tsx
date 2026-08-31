@@ -4,7 +4,11 @@ import { useNavigate } from "react-router";
 import { StatCard } from "@/features/dashboard/components/stat-card";
 import { formatDate } from "@/features/hr/shared/utils/format";
 import { useUserStore } from "@/stores/user-store";
-import { useListEmployees, useListDeletedEmployees } from "@/lib/api/generated/ems/employee-controller/employee-controller";
+import {
+  useGetMyEmployee,
+  useListEmployees,
+  useListDeletedEmployees,
+} from "@/lib/api/generated/ems/employee-controller/employee-controller";
 import { useListGrants } from "@/lib/api/generated/ems/hr-access-controller/hr-access-controller";
 import { useListHistory } from "@/lib/api/generated/ems/hr-settings-controller/hr-settings-controller";
 
@@ -25,6 +29,10 @@ const quickActions = [
 export function AdminDashboardPage() {
   const navigate = useNavigate();
   const username = useUserStore((s) => s.user?.username);
+  const myEmployee = useGetMyEmployee({ query: { retry: false } });
+
+  const displayName = myEmployee.data?.displayName ?? username ?? "Admin";
+  const employeeNumber = myEmployee.data?.employeeNumber ?? "—";
 
   const employees = useListEmployees();
   const deletedEmployees = useListDeletedEmployees();
@@ -54,15 +62,26 @@ export function AdminDashboardPage() {
         <div className="flex flex-col items-start justify-between gap-3 px-5 py-5 sm:flex-row sm:items-center md:h-[120px] md:px-8 md:py-0">
           <div className="flex flex-col gap-1">
             <p className="font-['Inter',sans-serif] text-[20px] font-bold text-white md:text-[28px]">
-              {username ?? "Admin"}
+              Good Morning, {displayName}!
             </p>
             <p className="font-['Inter',sans-serif] text-[13px] text-[#a4aab6] md:text-[15px]">
-              Admin Control Center
+              Here is what is happening in your organization today.
             </p>
           </div>
+
           <p className="hidden font-['Inter',sans-serif] text-[13px] text-white md:block md:text-[20px]">
             {today}
           </p>
+
+          <div className="relative hidden sm:block">
+            <div className="flex">
+              <div className="size-16 rounded-full bg-[#f5841f]/20 md:size-20" />
+              <div className="-ml-8 size-16 rounded-full bg-[#2ecc71]/20 md:-ml-10 md:size-20" />
+            </div>
+            <p className="absolute inset-0 flex items-center justify-center font-['Inter',sans-serif] text-[14px] font-bold text-white md:text-[16px]">
+              {employeeNumber}
+            </p>
+          </div>
         </div>
       </div>
 
