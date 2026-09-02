@@ -1,10 +1,11 @@
-import { FileSpreadsheet, Pencil, RefreshCw, XCircle } from "lucide-react";
+import { FileSpreadsheet, FileText, Pencil, RefreshCw, XCircle } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useContracts } from "@/features/hr/employees/api/use-contracts";
+import { ContractDocumentsDialog } from "@/features/hr/employees/components/contract-documents-dialog";
 import { ContractExportMenu } from "@/features/hr/employees/components/contract-export-menu";
 import { ContractFormDialog } from "@/features/hr/employees/components/contract-form-dialog";
 import { EmployeeContractImportDialog } from "@/features/hr/employees/components/employee-contract-import-dialog";
@@ -42,6 +43,7 @@ export function ContractsTab({ emp }: { emp: EmployeeDetail }) {
   const [editingContract, setEditingContract] = useState<ContractDetail | undefined>();
   const [endTarget, setEndTarget] = useState<ContractDetail | undefined>();
   const [renewTarget, setRenewTarget] = useState<ContractDetail | undefined>();
+  const [documentsTarget, setDocumentsTarget] = useState<ContractDetail | undefined>();
 
   const contracts = useContracts(employeeId);
   const rows = contracts.data?.items ?? [];
@@ -197,6 +199,15 @@ export function ContractsTab({ emp }: { emp: EmployeeDetail }) {
                   {t("employees.contractsTab.edit")}
                 </button>
 
+                <button
+                  type="button"
+                  onClick={() => setDocumentsTarget(contract)}
+                  className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 font-['Inter',sans-serif] text-xs font-medium text-[#f5841f] transition-colors hover:bg-[#f5841f]/10"
+                >
+                  <FileText className="size-3.5" />
+                  {t("employees.contractsTab.documents")}
+                </button>
+
                 {contract.active && (
                   <>
                     <button
@@ -262,6 +273,15 @@ export function ContractsTab({ emp }: { emp: EmployeeDetail }) {
         open={importOpen}
         onOpenChange={setImportOpen}
       />
+
+      {documentsTarget && (
+        <ContractDocumentsDialog
+          open={documentsTarget != null}
+          onOpenChange={(next) => !next && setDocumentsTarget(undefined)}
+          employeeId={employeeId}
+          contract={documentsTarget}
+        />
+      )}
     </div>
   );
 }

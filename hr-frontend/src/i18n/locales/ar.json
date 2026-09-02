@@ -333,7 +333,28 @@
       "hoursPerMonth": "ساعات / شهر",
       "edit": "تعديل",
       "renew": "تجديد",
-      "end": "إنهاء"
+      "end": "إنهاء",
+      "documents": "المستندات",
+      "documentsDialog": {
+        "title": "مستندات العقد رقم {{number}}",
+        "description": "أنشئ مستند العقد من بيانات العقد المحفوظة، أو ارفع النسخة الموقعة بعد طباعتها والتوقيع عليها.",
+        "generate": "إنشاء المستند",
+        "generating": "جارٍ الإنشاء…",
+        "generateSuccess": "تم إنشاء المستند",
+        "generateError": "تعذر إنشاء المستند",
+        "uploadSigned": "رفع النسخة الموقعة",
+        "uploading": "جارٍ الرفع…",
+        "uploadSuccess": "تم رفع المستند الموقع",
+        "uploadError": "تعذر رفع المستند الموقع",
+        "loading": "جارٍ تحميل المستندات…",
+        "unableToLoad": "تعذر تحميل المستندات.",
+        "noDocuments": "لا توجد مستندات بعد. أنشئ مستند العقد للبدء.",
+        "generated": "منشأ",
+        "signed": "موقّع",
+        "current": "الحالي",
+        "download": "تنزيل",
+        "close": "إغلاق"
+      }
     }
   },
   "organizations": {

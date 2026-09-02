@@ -333,7 +333,28 @@
       "hoursPerMonth": "Hours / Month",
       "edit": "Edit",
       "renew": "Renew",
-      "end": "End"
+      "end": "End",
+      "documents": "Documents",
+      "documentsDialog": {
+        "title": "Contract #{{number}} Documents",
+        "description": "Generate the contract document from the stored contract data, or upload the signed copy once it's been printed and signed.",
+        "generate": "Generate Document",
+        "generating": "Generating…",
+        "generateSuccess": "Document generated",
+        "generateError": "Unable to generate the document",
+        "uploadSigned": "Upload Signed Copy",
+        "uploading": "Uploading…",
+        "uploadSuccess": "Signed document uploaded",
+        "uploadError": "Unable to upload the signed document",
+        "loading": "Loading documents…",
+        "unableToLoad": "Unable to load documents.",
+        "noDocuments": "No documents yet. Generate the contract document to get started.",
+        "generated": "Generated",
+        "signed": "Signed",
+        "current": "Current",
+        "download": "Download",
+        "close": "Close"
+      }
     }
   },
   "organizations": {
