@@ -1,4 +1,4 @@
-import { Download, Trash2 } from "lucide-react";
+import { Download, FileSpreadsheet, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router";
@@ -6,6 +6,7 @@ import { useNavigate, useSearchParams } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DeleteEmployeeDialog } from "@/features/hr/employees/components/delete-employee-dialog";
+import { EmployeeContractImportDialog } from "@/features/hr/employees/components/employee-contract-import-dialog";
 import { EmploymentTab } from "@/features/hr/employees/components/employee-employment-tab";
 import { HistoryTab } from "@/features/hr/employees/components/employee-history-tab";
 import { OverviewTab } from "@/features/hr/employees/components/employee-overview-tab";
@@ -24,6 +25,7 @@ export function EmployeeDetailTabs({ emp }: { emp: EmployeeDetail }) {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
 
   const requestedTab = searchParams.get("tab");
   const activeTab = TAB_VALUES.includes(requestedTab ?? "") ? requestedTab! : "overview";
@@ -80,6 +82,13 @@ export function EmployeeDetailTabs({ emp }: { emp: EmployeeDetail }) {
               {t("employees.exportProfile")}
             </Button>
 
+            {activeTab === "contracts" && (
+              <Button size="sm" variant="outline" onClick={() => setImportOpen(true)}>
+                <FileSpreadsheet className="size-4" />
+                {t("employees.contractsTab.importContracts")}
+              </Button>
+            )}
+
             <Button
               size="sm"
               onClick={() => navigate(`/hr/employees/${emp.employeeId}/edit`)}
@@ -128,6 +137,12 @@ export function EmployeeDetailTabs({ emp }: { emp: EmployeeDetail }) {
         employeeId={emp.employeeId ?? 0}
         employeeName={emp.displayName ?? t("employees.thisEmployee")}
         onDeleted={() => navigate("/hr/employees")}
+      />
+
+      <EmployeeContractImportDialog
+        employeeId={emp.employeeId ?? 0}
+        open={importOpen}
+        onOpenChange={setImportOpen}
       />
     </div>
   );
