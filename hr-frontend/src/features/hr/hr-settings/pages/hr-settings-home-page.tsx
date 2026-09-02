@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router";
 
+import { useContractTemplates } from "@/features/hr/hr-settings/api/use-contract-templates";
 import { useJobGradesSummary } from "@/features/hr/hr-settings/api/use-job-grades-summary";
 import { useHrSettingsSummary } from "@/features/hr/hr-settings/api/use-settings-summary";
 import { HrSettingSummaryCard } from "@/features/hr/hr-settings/components/hr-setting-summary-card";
@@ -13,6 +14,10 @@ export function HrSettingsHomePage() {
   const grades = useJobGradesSummary();
   const gradeRows = grades.data ?? [];
   const activeGradesCount = gradeRows.filter((grade) => grade.active).length;
+
+  const templates = useContractTemplates(true);
+  const templateRows = templates.data ?? [];
+  const activeTemplatesCount = templateRows.filter((template) => template.active).length;
 
   const myAccess = useGetMyAccess({ query: { retry: false } });
   const canManageDelegation = myAccess.data?.canManageDelegation ?? false;
@@ -96,6 +101,16 @@ export function HrSettingsHomePage() {
           error={grades.isError}
           actionLabel="View"
           onAction={() => navigate("/hr/jobs/grades")}
+        />
+
+        <HrSettingSummaryCard
+          title="Contract Templates"
+          total={templateRows.length}
+          active={activeTemplatesCount}
+          loading={templates.isLoading}
+          error={templates.isError}
+          actionLabel="View"
+          onAction={() => navigate("/hr/settings/contract-templates")}
         />
       </div>
     </div>

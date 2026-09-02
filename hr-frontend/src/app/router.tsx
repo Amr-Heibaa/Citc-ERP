@@ -26,6 +26,7 @@ import { EmploymentRecordsPage } from "@/features/hr/employment/pages/employment
 import { HrSettingsHomePage } from "@/features/hr/hr-settings/pages/hr-settings-home-page";
 import { EmployeeStatusesPage } from "@/features/hr/hr-settings/pages/employee-statuses-page";
 import { ContractTypesPage } from "@/features/hr/hr-settings/pages/contract-types-page";
+import { ContractTemplatesPage } from "@/features/hr/hr-settings/pages/contract-templates-page";
 import { SkillsPage } from "@/features/hr/hr-settings/pages/skills-page";
 import { FunctionalRelationTypesPage } from "@/features/hr/hr-settings/pages/functional-relation-types-page";
 import { SettingsHistoryPage } from "@/features/hr/hr-settings/pages/settings-history-page";
@@ -116,6 +117,10 @@ export const router = createBrowserRouter([
                 element: <EmployeeStatusesPage />,
               },
               { path: "settings/contract-types", element: <ContractTypesPage /> },
+              {
+                path: "settings/contract-templates",
+                element: <ContractTemplatesPage />,
+              },
               { path: "settings/skills", element: <SkillsPage /> },
               {
                 path: "settings/functional-relation-types",

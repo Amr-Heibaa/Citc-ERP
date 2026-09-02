@@ -20,6 +20,7 @@ import {
   toContractRequest,
   type ContractFormValues,
 } from "@/features/hr/employees/schemas/contract-schema";
+import { useContractTemplates } from "@/features/hr/hr-settings/api/use-contract-templates";
 import { BooleanSelectField } from "@/features/hr/shared/components/boolean-select-field";
 import { LabeledField } from "@/features/hr/shared/components/labeled-field";
 import { SelectField } from "@/features/hr/shared/components/select-field";
@@ -37,7 +38,38 @@ export function RenewContractDialog({
   contract: ContractDetail;
 }) {
   const types = useContractTypes();
+  const templates = useContractTemplates();
   const renewContract = useRenewContract(employeeId, contract.contractId ?? 0);
+
+  function buildDefaults(): ContractFormValues {
+    return {
+      contractTypeId: contract.contractTypeId != null ? String(contract.contractTypeId) : "",
+      contractTemplateId:
+        contract.contractTemplateId != null ? String(contract.contractTemplateId) : "",
+      contractNumber: "",
+      contractDate: "",
+      startDate: "",
+      endDate: "",
+      salaryBasis: contract.salaryBasis ?? "MONTHLY",
+      salary: contract.salary != null ? String(contract.salary) : "",
+      salaryCurrency: contract.salaryCurrency ?? "EGP",
+      hourlyRate: contract.hourlyRate != null ? String(contract.hourlyRate) : "",
+      maxMonthlyHours:
+        contract.maxMonthlyHours != null ? String(contract.maxMonthlyHours) : "",
+      workingHoursPerWeek:
+        contract.workingHoursPerWeek != null ? String(contract.workingHoursPerWeek) : "",
+      workingHoursPerMonth:
+        contract.workingHoursPerMonth != null ? String(contract.workingHoursPerMonth) : "",
+      probationPeriodDays: "",
+      noticePeriodDays: "",
+      fulltime: contract.fulltime ?? true,
+      projectName: contract.projectName ?? "",
+      externalEmployerName: contract.externalEmployerName ?? "",
+      externalLeaveStartDate: "",
+      externalLeaveEndDate: "",
+      notes: "",
+    };
+  }
 
   const {
     register,
@@ -48,45 +80,26 @@ export function RenewContractDialog({
     formState: { errors },
   } = useForm<ContractFormValues>({
     resolver: zodResolver(contractSchema),
-    defaultValues: {
-      contractTypeId: contract.contractTypeId != null ? String(contract.contractTypeId) : "",
-      contractNumber: "",
-      startDate: "",
-      endDate: "",
-      salary: contract.salary != null ? String(contract.salary) : "",
-      salaryCurrency: contract.salaryCurrency ?? "EGP",
-      workingHoursPerWeek:
-        contract.workingHoursPerWeek != null ? String(contract.workingHoursPerWeek) : "",
-      workingHoursPerMonth:
-        contract.workingHoursPerMonth != null ? String(contract.workingHoursPerMonth) : "",
-      probationPeriodDays: "",
-      fulltime: contract.fulltime ?? true,
-      notes: "",
-    },
+    defaultValues: buildDefaults(),
   });
 
   const fulltime = useWatch({ control, name: "fulltime" });
+  const contractTypeId = useWatch({ control, name: "contractTypeId" });
+
+  const templateOptions =
+    templates.data
+      ?.filter((template) => String(template.contractTypeId) === contractTypeId)
+      .map((template) => ({
+        value: String(template.contractTemplateId),
+        label: template.templateNameEn ?? template.templateCode,
+      })) ?? [];
 
   useEffect(() => {
     if (!open) {
       return;
     }
 
-    reset({
-      contractTypeId: contract.contractTypeId != null ? String(contract.contractTypeId) : "",
-      contractNumber: "",
-      startDate: "",
-      endDate: "",
-      salary: contract.salary != null ? String(contract.salary) : "",
-      salaryCurrency: contract.salaryCurrency ?? "EGP",
-      workingHoursPerWeek:
-        contract.workingHoursPerWeek != null ? String(contract.workingHoursPerWeek) : "",
-      workingHoursPerMonth:
-        contract.workingHoursPerMonth != null ? String(contract.workingHoursPerMonth) : "",
-      probationPeriodDays: "",
-      fulltime: contract.fulltime ?? true,
-      notes: "",
-    });
+    reset(buildDefaults());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, contract]);
 
@@ -104,7 +117,7 @@ export function RenewContractDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-2xl gap-0 overflow-hidden p-0">
+      <DialogContent className="sm:max-w-3xl gap-0 overflow-hidden p-0 max-h-[92vh] overflow-y-auto">
         <DialogHeader className="border-b border-gray-100 px-6 py-5">
           <DialogTitle className="text-xl text-[#1a2535]">Renew Contract</DialogTitle>
 
@@ -131,10 +144,29 @@ export function RenewContractDialog({
             </LabeledField>
 
             <LabeledField
+              label="Contract Template"
+              error={errors.contractTemplateId?.message}
+            >
+              <SelectField
+                control={control}
+                name="contractTemplateId"
+                placeholder={
+                  contractTypeId ? "Select template" : "Select a contract type first"
+                }
+                disabled={!contractTypeId}
+                options={templateOptions}
+              />
+            </LabeledField>
+
+            <LabeledField
               label="New Contract Number"
               error={errors.contractNumber?.message}
             >
               <Input {...register("contractNumber")} />
+            </LabeledField>
+
+            <LabeledField label="Contract Date" error={errors.contractDate?.message}>
+              <Input type="date" {...register("contractDate")} />
             </LabeledField>
 
             <LabeledField label="Start Date" error={errors.startDate?.message}>
@@ -143,6 +175,18 @@ export function RenewContractDialog({
 
             <LabeledField label="End Date (Optional)" error={errors.endDate?.message}>
               <Input type="date" {...register("endDate")} />
+            </LabeledField>
+
+            <LabeledField label="Salary Basis" error={errors.salaryBasis?.message}>
+              <SelectField
+                control={control}
+                name="salaryBasis"
+                placeholder="Select salary basis"
+                options={[
+                  { value: "MONTHLY", label: "Monthly" },
+                  { value: "HOURLY", label: "Hourly" },
+                ]}
+              />
             </LabeledField>
 
             <LabeledField label="Salary" error={errors.salary?.message}>
@@ -154,6 +198,17 @@ export function RenewContractDialog({
               error={errors.salaryCurrency?.message}
             >
               <Input {...register("salaryCurrency")} placeholder="EGP" />
+            </LabeledField>
+
+            <LabeledField label="Hourly Rate (Optional)" error={errors.hourlyRate?.message}>
+              <Input {...register("hourlyRate")} placeholder="e.g. 150" />
+            </LabeledField>
+
+            <LabeledField
+              label="Max Monthly Hours (Optional)"
+              error={errors.maxMonthlyHours?.message}
+            >
+              <Input {...register("maxMonthlyHours")} />
             </LabeledField>
 
             <LabeledField
@@ -177,6 +232,13 @@ export function RenewContractDialog({
               <Input {...register("probationPeriodDays")} />
             </LabeledField>
 
+            <LabeledField
+              label="Notice Period (Days)"
+              error={errors.noticePeriodDays?.message}
+            >
+              <Input {...register("noticePeriodDays")} />
+            </LabeledField>
+
             <LabeledField label="Work Type">
               <BooleanSelectField
                 value={fulltime}
@@ -184,6 +246,22 @@ export function RenewContractDialog({
                 trueLabel="Full Time"
                 falseLabel="Part Time"
               />
+            </LabeledField>
+
+            <LabeledField label="Project Name (Optional)">
+              <Input {...register("projectName")} />
+            </LabeledField>
+
+            <LabeledField label="External Employer (Optional)">
+              <Input {...register("externalEmployerName")} />
+            </LabeledField>
+
+            <LabeledField label="External Leave Start (Optional)">
+              <Input type="date" {...register("externalLeaveStartDate")} />
+            </LabeledField>
+
+            <LabeledField label="External Leave End (Optional)">
+              <Input type="date" {...register("externalLeaveEndDate")} />
             </LabeledField>
 
             <div className="sm:col-span-2">
