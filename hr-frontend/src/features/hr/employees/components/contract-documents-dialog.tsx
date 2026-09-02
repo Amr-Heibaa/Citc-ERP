@@ -175,12 +175,16 @@ export function ContractDocumentsDialog({
                         className={`border-0 text-[11px] ${
                           doc.documentKind === "SIGNED"
                             ? "bg-emerald-100 text-emerald-700"
-                            : "bg-sky-100 text-sky-700"
+                            : doc.documentKind === "IMPORTED"
+                              ? "bg-violet-100 text-violet-700"
+                              : "bg-sky-100 text-sky-700"
                         }`}
                       >
                         {doc.documentKind === "SIGNED"
                           ? t("employees.contractsTab.documentsDialog.signed")
-                          : t("employees.contractsTab.documentsDialog.generated")}
+                          : doc.documentKind === "IMPORTED"
+                            ? t("employees.contractsTab.documentsDialog.imported")
+                            : t("employees.contractsTab.documentsDialog.generated")}
                       </Badge>
 
                       {doc.current && (

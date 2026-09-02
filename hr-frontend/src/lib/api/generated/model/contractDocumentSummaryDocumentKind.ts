@@ -11,4 +11,5 @@ export type ContractDocumentSummaryDocumentKind = typeof ContractDocumentSummary
 export const ContractDocumentSummaryDocumentKind = {
   GENERATED: 'GENERATED',
   SIGNED: 'SIGNED',
+  IMPORTED: 'IMPORTED',
 } as const;

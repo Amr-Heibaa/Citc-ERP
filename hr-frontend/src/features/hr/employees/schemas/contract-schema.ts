@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import type { ContractDetail } from "@/lib/api/generated/model";
+import type { ContractDetail, CreateContractRequest } from "@/lib/api/generated/model";
 
 const optionalNumber = z
   .string()
@@ -103,6 +103,43 @@ export function contractToFormValues(
     externalLeaveStartDate: contract.externalLeaveStartDate ?? "",
     externalLeaveEndDate: contract.externalLeaveEndDate ?? "",
     notes: contract.notes ?? "",
+  };
+}
+
+export function createContractRequestToFormValues(
+  request?: CreateContractRequest,
+): ContractFormValues {
+  if (!request) {
+    return EMPTY_CONTRACT_DEFAULTS;
+  }
+
+  return {
+    contractTypeId: request.contractTypeId != null ? String(request.contractTypeId) : "",
+    contractTemplateId:
+      request.contractTemplateId != null ? String(request.contractTemplateId) : "",
+    contractNumber: request.contractNumber ?? "",
+    contractDate: request.contractDate ?? "",
+    startDate: request.startDate ?? "",
+    endDate: request.endDate ?? "",
+    salaryBasis: request.salaryBasis ?? "MONTHLY",
+    salary: request.salary != null ? String(request.salary) : "",
+    salaryCurrency: request.salaryCurrency ?? "EGP",
+    hourlyRate: request.hourlyRate != null ? String(request.hourlyRate) : "",
+    maxMonthlyHours: request.maxMonthlyHours != null ? String(request.maxMonthlyHours) : "",
+    workingHoursPerWeek:
+      request.workingHoursPerWeek != null ? String(request.workingHoursPerWeek) : "",
+    workingHoursPerMonth:
+      request.workingHoursPerMonth != null ? String(request.workingHoursPerMonth) : "",
+    probationPeriodDays:
+      request.probationPeriodDays != null ? String(request.probationPeriodDays) : "",
+    noticePeriodDays:
+      request.noticePeriodDays != null ? String(request.noticePeriodDays) : "",
+    fulltime: request.fulltime ?? true,
+    projectName: request.projectName ?? "",
+    externalEmployerName: request.externalEmployerName ?? "",
+    externalLeaveStartDate: request.externalLeaveStartDate ?? "",
+    externalLeaveEndDate: request.externalLeaveEndDate ?? "",
+    notes: request.notes ?? "",
   };
 }
 

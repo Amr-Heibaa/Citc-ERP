@@ -11,4 +11,5 @@ export type ContractDocumentDetailDocumentKind = typeof ContractDocumentDetailDo
 export const ContractDocumentDetailDocumentKind = {
   GENERATED: 'GENERATED',
   SIGNED: 'SIGNED',
+  IMPORTED: 'IMPORTED',
 } as const;

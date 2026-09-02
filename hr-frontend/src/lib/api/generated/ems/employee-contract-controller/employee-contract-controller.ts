@@ -24,10 +24,12 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  ConfirmDocxImportBody,
   ConfirmImportBody,
   ContractDetail,
   ContractDocumentDetail,
   ContractDocumentSummary,
+  ContractDocxImportPreview,
   ContractImportPreview,
   ContractImportResult,
   ContractPage,
@@ -36,6 +38,7 @@ import type {
   ExportContractParams,
   ExportContractsParams,
   ListContractsParams,
+  PreviewDocxImportBody,
   PreviewImportBody,
   UpdateContractRequest,
   UploadSignedContractDocumentBody
@@ -612,6 +615,135 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
         TContext
       > => {
       return useMutation(getPreviewImportMutationOptions(options), queryClient);
+    }
+    export const previewDocxImport = (
+    employeeId: number,
+    previewDocxImportBody?: PreviewDocxImportBody,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+
+      const formData = new FormData();
+if(previewDocxImportBody?.file !== undefined) {
+ formData.append(`file`, previewDocxImportBody.file);
+ }
+
+      return customInstance<ContractDocxImportPreview>(
+      {url: `/api/hr/employees/${employeeId}/contracts/import/docx/preview`, method: 'POST',
+      headers: {'Content-Type': 'multipart/form-data', },
+       data: formData, signal
+    },
+      options);
+    }
+
+
+
+
+export const getPreviewDocxImportMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof previewDocxImport>>, TError,{employeeId: number;data?: PreviewDocxImportBody}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof previewDocxImport>>, TError,{employeeId: number;data?: PreviewDocxImportBody}, TContext> => {
+
+const mutationKey = ['previewDocxImport'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof previewDocxImport>>, {employeeId: number;data?: PreviewDocxImportBody}> = (props) => {
+          const {employeeId,data} = props ?? {};
+
+          return  previewDocxImport(employeeId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PreviewDocxImportMutationResult = NonNullable<Awaited<ReturnType<typeof previewDocxImport>>>
+    export type PreviewDocxImportMutationBody = PreviewDocxImportBody | undefined
+    export type PreviewDocxImportMutationError = unknown
+
+    export const usePreviewDocxImport = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof previewDocxImport>>, TError,{employeeId: number;data?: PreviewDocxImportBody}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof previewDocxImport>>,
+        TError,
+        {employeeId: number;data?: PreviewDocxImportBody},
+        TContext
+      > => {
+      return useMutation(getPreviewDocxImportMutationOptions(options), queryClient);
+    }
+    export const confirmDocxImport = (
+    employeeId: number,
+    confirmDocxImportBody?: ConfirmDocxImportBody,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+
+      const formData = new FormData();
+if(confirmDocxImportBody?.file !== undefined) {
+ formData.append(`file`, confirmDocxImportBody.file);
+ }
+if(confirmDocxImportBody?.contract !== undefined) {
+ formData.append(`contract`, JSON.stringify(confirmDocxImportBody.contract));
+ }
+
+      return customInstance<ContractDetail>(
+      {url: `/api/hr/employees/${employeeId}/contracts/import/docx/confirm`, method: 'POST',
+      headers: {'Content-Type': 'multipart/form-data', },
+       data: formData, signal
+    },
+      options);
+    }
+
+
+
+
+export const getConfirmDocxImportMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof confirmDocxImport>>, TError,{employeeId: number;data?: ConfirmDocxImportBody}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof confirmDocxImport>>, TError,{employeeId: number;data?: ConfirmDocxImportBody}, TContext> => {
+
+const mutationKey = ['confirmDocxImport'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof confirmDocxImport>>, {employeeId: number;data?: ConfirmDocxImportBody}> = (props) => {
+          const {employeeId,data} = props ?? {};
+
+          return  confirmDocxImport(employeeId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ConfirmDocxImportMutationResult = NonNullable<Awaited<ReturnType<typeof confirmDocxImport>>>
+    export type ConfirmDocxImportMutationBody = ConfirmDocxImportBody | undefined
+    export type ConfirmDocxImportMutationError = unknown
+
+    export const useConfirmDocxImport = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof confirmDocxImport>>, TError,{employeeId: number;data?: ConfirmDocxImportBody}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof confirmDocxImport>>,
+        TError,
+        {employeeId: number;data?: ConfirmDocxImportBody},
+        TContext
+      > => {
+      return useMutation(getConfirmDocxImportMutationOptions(options), queryClient);
     }
     export const confirmImport = (
     employeeId: number,

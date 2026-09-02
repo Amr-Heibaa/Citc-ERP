@@ -351,6 +351,7 @@
         "noDocuments": "No documents yet. Generate the contract document to get started.",
         "generated": "Generated",
         "signed": "Signed",
+        "imported": "Imported",
         "current": "Current",
         "download": "Download",
         "close": "Close"
