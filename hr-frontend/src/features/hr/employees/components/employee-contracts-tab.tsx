@@ -1,9 +1,11 @@
 import { FileSpreadsheet, FileText, Pencil, RefreshCw, XCircle } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useContractDocuments } from "@/features/hr/employees/api/use-contract-documents";
 import { useContracts } from "@/features/hr/employees/api/use-contracts";
 import { ContractDocumentsDialog } from "@/features/hr/employees/components/contract-documents-dialog";
 import { ContractExportMenu } from "@/features/hr/employees/components/contract-export-menu";
@@ -11,6 +13,7 @@ import { ContractFormDialog } from "@/features/hr/employees/components/contract-
 import { EmployeeContractImportDialog } from "@/features/hr/employees/components/employee-contract-import-dialog";
 import { EndContractDialog } from "@/features/hr/employees/components/end-contract-dialog";
 import { RenewContractDialog } from "@/features/hr/employees/components/renew-contract-dialog";
+import { downloadContractDocumentFile } from "@/features/hr/employees/utils/contract-document-download";
 import { formatDate } from "@/features/hr/shared/utils/format";
 import type { ContractDetail, EmployeeDetail } from "@/lib/api/generated/model";
 
@@ -30,6 +33,189 @@ function ContractValue({
       <p className="mt-0.5 font-['Inter',sans-serif] text-xs font-medium text-[#1a2535]">
         {value}
       </p>
+    </div>
+  );
+}
+
+function ContractCard({
+  contract,
+  employeeId,
+  onEdit,
+  onDocuments,
+  onRenew,
+  onEnd,
+}: {
+  contract: ContractDetail;
+  employeeId: number;
+  onEdit: () => void;
+  onDocuments: () => void;
+  onRenew: () => void;
+  onEnd: () => void;
+}) {
+  const { t } = useTranslation();
+  const contractId = contract.contractId ?? 0;
+
+  const documents = useContractDocuments(employeeId, contractId);
+  const currentDocument = documents.data?.find((doc) => doc.current);
+
+  function handleCardClick() {
+    if (currentDocument?.contractDocumentId != null) {
+      downloadContractDocumentFile(
+        employeeId,
+        contractId,
+        currentDocument.contractDocumentId,
+        currentDocument.fileName ?? `contract-${contractId}-document`,
+      ).catch(() => {
+        toast.error(t("employees.contractsTab.documentsDialog.unableToLoad"));
+      });
+    } else {
+      onDocuments();
+    }
+  }
+
+  return (
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={handleCardClick}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          handleCardClick();
+        }
+      }}
+      title={
+        currentDocument
+          ? t("employees.contractsTab.documentsDialog.download")
+          : t("employees.contractsTab.documents")
+      }
+      className="cursor-pointer rounded-xl border border-gray-100 bg-[#f4f6f9] p-4 transition-shadow hover:shadow-md"
+    >
+      <div className="mb-1 flex items-start justify-between gap-2">
+        <div>
+          <p className="font-['Inter',sans-serif] font-semibold text-[#1a2535]">
+            {t("employees.contractsTab.contractNumber", { number: contract.contractNumber ?? contract.contractId })}
+          </p>
+
+          {contract.contractTypeName && (
+            <p className="mt-1 font-['Inter',sans-serif] text-xs text-gray-500">
+              {contract.contractTypeName}
+            </p>
+          )}
+
+          {contract.salary != null && (
+            <p className="mt-1 font-['Inter',sans-serif] text-xs text-gray-500">
+              {t("employees.contractsTab.salary", { amount: contract.salary, currency: contract.salaryCurrency })}
+            </p>
+          )}
+        </div>
+
+        <Badge
+          className={`shrink-0 border-0 ${
+            contract.active
+              ? "bg-emerald-100 text-emerald-700"
+              : "bg-gray-200 text-gray-500"
+          }`}
+        >
+          {contract.active ? t("employees.contractsTab.active") : t("employees.contractsTab.inactive")}
+        </Badge>
+      </div>
+
+      <div className="mt-3 flex items-center gap-1 font-['Inter',sans-serif] text-xs text-gray-400">
+        📅 {formatDate(contract.startDate)} -{" "}
+        {contract.endDate ? formatDate(contract.endDate) : t("employees.contractsTab.ongoing")}
+      </div>
+
+      <div className="mt-3 grid grid-cols-2 gap-2">
+        <ContractValue
+          label={t("employees.contractsTab.workType")}
+          value={
+            contract.fulltime == null
+              ? "—"
+              : contract.fulltime
+                ? t("employees.contractsTab.fullTime")
+                : t("employees.contractsTab.partTime")
+          }
+        />
+
+        <ContractValue
+          label={t("employees.contractsTab.probation")}
+          value={
+            contract.probationPeriodDays != null
+              ? t("employees.contractsTab.probationDays", { count: contract.probationPeriodDays })
+              : "—"
+          }
+        />
+
+        <ContractValue
+          label={t("employees.contractsTab.hoursPerWeek")}
+          value={contract.workingHoursPerWeek ?? "—"}
+        />
+
+        <ContractValue
+          label={t("employees.contractsTab.hoursPerMonth")}
+          value={contract.workingHoursPerMonth ?? "—"}
+        />
+      </div>
+
+      {contract.notes && (
+        <p className="mt-3 whitespace-pre-wrap border-t border-gray-200 pt-3 font-['Inter',sans-serif] text-xs leading-5 text-gray-500">
+          {contract.notes}
+        </p>
+      )}
+
+      <div
+        className="mt-3 flex flex-wrap items-center gap-1 border-t border-gray-200 pt-3"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <button
+          type="button"
+          onClick={onEdit}
+          className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 font-['Inter',sans-serif] text-xs font-medium text-[#f5841f] transition-colors hover:bg-[#f5841f]/10"
+        >
+          <Pencil className="size-3.5" />
+          {t("employees.contractsTab.edit")}
+        </button>
+
+        <button
+          type="button"
+          onClick={onDocuments}
+          className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 font-['Inter',sans-serif] text-xs font-medium text-[#f5841f] transition-colors hover:bg-[#f5841f]/10"
+        >
+          <FileText className="size-3.5" />
+          {t("employees.contractsTab.documents")}
+        </button>
+
+        {contract.active && (
+          <>
+            <button
+              type="button"
+              onClick={onRenew}
+              className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 font-['Inter',sans-serif] text-xs font-medium text-[#f5841f] transition-colors hover:bg-[#f5841f]/10"
+            >
+              <RefreshCw className="size-3.5" />
+              {t("employees.contractsTab.renew")}
+            </button>
+
+            <button
+              type="button"
+              onClick={onEnd}
+              className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 font-['Inter',sans-serif] text-xs font-medium text-red-600 transition-colors hover:bg-red-50"
+            >
+              <XCircle className="size-3.5" />
+              {t("employees.contractsTab.end")}
+            </button>
+          </>
+        )}
+
+        <div className="ml-auto">
+          <ContractExportMenu
+            employeeId={employeeId}
+            contractId={contract.contractId}
+            label=""
+          />
+        </div>
+      </div>
     </div>
   );
 }
@@ -109,136 +295,18 @@ export function ContractsTab({ emp }: { emp: EmployeeDetail }) {
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {rows.map((contract) => (
-            <div
+            <ContractCard
               key={contract.contractId}
-              className="rounded-xl border border-gray-100 bg-[#f4f6f9] p-4"
-            >
-              <div className="mb-1 flex items-start justify-between gap-2">
-                <div>
-                  <p className="font-['Inter',sans-serif] font-semibold text-[#1a2535]">
-                    {t("employees.contractsTab.contractNumber", { number: contract.contractNumber ?? contract.contractId })}
-                  </p>
-
-                  {contract.contractTypeName && (
-                    <p className="mt-1 font-['Inter',sans-serif] text-xs text-gray-500">
-                      {contract.contractTypeName}
-                    </p>
-                  )}
-
-                  {contract.salary != null && (
-                    <p className="mt-1 font-['Inter',sans-serif] text-xs text-gray-500">
-                      {t("employees.contractsTab.salary", { amount: contract.salary, currency: contract.salaryCurrency })}
-                    </p>
-                  )}
-                </div>
-
-                <Badge
-                  className={`shrink-0 border-0 ${
-                    contract.active
-                      ? "bg-emerald-100 text-emerald-700"
-                      : "bg-gray-200 text-gray-500"
-                  }`}
-                >
-                  {contract.active ? t("employees.contractsTab.active") : t("employees.contractsTab.inactive")}
-                </Badge>
-              </div>
-
-              <div className="mt-3 flex items-center gap-1 font-['Inter',sans-serif] text-xs text-gray-400">
-                📅 {formatDate(contract.startDate)} -{" "}
-                {contract.endDate ? formatDate(contract.endDate) : t("employees.contractsTab.ongoing")}
-              </div>
-
-              <div className="mt-3 grid grid-cols-2 gap-2">
-                <ContractValue
-                  label={t("employees.contractsTab.workType")}
-                  value={
-                    contract.fulltime == null
-                      ? "—"
-                      : contract.fulltime
-                        ? t("employees.contractsTab.fullTime")
-                        : t("employees.contractsTab.partTime")
-                  }
-                />
-
-                <ContractValue
-                  label={t("employees.contractsTab.probation")}
-                  value={
-                    contract.probationPeriodDays != null
-                      ? t("employees.contractsTab.probationDays", { count: contract.probationPeriodDays })
-                      : "—"
-                  }
-                />
-
-                <ContractValue
-                  label={t("employees.contractsTab.hoursPerWeek")}
-                  value={contract.workingHoursPerWeek ?? "—"}
-                />
-
-                <ContractValue
-                  label={t("employees.contractsTab.hoursPerMonth")}
-                  value={contract.workingHoursPerMonth ?? "—"}
-                />
-              </div>
-
-              {contract.notes && (
-                <p className="mt-3 whitespace-pre-wrap border-t border-gray-200 pt-3 font-['Inter',sans-serif] text-xs leading-5 text-gray-500">
-                  {contract.notes}
-                </p>
-              )}
-
-              <div className="mt-3 flex flex-wrap items-center gap-1 border-t border-gray-200 pt-3">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setEditingContract(contract);
-                    setFormOpen(true);
-                  }}
-                  className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 font-['Inter',sans-serif] text-xs font-medium text-[#f5841f] transition-colors hover:bg-[#f5841f]/10"
-                >
-                  <Pencil className="size-3.5" />
-                  {t("employees.contractsTab.edit")}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setDocumentsTarget(contract)}
-                  className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 font-['Inter',sans-serif] text-xs font-medium text-[#f5841f] transition-colors hover:bg-[#f5841f]/10"
-                >
-                  <FileText className="size-3.5" />
-                  {t("employees.contractsTab.documents")}
-                </button>
-
-                {contract.active && (
-                  <>
-                    <button
-                      type="button"
-                      onClick={() => setRenewTarget(contract)}
-                      className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 font-['Inter',sans-serif] text-xs font-medium text-[#f5841f] transition-colors hover:bg-[#f5841f]/10"
-                    >
-                      <RefreshCw className="size-3.5" />
-                      {t("employees.contractsTab.renew")}
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => setEndTarget(contract)}
-                      className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 font-['Inter',sans-serif] text-xs font-medium text-red-600 transition-colors hover:bg-red-50"
-                    >
-                      <XCircle className="size-3.5" />
-                      {t("employees.contractsTab.end")}
-                    </button>
-                  </>
-                )}
-
-                <div className="ml-auto">
-                  <ContractExportMenu
-                    employeeId={employeeId}
-                    contractId={contract.contractId}
-                    label=""
-                  />
-                </div>
-              </div>
-            </div>
+              contract={contract}
+              employeeId={employeeId}
+              onEdit={() => {
+                setEditingContract(contract);
+                setFormOpen(true);
+              }}
+              onDocuments={() => setDocumentsTarget(contract)}
+              onRenew={() => setRenewTarget(contract)}
+              onEnd={() => setEndTarget(contract)}
+            />
           ))}
         </div>
       )}
