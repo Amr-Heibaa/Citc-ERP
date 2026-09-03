@@ -1,14 +1,12 @@
-import { Briefcase, Clock, DollarSign, FileBarChart2, Settings, ShieldCheck, UserPlus, Users } from "lucide-react";
+import { Clock, FileBarChart2, Settings, ShieldCheck, UserPlus } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 
+import { EmployeesBreakdownCard } from "@/features/dashboard/components/employees-breakdown-card";
 import { StatCard } from "@/features/dashboard/components/stat-card";
 import { formatDate, initials } from "@/features/hr/shared/utils/format";
 import { useUserStore } from "@/stores/user-store";
-import {
-  useGetMyEmployee,
-  useListEmployees,
-} from "@/lib/api/generated/ems/employee-controller/employee-controller";
+import { useGetMyEmployee } from "@/lib/api/generated/ems/employee-controller/employee-controller";
 import { useListHistory } from "@/lib/api/generated/ems/hr-settings-controller/hr-settings-controller";
 
 const NO_DATA_COLOR = "#9ca3af";
@@ -36,7 +34,6 @@ export function AdminDashboardPage() {
   const displayName = myEmployee.data?.displayName ?? username ?? "Admin";
   const employeeNumber = myEmployee.data?.employeeNumber ?? "—";
 
-  const employees = useListEmployees();
   const history = useListHistory({ size: 5 });
 
   const recentEvents = history.data?.content ?? [];
@@ -85,32 +82,10 @@ export function AdminDashboardPage() {
       </div>
 
       {/* Stat cards */}
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 md:gap-4">
-        <StatCard
-          label={t("dashboard.totalEmployees")}
-          value={employees.isLoading ? "—" : String((employees.data ?? []).length)}
-          color="#f5841f"
-          icon={Users}
-          onClick={() => navigate("/hr/employees")}
-        />
-
-        <StatCard
-          label={t("dashboard.openProjects")}
-          value="—"
-          color={NO_DATA_COLOR}
-          icon={Briefcase}
-          subText={t("dashboard.noDataYet")}
-          subColor={NO_DATA_COLOR}
-        />
-
-        <StatCard
-          label={t("dashboard.monthlyRevenue")}
-          value="—"
-          color={NO_DATA_COLOR}
-          icon={DollarSign}
-          subText={t("dashboard.noDataYet")}
-          subColor={NO_DATA_COLOR}
-        />
+      <div className="grid grid-cols-1 gap-3 lg:grid-cols-3 md:gap-4">
+        <div className="lg:col-span-2">
+          <EmployeesBreakdownCard />
+        </div>
 
         <StatCard
           label={t("dashboard.pendingApprovals")}

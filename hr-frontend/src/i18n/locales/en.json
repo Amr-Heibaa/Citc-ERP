@@ -153,9 +153,10 @@
     "employeeNotFound": "Employee not found.",
     "backToList": "Back to list",
     "loadingEmployee": "Loading employee…",
-    "searchPlaceholder": "Search for name, ID or email...",
+    "searchPlaceholder": "Search for name, ID, email or department...",
     "allDepartments": "All Departments",
     "allStatuses": "All Status",
+    "filteredByOrganization": "Branch: {{name}}",
     "table": {
       "employee": "Employee",
       "contact": "Contact",

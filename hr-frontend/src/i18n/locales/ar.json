@@ -153,9 +153,10 @@
     "employeeNotFound": "الموظف غير موجود.",
     "backToList": "العودة للقائمة",
     "loadingEmployee": "جاري تحميل بيانات الموظف…",
-    "searchPlaceholder": "ابحث بالاسم أو الرقم الوظيفي أو البريد الإلكتروني...",
+    "searchPlaceholder": "ابحث بالاسم أو الرقم الوظيفي أو البريد الإلكتروني أو الإدارة...",
     "allDepartments": "كل الإدارات",
     "allStatuses": "كل الحالات",
+    "filteredByOrganization": "الفرع: {{name}}",
     "table": {
       "employee": "الموظف",
       "contact": "بيانات التواصل",
