@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router";
 import { toast } from "sonner";
 
@@ -21,6 +22,7 @@ import {
 import type { JobPositionFormValues } from "@/features/hr/jobs/schemas/job-position-schema";
 
 export function JobPositionEditPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { positionId } = useParams();
   const id = Number(positionId);
@@ -35,13 +37,13 @@ export function JobPositionEditPage() {
   async function handleSubmit(values: JobPositionFormValues) {
     try {
       await updatePosition.mutateAsync(toUpdateJobPositionRequest(values));
-      toast.success("Position updated successfully");
+      toast.success(t("jobs.positionForm.editSuccess"));
       close();
     } catch (error) {
       const message =
         typeof error === "object" && error !== null && "message" in error
           ? String(error.message)
-          : "Failed to update position";
+          : t("jobs.positionForm.editError");
 
       toast.error(message);
     }
@@ -60,31 +62,31 @@ export function JobPositionEditPage() {
       >
         <DialogHeader className="shrink-0 border-b border-gray-100 px-6 py-5 text-left">
           <DialogTitle className="font-['Inter',sans-serif] text-2xl text-[#1a2535]">
-            Edit Job Position
+            {t("jobs.positionForm.editTitle")}
           </DialogTitle>
 
           <DialogDescription>
-            Update the position's grade, unit and reporting line.
+            {t("jobs.positionForm.editDescription")}
           </DialogDescription>
         </DialogHeader>
 
         {position.isLoading ? (
           <div className="flex h-64 items-center justify-center text-sm text-gray-400">
-            Loading position…
+            {t("jobs.positionForm.loading")}
           </div>
         ) : position.isError || !position.data ? (
           <div className="flex h-64 flex-col items-center justify-center gap-3">
-            <p className="text-sm text-red-600">Position not found.</p>
+            <p className="text-sm text-red-600">{t("jobs.positionForm.notFound")}</p>
 
             <Button variant="outline" onClick={() => navigate("/hr/jobs/positions")}>
-              Back to positions
+              {t("jobs.positionForm.backToPositions")}
             </Button>
           </div>
         ) : (
           <JobPositionForm
             defaultValues={jobPositionDetailToFormValues(position.data)}
             excludePositionId={id}
-            submitLabel="Save Changes"
+            submitLabel={t("jobs.positionForm.saveChanges")}
             pending={updatePosition.isPending}
             onCancel={close}
             onSubmit={handleSubmit}

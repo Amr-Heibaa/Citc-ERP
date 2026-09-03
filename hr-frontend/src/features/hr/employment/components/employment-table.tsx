@@ -1,4 +1,5 @@
 import { AlertCircle, RefreshCw } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
 import { EmploymentStatusBadge } from "@/features/hr/employment/components/employment-status-badge";
@@ -10,15 +11,6 @@ const AVATAR_COLORS = [
   "bg-[#3498db]",
   "bg-[#9b59b6]",
   "bg-[#2ecc71]",
-];
-
-const COLUMNS = [
-  "Employee",
-  "Organization Unit",
-  "Position",
-  "Status",
-  "Hire Date",
-  "Termination Date",
 ];
 
 function EmploymentRow({

@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -44,6 +45,7 @@ export function AssignEmployeeDialog({
   onOpenChange: (open: boolean) => void;
   position: JobPositionDetail;
 }) {
+  const { t } = useTranslation();
   const positionId = position.positionId ?? 0;
   const currentAssignmentId = position.currentAssignment?.assignmentId ?? 0;
   const employees = useEmployeesForJobs();
@@ -89,12 +91,14 @@ export function AssignEmployeeDialog({
       });
 
       toast.success(
-        isReassign ? "Employee changed successfully" : "Employee assigned successfully",
+        isReassign
+          ? t("jobs.assignDialog.changedSuccess")
+          : t("jobs.assignDialog.assignedSuccess"),
       );
       onOpenChange(false);
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Unable to assign employee",
+        error instanceof Error ? error.message : t("jobs.assignDialog.unableToAssign"),
       );
     }
   });
@@ -106,24 +110,27 @@ export function AssignEmployeeDialog({
       <DialogContent className="sm:max-w-lg gap-0 overflow-hidden p-0">
         <DialogHeader className="border-b border-gray-100 px-6 py-5">
           <DialogTitle className="text-xl text-[#1a2535]">
-            {isReassign ? "Change Employee" : "Assign Employee"}
+            {isReassign ? t("jobs.assignDialog.changeTitle") : t("jobs.assignDialog.assignTitle")}
           </DialogTitle>
 
           <DialogDescription>
             {isReassign
-              ? `Replace the employee currently assigned to ${position.titleEn}.`
-              : `Assign an employee to ${position.titleEn} (${position.code}).`}
+              ? t("jobs.assignDialog.changeDescription", { position: position.titleEn })
+              : t("jobs.assignDialog.assignDescription", {
+                  position: position.titleEn,
+                  code: position.code,
+                })}
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={submit}>
           <div className="grid grid-cols-1 gap-4 px-6 py-5 sm:grid-cols-2">
             <div className="sm:col-span-2">
-              <LabeledField label="Employee" error={errors.employeeId?.message}>
+              <LabeledField label={t("jobs.assignDialog.employee")} error={errors.employeeId?.message}>
                 <SelectField
                   control={control}
                   name="employeeId"
-                  placeholder="Select employee"
+                  placeholder={t("jobs.assignDialog.selectEmployee")}
                   options={
                     employees.data?.flatMap((employee) =>
                       employee.employeeId == null
@@ -140,31 +147,38 @@ export function AssignEmployeeDialog({
               </LabeledField>
             </div>
 
-            <LabeledField label="Assignment Type" error={errors.assignmentType?.message}>
+            <LabeledField label={t("jobs.assignDialog.assignmentType")} error={errors.assignmentType?.message}>
               <SelectField
                 control={control}
                 name="assignmentType"
-                placeholder="Select type"
-                options={ASSIGNMENT_TYPE_OPTIONS}
+                placeholder={t("jobs.assignDialog.selectType")}
+                options={ASSIGNMENT_TYPE_OPTIONS.map((option) => ({
+                  value: option.value,
+                  label: t(option.label),
+                }))}
               />
             </LabeledField>
 
-            <LabeledField label="Start Date" error={errors.startDate?.message}>
+            <LabeledField label={t("jobs.assignDialog.startDate")} error={errors.startDate?.message}>
               <Input type="date" {...register("startDate")} />
             </LabeledField>
 
-            <LabeledField label="End Date (Optional)" error={errors.endDate?.message}>
+            <LabeledField label={t("jobs.assignDialog.endDateOptional")} error={errors.endDate?.message}>
               <Input type="date" {...register("endDate")} />
             </LabeledField>
           </div>
 
           <DialogFooter className="border-t border-gray-100 px-6 py-4">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
+              {t("jobs.assignDialog.cancel")}
             </Button>
 
             <Button type="submit" disabled={isSaving || !employeeId}>
-              {isSaving ? "Saving…" : isReassign ? "Update" : "Assign"}
+              {isSaving
+                ? t("jobs.assignDialog.saving")
+                : isReassign
+                  ? t("jobs.assignDialog.update")
+                  : t("jobs.assignDialog.assign")}
             </Button>
           </DialogFooter>
         </form>

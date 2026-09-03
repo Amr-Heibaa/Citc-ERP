@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 
@@ -29,6 +30,7 @@ const EMPTY_DEFAULTS: JobPositionFormValues = {
 };
 
 export function JobPositionCreatePage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const createPosition = useCreateJobPosition();
 
@@ -42,13 +44,13 @@ export function JobPositionCreatePage() {
         toCreateJobPositionRequest(values),
       );
 
-      toast.success("Position created successfully");
+      toast.success(t("jobs.positionForm.createSuccess"));
       navigate(`/hr/jobs/positions/${created.positionId}`);
     } catch (error) {
       const message =
         typeof error === "object" && error !== null && "message" in error
           ? String(error.message)
-          : "Failed to create position";
+          : t("jobs.positionForm.createError");
 
       toast.error(message);
     }
@@ -67,17 +69,17 @@ export function JobPositionCreatePage() {
       >
         <DialogHeader className="shrink-0 border-b border-gray-100 px-6 py-5 text-left">
           <DialogTitle className="font-['Inter',sans-serif] text-2xl text-[#1a2535]">
-            Create Job Position
+            {t("jobs.positionForm.createTitle")}
           </DialogTitle>
 
           <DialogDescription>
-            Add a new position with its grade, unit and reporting line.
+            {t("jobs.positionForm.createDescription")}
           </DialogDescription>
         </DialogHeader>
 
         <JobPositionForm
           defaultValues={EMPTY_DEFAULTS}
-          submitLabel="Create Position"
+          submitLabel={t("jobs.positionForm.createSubmit")}
           pending={createPosition.isPending}
           onCancel={close}
           onSubmit={handleSubmit}

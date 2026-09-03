@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 
 import { useJobPositionHierarchy } from "@/features/hr/jobs/api/use-job-positions";
@@ -33,6 +34,7 @@ export function JobPositionReportingTab({
 }: {
   position: JobPositionDetail;
 }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const hierarchy = useJobPositionHierarchy({
@@ -52,17 +54,23 @@ export function JobPositionReportingTab({
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       <section>
-        <SectionTitle>Reports To Position</SectionTitle>
+        <SectionTitle>{t("jobs.positionDetail.reporting.reportsToPosition")}</SectionTitle>
 
         <div className="flex flex-col gap-2">
-          <InfoRow label="Position" value={position.reportsToPositionTitle} />
-          <InfoRow label="Position Code" value={position.reportsToPositionCode} />
-          <InfoRow label="Direct Reports" value={position.directReportsCount ?? 0} />
+          <InfoRow label={t("jobs.positionDetail.reporting.position")} value={position.reportsToPositionTitle} />
+          <InfoRow
+            label={t("jobs.positionDetail.reporting.positionCode")}
+            value={position.reportsToPositionCode}
+          />
+          <InfoRow
+            label={t("jobs.positionDetail.reporting.directReports")}
+            value={position.directReportsCount ?? 0}
+          />
         </div>
       </section>
 
       <section>
-        <SectionTitle>Reporting Hierarchy</SectionTitle>
+        <SectionTitle>{t("jobs.positionDetail.reporting.reportingHierarchy")}</SectionTitle>
 
         {position.reportsToPositionTitle && (
           <>

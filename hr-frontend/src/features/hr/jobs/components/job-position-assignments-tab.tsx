@@ -1,5 +1,6 @@
 import { UserMinus, UserPlus } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -26,6 +27,7 @@ export function JobPositionAssignmentsTab({
 }: {
   position: JobPositionDetail;
 }) {
+  const { t } = useTranslation();
   const [assignOpen, setAssignOpen] = useState(false);
   const [endOpen, setEndOpen] = useState(false);
 
@@ -37,20 +39,29 @@ export function JobPositionAssignmentsTab({
     <div className="flex flex-col gap-6">
       <div className="grid gap-6 lg:grid-cols-2">
         <section>
-          <SectionTitle>Current Assignment</SectionTitle>
+          <SectionTitle>{t("jobs.positionDetail.assignments.currentAssignment")}</SectionTitle>
 
           {assignment ? (
             <div className="flex flex-col gap-2">
-              <InfoRow label="Employee" value={assignment.employeeName} />
-              <InfoRow label="Assignment Type" value={assignment.assignmentType} />
+              <InfoRow label={t("jobs.positionDetail.assignments.employee")} value={assignment.employeeName} />
               <InfoRow
-                label="Status"
+                label={t("jobs.positionDetail.assignments.assignmentType")}
+                value={assignment.assignmentType}
+              />
+              <InfoRow
+                label={t("jobs.positionDetail.assignments.status")}
                 value={<JobStatusBadge active={assignment.active ?? false} />}
               />
-              <InfoRow label="Start Date" value={formatDate(assignment.startDate)} />
-              <InfoRow label="End Date" value={formatDate(assignment.endDate)} />
               <InfoRow
-                label="Assigned By"
+                label={t("jobs.positionDetail.assignments.startDate")}
+                value={formatDate(assignment.startDate)}
+              />
+              <InfoRow
+                label={t("jobs.positionDetail.assignments.endDate")}
+                value={formatDate(assignment.endDate)}
+              />
+              <InfoRow
+                label={t("jobs.positionDetail.assignments.assignedBy")}
                 value={
                   assignment.assignedBy != null
                     ? employeeNames[assignment.assignedBy]
@@ -58,37 +69,38 @@ export function JobPositionAssignmentsTab({
                 }
               />
               <InfoRow
-                label="Assigned At"
+                label={t("jobs.positionDetail.assignments.assignedAt")}
                 value={formatDate(assignment.assignedAt?.slice(0, 10))}
               />
             </div>
           ) : (
             <p className="font-['Inter',sans-serif] text-sm text-gray-400">
-              This position has no current assignment.
+              {t("jobs.positionDetail.assignments.noCurrentAssignment")}
             </p>
           )}
         </section>
 
         <section>
           <div className="mb-2 flex items-center justify-between">
-            <SectionTitle>Change Assignment</SectionTitle>
+            <SectionTitle>{t("jobs.positionDetail.assignments.changeAssignment")}</SectionTitle>
           </div>
 
           <p className="font-['Inter',sans-serif] text-sm text-gray-500">
-            Reassign this position to a different employee or end the current
-            assignment. All changes are logged in the history below.
+            {t("jobs.positionDetail.assignments.reassignHint")}
           </p>
 
           <div className="mt-4 flex gap-2">
             <Button size="sm" onClick={() => setAssignOpen(true)}>
               <UserPlus className="size-3.5" />
-              {assignment ? "Change Employee" : "Assign Employee"}
+              {assignment
+                ? t("jobs.positionDetail.assignments.changeEmployee")
+                : t("jobs.positionDetail.assignments.assignEmployee")}
             </Button>
 
             {assignment && (
               <Button size="sm" variant="destructive" onClick={() => setEndOpen(true)}>
                 <UserMinus className="size-3.5" />
-                End Assignment
+                {t("jobs.positionDetail.assignments.endAssignment")}
               </Button>
             )}
           </div>
@@ -96,28 +108,28 @@ export function JobPositionAssignmentsTab({
       </div>
 
       <section>
-        <SectionTitle>Assignment History</SectionTitle>
+        <SectionTitle>{t("jobs.positionDetail.assignments.assignmentHistory")}</SectionTitle>
 
         <div className="overflow-hidden rounded-xl border border-gray-100">
           {history.isLoading ? (
             <div className="flex h-32 items-center justify-center font-['Inter',sans-serif] text-sm text-gray-400">
-              Loading…
+              {t("jobs.positionDetail.assignments.loading")}
             </div>
           ) : !history.data || history.data.content?.length === 0 ? (
             <div className="flex h-32 items-center justify-center font-['Inter',sans-serif] text-sm text-gray-400">
-              No assignment history yet.
+              {t("jobs.positionDetail.assignments.noHistory")}
             </div>
           ) : (
             <Table>
               <TableHeader className="bg-[#f4f6f9]">
                 <TableRow>
-                  <TableHead>Employee</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Primary</TableHead>
-                  <TableHead>Start</TableHead>
-                  <TableHead>End</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Assigned By</TableHead>
+                  <TableHead>{t("jobs.positionDetail.assignments.tableHeaders.employee")}</TableHead>
+                  <TableHead>{t("jobs.positionDetail.assignments.tableHeaders.type")}</TableHead>
+                  <TableHead>{t("jobs.positionDetail.assignments.tableHeaders.primary")}</TableHead>
+                  <TableHead>{t("jobs.positionDetail.assignments.tableHeaders.start")}</TableHead>
+                  <TableHead>{t("jobs.positionDetail.assignments.tableHeaders.end")}</TableHead>
+                  <TableHead>{t("jobs.positionDetail.assignments.tableHeaders.status")}</TableHead>
+                  <TableHead>{t("jobs.positionDetail.assignments.tableHeaders.assignedBy")}</TableHead>
                 </TableRow>
               </TableHeader>
 
@@ -139,7 +151,7 @@ export function JobPositionAssignmentsTab({
                     </TableCell>
 
                     <TableCell className="font-['Inter',sans-serif] text-sm text-gray-600">
-                      {row.primary ? "Yes" : "No"}
+                      {row.primary ? t("common.yes") : t("common.no")}
                     </TableCell>
 
                     <TableCell className="font-['Inter',sans-serif] text-sm text-gray-600">

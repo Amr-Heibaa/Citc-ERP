@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 import { BooleanSelectField } from "@/features/hr/shared/components/boolean-select-field";
 
 export function StatusSelectField({
@@ -9,12 +11,14 @@ export function StatusSelectField({
   onChange: (active: boolean) => void;
   disableInactive?: boolean;
 }) {
+  const { t } = useTranslation();
+
   return (
     <BooleanSelectField
       value={active}
       onChange={onChange}
-      trueLabel="Active"
-      falseLabel="Inactive"
+      trueLabel={t("common.active")}
+      falseLabel={t("common.inactive")}
       disableFalse={disableInactive}
     />
   );

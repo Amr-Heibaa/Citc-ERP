@@ -658,6 +658,17 @@
       "selectToUnit": "Select to unit",
       "startDate": "Start Date",
       "endDate": "End Date"
+    },
+    "unitTab": {
+      "loading": "Loading organization units…",
+      "unableToLoad": "Unable to load organization units.",
+      "organizationFallback": "Organization",
+      "title": "Organization Units",
+      "subtitle": "Select a unit to view its information",
+      "searchPlaceholder": "Search units",
+      "unitFallback": "Organization Unit",
+      "viewUnitDetails": "Unit Details",
+      "selectUnitPrompt": "Select a unit to view its details."
     }
   },
   "jobs": {
@@ -726,6 +737,248 @@
       "allOccupancy": "All Occupancy",
       "occupied": "Occupied",
       "open": "Open"
+    },
+    "assignmentTypes": {
+      "permanent": "Permanent",
+      "acting": "Acting",
+      "temporary": "Temporary"
+    },
+    "positionForm": {
+      "createTitle": "Create Job Position",
+      "createDescription": "Add a new position with its grade, unit and reporting line.",
+      "editTitle": "Edit Job Position",
+      "editDescription": "Update the position's grade, unit and reporting line.",
+      "createSubmit": "Create Position",
+      "saveChanges": "Save Changes",
+      "saving": "Saving…",
+      "createSuccess": "Position created successfully",
+      "createError": "Failed to create position",
+      "editSuccess": "Position updated successfully",
+      "editError": "Failed to update position",
+      "loading": "Loading position…",
+      "notFound": "Position not found.",
+      "backToPositions": "Back to positions",
+      "backToList": "Back to list",
+      "titleEn": "Title (English)",
+      "titleEnPlaceholder": "Position title",
+      "titleAr": "Title (Arabic)",
+      "titleArPlaceholder": "مسمى الوظيفة",
+      "organization": "Organization",
+      "selectOrganization": "Select organization",
+      "organizationUnit": "Organization Unit",
+      "selectUnit": "Select unit",
+      "jobGrade": "Job Grade",
+      "selectGrade": "Select grade",
+      "positionLevel": "Position Level",
+      "reportsTo": "Reports To",
+      "selectReportingPosition": "Select reporting position",
+      "status": "Status",
+      "openForHiring": "Open for Hiring",
+      "open": "Open",
+      "closed": "Closed",
+      "descriptionEn": "Description (English)",
+      "descriptionAr": "Description (Arabic)"
+    },
+    "positionDetail": {
+      "editPosition": "Edit Position",
+      "tabs": {
+        "overview": "Overview",
+        "employee": "Employee",
+        "organization": "Organization",
+        "reporting": "Reporting",
+        "assignments": "Assignments",
+        "history": "History"
+      },
+      "overview": {
+        "positionInformation": "Position Information",
+        "positionCode": "Position Code",
+        "titleEn": "Title (English)",
+        "titleAr": "Title (Arabic)",
+        "jobGrade": "Job Grade",
+        "positionLevel": "Position Level",
+        "status": "Status",
+        "occupancy": "Occupancy",
+        "description": "Description",
+        "summary": "Summary",
+        "organizationUnit": "Organization Unit",
+        "reportsTo": "Reports To",
+        "currentEmployee": "Current Employee",
+        "directReports": "Direct Reports",
+        "reportsToSection": "Reports To",
+        "quickActions": "Quick Actions",
+        "changeEmployee": "Change Employee",
+        "assignEmployee": "Assign Employee",
+        "deactivatePosition": "Deactivate Position",
+        "activatePosition": "Activate Position",
+        "positionDeactivated": "Position deactivated",
+        "positionActivated": "Position activated",
+        "unableToUpdateStatus": "Unable to update status"
+      },
+      "employee": {
+        "noEmployeeAssigned": "No employee assigned",
+        "positionOpen": "This position is currently open.",
+        "assignAnEmployee": "Assign an employee",
+        "currentEmployee": "Current Employee",
+        "employeeContact": "Employee Contact",
+        "employmentInformation": "Employment Information",
+        "assignmentSummary": "Assignment Summary",
+        "quickActions": "Quick Actions",
+        "employmentStatus": "Employment Status",
+        "employeeType": "Employee Type",
+        "hireDate": "Hire Date",
+        "serviceDuration": "Service Duration",
+        "currentAssignmentSince": "Current Assignment Since",
+        "assignmentType": "Assignment Type",
+        "startDate": "Start Date",
+        "endDate": "End Date",
+        "assignedBy": "Assigned By",
+        "assignedAt": "Assigned At",
+        "viewEmployeeProfile": "View Employee Profile",
+        "changeEmployee": "Change Employee",
+        "endAssignment": "End Assignment",
+        "fullTime": "Full Time",
+        "partTime": "Part Time"
+      },
+      "organization": {
+        "organizationUnit": "Organization Unit",
+        "unit": "Unit",
+        "unitCode": "Unit Code",
+        "unitType": "Unit Type",
+        "parentUnit": "Parent Unit",
+        "organization": "Organization",
+        "manager": "Manager",
+        "status": "Status",
+        "viewUnitDetails": "View Unit Details →",
+        "unitHierarchy": "Unit Hierarchy",
+        "organizationSubtitle": "Organization",
+        "parentUnitSubtitle": "Parent Unit"
+      },
+      "reporting": {
+        "reportsToPosition": "Reports To Position",
+        "position": "Position",
+        "positionCode": "Position Code",
+        "directReports": "Direct Reports",
+        "reportingHierarchy": "Reporting Hierarchy"
+      },
+      "assignments": {
+        "currentAssignment": "Current Assignment",
+        "noCurrentAssignment": "This position has no current assignment.",
+        "changeAssignment": "Change Assignment",
+        "reassignHint": "Reassign this position to a different employee or end the current assignment. All changes are logged in the history below.",
+        "employee": "Employee",
+        "assignmentType": "Assignment Type",
+        "status": "Status",
+        "startDate": "Start Date",
+        "endDate": "End Date",
+        "assignedBy": "Assigned By",
+        "assignedAt": "Assigned At",
+        "changeEmployee": "Change Employee",
+        "assignEmployee": "Assign Employee",
+        "endAssignment": "End Assignment",
+        "assignmentHistory": "Assignment History",
+        "loading": "Loading…",
+        "noHistory": "No assignment history yet.",
+        "tableHeaders": {
+          "employee": "Employee",
+          "type": "Type",
+          "primary": "Primary",
+          "start": "Start",
+          "end": "End",
+          "status": "Status",
+          "assignedBy": "Assigned By"
+        }
+      },
+      "history": {
+        "positionHistory": "Position History",
+        "loading": "Loading…",
+        "noHistory": "No history recorded yet.",
+        "by": "by {{name}}",
+        "systemFallback": "System"
+      }
+    },
+    "assignDialog": {
+      "changeTitle": "Change Employee",
+      "assignTitle": "Assign Employee",
+      "changeDescription": "Replace the employee currently assigned to {{position}}.",
+      "assignDescription": "Assign an employee to {{position}} ({{code}}).",
+      "employee": "Employee",
+      "selectEmployee": "Select employee",
+      "assignmentType": "Assignment Type",
+      "selectType": "Select type",
+      "startDate": "Start Date",
+      "endDateOptional": "End Date (Optional)",
+      "cancel": "Cancel",
+      "saving": "Saving…",
+      "update": "Update",
+      "assign": "Assign",
+      "changedSuccess": "Employee changed successfully",
+      "assignedSuccess": "Employee assigned successfully",
+      "unableToAssign": "Unable to assign employee"
+    },
+    "endAssignmentDialog": {
+      "title": "End Assignment",
+      "description": "End {{employee}}'s assignment. The position will become open.",
+      "employeeFallback": "the current employee",
+      "endDate": "End Date",
+      "cancel": "Cancel",
+      "saving": "Saving…",
+      "confirm": "End Assignment",
+      "success": "Assignment ended successfully",
+      "error": "Unable to end assignment"
+    }
+  },
+  "employment": {
+    "home": {
+      "title": "Employment",
+      "subtitle": "Manage employment records and position assignments",
+      "recordsCard": {
+        "title": "Employment Records",
+        "headlineLabel": "Total Records",
+        "active": "Active",
+        "thisYear": "This Year",
+        "thisMonth": "This Month",
+        "actionLabel": "View Employment Records"
+      },
+      "positionsCard": {
+        "title": "Position Assignments",
+        "headlineLabel": "Total Positions",
+        "occupied": "Occupied",
+        "open": "Open",
+        "inactive": "Inactive",
+        "actionLabel": "View Position Assignments"
+      }
+    },
+    "records": {
+      "backLink": "Employment",
+      "title": "Employment Records",
+      "subtitle": "Browse employment status across the company. Select an employee to manage their status, contracts, and assignment.",
+      "stats": {
+        "active": "Active",
+        "probation": "Probation",
+        "onLeave": "On Leave",
+        "terminated": "Terminated / Inactive"
+      }
+    },
+    "filters": {
+      "searchPlaceholder": "Search for name, ID or email...",
+      "allOrganizationUnits": "All Organization Units",
+      "allStatus": "All Status"
+    },
+    "table": {
+      "columns": {
+        "employee": "Employee",
+        "organizationUnit": "Organization Unit",
+        "position": "Position",
+        "status": "Status",
+        "hireDate": "Hire Date",
+        "terminationDate": "Termination Date"
+      },
+      "unnamedEmployee": "Unnamed employee",
+      "unableToLoad": "Unable to load employment records",
+      "checkConnection": "Check the server connection and try again.",
+      "tryAgain": "Try again",
+      "noMatches": "No employment records match the current filters.",
+      "showingOf": "Showing {{count}} of {{total}}"
     }
   }
 }

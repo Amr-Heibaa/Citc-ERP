@@ -658,6 +658,17 @@
       "selectToUnit": "اختر الوحدة الهدف",
       "startDate": "تاريخ البدء",
       "endDate": "تاريخ الانتهاء"
+    },
+    "unitTab": {
+      "loading": "جارٍ تحميل الوحدات التنظيمية…",
+      "unableToLoad": "تعذر تحميل الوحدات التنظيمية.",
+      "organizationFallback": "المؤسسة",
+      "title": "الوحدات التنظيمية",
+      "subtitle": "اختر وحدة لعرض معلوماتها",
+      "searchPlaceholder": "بحث في الوحدات",
+      "unitFallback": "وحدة تنظيمية",
+      "viewUnitDetails": "تفاصيل الوحدة",
+      "selectUnitPrompt": "اختر وحدة لعرض تفاصيلها."
     }
   },
   "jobs": {
@@ -726,6 +737,248 @@
       "allOccupancy": "كل الحالات",
       "occupied": "مشغولة",
       "open": "شاغرة"
+    },
+    "assignmentTypes": {
+      "permanent": "دائم",
+      "acting": "بالتكليف",
+      "temporary": "مؤقت"
+    },
+    "positionForm": {
+      "createTitle": "إنشاء وظيفة",
+      "createDescription": "أضف وظيفة جديدة مع درجتها ووحدتها وخط التبعية.",
+      "editTitle": "تعديل الوظيفة",
+      "editDescription": "تحديث درجة الوظيفة ووحدتها وخط التبعية.",
+      "createSubmit": "إنشاء الوظيفة",
+      "saveChanges": "حفظ التغييرات",
+      "saving": "جارٍ الحفظ…",
+      "createSuccess": "تم إنشاء الوظيفة بنجاح",
+      "createError": "تعذر إنشاء الوظيفة",
+      "editSuccess": "تم تحديث الوظيفة بنجاح",
+      "editError": "تعذر تحديث الوظيفة",
+      "loading": "جارٍ تحميل الوظيفة…",
+      "notFound": "الوظيفة غير موجودة.",
+      "backToPositions": "الرجوع إلى الوظائف",
+      "backToList": "الرجوع إلى القائمة",
+      "titleEn": "المسمى (إنجليزي)",
+      "titleEnPlaceholder": "مسمى الوظيفة",
+      "titleAr": "المسمى (عربي)",
+      "titleArPlaceholder": "مسمى الوظيفة",
+      "organization": "المؤسسة",
+      "selectOrganization": "اختر المؤسسة",
+      "organizationUnit": "الوحدة التنظيمية",
+      "selectUnit": "اختر الوحدة",
+      "jobGrade": "الدرجة الوظيفية",
+      "selectGrade": "اختر الدرجة",
+      "positionLevel": "مستوى الوظيفة",
+      "reportsTo": "يتبع",
+      "selectReportingPosition": "اختر وظيفة التبعية",
+      "status": "الحالة",
+      "openForHiring": "متاحة للتوظيف",
+      "open": "متاحة",
+      "closed": "مغلقة",
+      "descriptionEn": "الوصف (إنجليزي)",
+      "descriptionAr": "الوصف (عربي)"
+    },
+    "positionDetail": {
+      "editPosition": "تعديل الوظيفة",
+      "tabs": {
+        "overview": "نظرة عامة",
+        "employee": "الموظف",
+        "organization": "التنظيم",
+        "reporting": "التبعية",
+        "assignments": "التكليفات",
+        "history": "السجل"
+      },
+      "overview": {
+        "positionInformation": "معلومات الوظيفة",
+        "positionCode": "كود الوظيفة",
+        "titleEn": "المسمى (إنجليزي)",
+        "titleAr": "المسمى (عربي)",
+        "jobGrade": "الدرجة الوظيفية",
+        "positionLevel": "مستوى الوظيفة",
+        "status": "الحالة",
+        "occupancy": "الحالة الوظيفية",
+        "description": "الوصف",
+        "summary": "الملخص",
+        "organizationUnit": "الوحدة التنظيمية",
+        "reportsTo": "يتبع",
+        "currentEmployee": "الموظف الحالي",
+        "directReports": "المرؤوسون المباشرون",
+        "reportsToSection": "يتبع",
+        "quickActions": "إجراءات سريعة",
+        "changeEmployee": "تغيير الموظف",
+        "assignEmployee": "تعيين موظف",
+        "deactivatePosition": "إلغاء تفعيل الوظيفة",
+        "activatePosition": "تفعيل الوظيفة",
+        "positionDeactivated": "تم إلغاء تفعيل الوظيفة",
+        "positionActivated": "تم تفعيل الوظيفة",
+        "unableToUpdateStatus": "تعذر تحديث الحالة"
+      },
+      "employee": {
+        "noEmployeeAssigned": "لا يوجد موظف معيّن",
+        "positionOpen": "هذه الوظيفة شاغرة حاليًا.",
+        "assignAnEmployee": "تعيين موظف",
+        "currentEmployee": "الموظف الحالي",
+        "employeeContact": "بيانات التواصل",
+        "employmentInformation": "معلومات التوظيف",
+        "assignmentSummary": "ملخص التكليف",
+        "quickActions": "إجراءات سريعة",
+        "employmentStatus": "حالة التوظيف",
+        "employeeType": "نوع الموظف",
+        "hireDate": "تاريخ التعيين",
+        "serviceDuration": "مدة الخدمة",
+        "currentAssignmentSince": "التكليف الحالي منذ",
+        "assignmentType": "نوع التكليف",
+        "startDate": "تاريخ البدء",
+        "endDate": "تاريخ الانتهاء",
+        "assignedBy": "تم التعيين بواسطة",
+        "assignedAt": "تاريخ التعيين",
+        "viewEmployeeProfile": "عرض الملف الشخصي للموظف",
+        "changeEmployee": "تغيير الموظف",
+        "endAssignment": "إنهاء التكليف",
+        "fullTime": "دوام كامل",
+        "partTime": "دوام جزئي"
+      },
+      "organization": {
+        "organizationUnit": "الوحدة التنظيمية",
+        "unit": "الوحدة",
+        "unitCode": "كود الوحدة",
+        "unitType": "نوع الوحدة",
+        "parentUnit": "الوحدة الأعلى",
+        "organization": "المؤسسة",
+        "manager": "المدير",
+        "status": "الحالة",
+        "viewUnitDetails": "عرض تفاصيل الوحدة ←",
+        "unitHierarchy": "الهيكل التنظيمي للوحدة",
+        "organizationSubtitle": "المؤسسة",
+        "parentUnitSubtitle": "الوحدة الأعلى"
+      },
+      "reporting": {
+        "reportsToPosition": "الوظيفة التي يتبع لها",
+        "position": "الوظيفة",
+        "positionCode": "كود الوظيفة",
+        "directReports": "المرؤوسون المباشرون",
+        "reportingHierarchy": "الهيكل التنظيمي للتبعية"
+      },
+      "assignments": {
+        "currentAssignment": "التكليف الحالي",
+        "noCurrentAssignment": "لا يوجد تكليف حالي لهذه الوظيفة.",
+        "changeAssignment": "تغيير التكليف",
+        "reassignHint": "أعد تعيين هذه الوظيفة لموظف آخر أو أنهِ التكليف الحالي. يتم تسجيل جميع التغييرات في السجل أدناه.",
+        "employee": "الموظف",
+        "assignmentType": "نوع التكليف",
+        "status": "الحالة",
+        "startDate": "تاريخ البدء",
+        "endDate": "تاريخ الانتهاء",
+        "assignedBy": "تم التعيين بواسطة",
+        "assignedAt": "تاريخ التعيين",
+        "changeEmployee": "تغيير الموظف",
+        "assignEmployee": "تعيين موظف",
+        "endAssignment": "إنهاء التكليف",
+        "assignmentHistory": "سجل التكليفات",
+        "loading": "جارٍ التحميل…",
+        "noHistory": "لا يوجد سجل تكليفات بعد.",
+        "tableHeaders": {
+          "employee": "الموظف",
+          "type": "النوع",
+          "primary": "أساسي",
+          "start": "البدء",
+          "end": "الانتهاء",
+          "status": "الحالة",
+          "assignedBy": "تم التعيين بواسطة"
+        }
+      },
+      "history": {
+        "positionHistory": "سجل الوظيفة",
+        "loading": "جارٍ التحميل…",
+        "noHistory": "لا يوجد سجل مسجّل بعد.",
+        "by": "بواسطة {{name}}",
+        "systemFallback": "النظام"
+      }
+    },
+    "assignDialog": {
+      "changeTitle": "تغيير الموظف",
+      "assignTitle": "تعيين موظف",
+      "changeDescription": "استبدال الموظف المعيّن حاليًا في {{position}}.",
+      "assignDescription": "تعيين موظف في {{position}} ({{code}}).",
+      "employee": "الموظف",
+      "selectEmployee": "اختر الموظف",
+      "assignmentType": "نوع التكليف",
+      "selectType": "اختر النوع",
+      "startDate": "تاريخ البدء",
+      "endDateOptional": "تاريخ الانتهاء (اختياري)",
+      "cancel": "إلغاء",
+      "saving": "جارٍ الحفظ…",
+      "update": "تحديث",
+      "assign": "تعيين",
+      "changedSuccess": "تم تغيير الموظف بنجاح",
+      "assignedSuccess": "تم تعيين الموظف بنجاح",
+      "unableToAssign": "تعذر تعيين الموظف"
+    },
+    "endAssignmentDialog": {
+      "title": "إنهاء التكليف",
+      "description": "سيتم إنهاء تكليف {{employee}}. ستصبح الوظيفة شاغرة.",
+      "employeeFallback": "الموظف الحالي",
+      "endDate": "تاريخ الانتهاء",
+      "cancel": "إلغاء",
+      "saving": "جارٍ الحفظ…",
+      "confirm": "إنهاء التكليف",
+      "success": "تم إنهاء التكليف بنجاح",
+      "error": "تعذر إنهاء التكليف"
+    }
+  },
+  "employment": {
+    "home": {
+      "title": "التوظيف",
+      "subtitle": "إدارة سجلات التوظيف وتكليفات الوظائف",
+      "recordsCard": {
+        "title": "سجلات التوظيف",
+        "headlineLabel": "إجمالي السجلات",
+        "active": "نشط",
+        "thisYear": "هذا العام",
+        "thisMonth": "هذا الشهر",
+        "actionLabel": "عرض سجلات التوظيف"
+      },
+      "positionsCard": {
+        "title": "تكليفات الوظائف",
+        "headlineLabel": "إجمالي الوظائف",
+        "occupied": "مشغولة",
+        "open": "شاغرة",
+        "inactive": "غير نشطة",
+        "actionLabel": "عرض تكليفات الوظائف"
+      }
+    },
+    "records": {
+      "backLink": "التوظيف",
+      "title": "سجلات التوظيف",
+      "subtitle": "تصفح حالة التوظيف في الشركة. اختر موظفًا لإدارة حالته وعقوده وتكليفه.",
+      "stats": {
+        "active": "نشط",
+        "probation": "تحت الاختبار",
+        "onLeave": "في إجازة",
+        "terminated": "منتهي الخدمة / غير نشط"
+      }
+    },
+    "filters": {
+      "searchPlaceholder": "ابحث بالاسم أو الرقم الوظيفي أو البريد الإلكتروني...",
+      "allOrganizationUnits": "كل الوحدات التنظيمية",
+      "allStatus": "كل الحالات"
+    },
+    "table": {
+      "columns": {
+        "employee": "الموظف",
+        "organizationUnit": "الوحدة التنظيمية",
+        "position": "الوظيفة",
+        "status": "الحالة",
+        "hireDate": "تاريخ التعيين",
+        "terminationDate": "تاريخ إنهاء الخدمة"
+      },
+      "unnamedEmployee": "موظف بدون اسم",
+      "unableToLoad": "تعذر تحميل سجلات التوظيف",
+      "checkConnection": "تحقق من اتصال الخادم وحاول مرة أخرى.",
+      "tryAgain": "حاول مرة أخرى",
+      "noMatches": "لا توجد سجلات توظيف مطابقة للفلاتر الحالية.",
+      "showingOf": "عرض {{count}} من {{total}}"
     }
   }
 }

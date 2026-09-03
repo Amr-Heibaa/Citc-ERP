@@ -1,5 +1,6 @@
 import { PowerOff, UserPlus } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { useUpdateJobPositionStatus } from "@/features/hr/jobs/api/use-job-positions";
@@ -40,6 +41,7 @@ export function JobPositionOverviewTab({
 }: {
   position: JobPositionDetail;
 }) {
+  const { t } = useTranslation();
   const [assignOpen, setAssignOpen] = useState(false);
   const updateStatus = useUpdateJobPositionStatus(position.positionId ?? 0);
 
@@ -51,11 +53,15 @@ export function JobPositionOverviewTab({
       });
 
       toast.success(
-        position.active ? "Position deactivated" : "Position activated",
+        position.active
+          ? t("jobs.positionDetail.overview.positionDeactivated")
+          : t("jobs.positionDetail.overview.positionActivated"),
       );
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Unable to update status",
+        error instanceof Error
+          ? error.message
+          : t("jobs.positionDetail.overview.unableToUpdateStatus"),
       );
     }
   }
@@ -63,36 +69,39 @@ export function JobPositionOverviewTab({
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       <section>
-        <SectionTitle>Position Information</SectionTitle>
+        <SectionTitle>{t("jobs.positionDetail.overview.positionInformation")}</SectionTitle>
 
         <div className="flex flex-col gap-2">
-          <InfoRow label="Position Code" value={position.code} />
-          <InfoRow label="Title (English)" value={position.titleEn} />
+          <InfoRow label={t("jobs.positionDetail.overview.positionCode")} value={position.code} />
+          <InfoRow label={t("jobs.positionDetail.overview.titleEn")} value={position.titleEn} />
           <InfoRow
-            label="Title (Arabic)"
+            label={t("jobs.positionDetail.overview.titleAr")}
             value={<span dir="rtl">{position.titleAr}</span>}
           />
-          <InfoRow label="Job Grade" value={position.gradeName} />
-          <InfoRow label="Position Level" value={position.positionLevel} />
-          <InfoRow label="Status" value={position.active ? "Active" : "Inactive"} />
-          <InfoRow label="Occupancy" value={position.occupancyStatus} />
-          <InfoRow label="Description" value={position.descriptionEn} />
+          <InfoRow label={t("jobs.positionDetail.overview.jobGrade")} value={position.gradeName} />
+          <InfoRow label={t("jobs.positionDetail.overview.positionLevel")} value={position.positionLevel} />
+          <InfoRow
+            label={t("jobs.positionDetail.overview.status")}
+            value={position.active ? t("common.active") : t("common.inactive")}
+          />
+          <InfoRow label={t("jobs.positionDetail.overview.occupancy")} value={position.occupancyStatus} />
+          <InfoRow label={t("jobs.positionDetail.overview.description")} value={position.descriptionEn} />
         </div>
       </section>
 
       <div className="space-y-6">
         <section>
-          <SectionTitle>Summary</SectionTitle>
+          <SectionTitle>{t("jobs.positionDetail.overview.summary")}</SectionTitle>
 
           <div className="flex flex-col gap-2">
-            <InfoRow label="Organization Unit" value={position.orgUnitName} />
-            <InfoRow label="Reports To" value={position.reportsToPositionTitle} />
+            <InfoRow label={t("jobs.positionDetail.overview.organizationUnit")} value={position.orgUnitName} />
+            <InfoRow label={t("jobs.positionDetail.overview.reportsTo")} value={position.reportsToPositionTitle} />
             <InfoRow
-              label="Current Employee"
+              label={t("jobs.positionDetail.overview.currentEmployee")}
               value={position.currentAssignment?.employeeName}
             />
             <InfoRow
-              label="Direct Reports"
+              label={t("jobs.positionDetail.overview.directReports")}
               value={position.directReportsCount ?? 0}
             />
           </div>
@@ -100,7 +109,7 @@ export function JobPositionOverviewTab({
 
         {position.reportsToPositionTitle && (
           <section>
-            <SectionTitle>Reports To</SectionTitle>
+            <SectionTitle>{t("jobs.positionDetail.overview.reportsToSection")}</SectionTitle>
 
             <OrgNode
               title={position.reportsToPositionTitle}
@@ -114,18 +123,26 @@ export function JobPositionOverviewTab({
         )}
 
         <section>
-          <SectionTitle>Quick Actions</SectionTitle>
+          <SectionTitle>{t("jobs.positionDetail.overview.quickActions")}</SectionTitle>
 
           <div className="flex flex-col gap-1">
             <QuickActionButton
               icon={UserPlus}
-              label={position.currentAssignment ? "Change Employee" : "Assign Employee"}
+              label={
+                position.currentAssignment
+                  ? t("jobs.positionDetail.overview.changeEmployee")
+                  : t("jobs.positionDetail.overview.assignEmployee")
+              }
               onClick={() => setAssignOpen(true)}
             />
 
             <QuickActionButton
               icon={PowerOff}
-              label={position.active ? "Deactivate Position" : "Activate Position"}
+              label={
+                position.active
+                  ? t("jobs.positionDetail.overview.deactivatePosition")
+                  : t("jobs.positionDetail.overview.activatePosition")
+              }
               destructive={position.active ?? false}
               onClick={handleDeactivate}
             />

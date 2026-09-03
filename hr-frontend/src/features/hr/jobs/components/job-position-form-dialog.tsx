@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,6 +36,7 @@ export function JobPositionForm({
   onCancel: () => void;
   onSubmit: (values: JobPositionFormValues) => void;
 }) {
+  const { t } = useTranslation();
   const organizations = useOrganizationsForJobs();
   const grades = useJobGrades(true);
 
@@ -91,19 +93,23 @@ export function JobPositionForm({
     <form onSubmit={submit} className="flex min-h-0 flex-1 flex-col overflow-hidden">
       <div className="flex-1 space-y-4 overflow-y-auto px-6 py-5">
         <div className="grid gap-4 sm:grid-cols-2">
-          <LabeledField label="Title (English)" error={errors.titleEn?.message}>
-            <Input {...register("titleEn")} placeholder="Position title" />
+          <LabeledField label={t("jobs.positionForm.titleEn")} error={errors.titleEn?.message}>
+            <Input {...register("titleEn")} placeholder={t("jobs.positionForm.titleEnPlaceholder")} />
           </LabeledField>
 
-          <LabeledField label="Title (Arabic)" error={errors.titleAr?.message}>
-            <Input {...register("titleAr")} dir="rtl" placeholder="مسمى الوظيفة" />
+          <LabeledField label={t("jobs.positionForm.titleAr")} error={errors.titleAr?.message}>
+            <Input
+              {...register("titleAr")}
+              dir="rtl"
+              placeholder={t("jobs.positionForm.titleArPlaceholder")}
+            />
           </LabeledField>
 
-          <LabeledField label="Organization" error={errors.organizationId?.message}>
+          <LabeledField label={t("jobs.positionForm.organization")} error={errors.organizationId?.message}>
             <SelectField
               control={control}
               name="organizationId"
-              placeholder="Select organization"
+              placeholder={t("jobs.positionForm.selectOrganization")}
               options={
                 organizations.data?.map((org) => ({
                   value: String(org.id),
@@ -113,11 +119,11 @@ export function JobPositionForm({
             />
           </LabeledField>
 
-          <LabeledField label="Organization Unit" error={errors.orgUnitId?.message}>
+          <LabeledField label={t("jobs.positionForm.organizationUnit")} error={errors.orgUnitId?.message}>
             <SelectField
               control={control}
               name="orgUnitId"
-              placeholder="Select unit"
+              placeholder={t("jobs.positionForm.selectUnit")}
               disabled={!organizationId}
               options={
                 orgUnits.data?.map((unit) => ({
@@ -128,11 +134,11 @@ export function JobPositionForm({
             />
           </LabeledField>
 
-          <LabeledField label="Job Grade" error={errors.gradeId?.message}>
+          <LabeledField label={t("jobs.positionForm.jobGrade")} error={errors.gradeId?.message}>
             <SelectField
               control={control}
               name="gradeId"
-              placeholder="Select grade"
+              placeholder={t("jobs.positionForm.selectGrade")}
               options={
                 grades.data?.map((grade) => ({
                   value: String(grade.gradeId),
@@ -142,7 +148,7 @@ export function JobPositionForm({
             />
           </LabeledField>
 
-          <LabeledField label="Position Level" error={errors.positionLevel?.message}>
+          <LabeledField label={t("jobs.positionForm.positionLevel")} error={errors.positionLevel?.message}>
             <Input
               type="number"
               min={1}
@@ -150,17 +156,17 @@ export function JobPositionForm({
             />
           </LabeledField>
 
-          <LabeledField label="Reports To" error={errors.reportsToPositionId?.message}>
+          <LabeledField label={t("jobs.positionForm.reportsTo")} error={errors.reportsToPositionId?.message}>
             <SelectField
               control={control}
               name="reportsToPositionId"
-              placeholder="Select reporting position"
+              placeholder={t("jobs.positionForm.selectReportingPosition")}
               disabled={!organizationId}
               options={reportsToOptions}
             />
           </LabeledField>
 
-          <LabeledField label="Status">
+          <LabeledField label={t("jobs.positionForm.status")}>
             <StatusSelectField
               active={active}
               onChange={(checked) => setValue("active", checked)}
@@ -169,32 +175,32 @@ export function JobPositionForm({
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
-          <LabeledField label="Open for Hiring">
+          <LabeledField label={t("jobs.positionForm.openForHiring")}>
             <BooleanSelectField
               value={open}
               onChange={(checked) => setValue("open", checked)}
-              trueLabel="Open"
-              falseLabel="Closed"
+              trueLabel={t("jobs.positionForm.open")}
+              falseLabel={t("jobs.positionForm.closed")}
             />
           </LabeledField>
         </div>
 
-        <LabeledField label="Description (English)" error={errors.descriptionEn?.message}>
+        <LabeledField label={t("jobs.positionForm.descriptionEn")} error={errors.descriptionEn?.message}>
           <Textarea {...register("descriptionEn")} rows={4} />
         </LabeledField>
 
-        <LabeledField label="Description (Arabic)" error={errors.descriptionAr?.message}>
+        <LabeledField label={t("jobs.positionForm.descriptionAr")} error={errors.descriptionAr?.message}>
           <Textarea {...register("descriptionAr")} rows={4} dir="rtl" />
         </LabeledField>
       </div>
 
       <div className="flex justify-end gap-3 border-t border-gray-100 px-6 py-4">
         <Button type="button" variant="outline" onClick={onCancel}>
-          Cancel
+          {t("common.cancel")}
         </Button>
 
         <Button type="submit" disabled={pending}>
-          {pending ? "Saving…" : submitLabel}
+          {pending ? t("jobs.positionForm.saving") : submitLabel}
         </Button>
       </div>
     </form>

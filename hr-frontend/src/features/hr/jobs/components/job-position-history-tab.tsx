@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 import { useJobPositionHistory } from "@/features/hr/jobs/api/use-job-positions";
 import { SectionTitle } from "@/features/hr/shared/components/info-row";
 import { formatDate } from "@/features/hr/shared/utils/format";
@@ -7,20 +9,21 @@ export function JobPositionHistoryTab({
 }: {
   positionId: number;
 }) {
+  const { t } = useTranslation();
   const history = useJobPositionHistory(positionId);
   const entries = history.data?.content ?? [];
 
   return (
     <section>
-      <SectionTitle>Position History</SectionTitle>
+      <SectionTitle>{t("jobs.positionDetail.history.positionHistory")}</SectionTitle>
 
       {history.isLoading ? (
         <div className="flex h-32 items-center justify-center font-['Inter',sans-serif] text-sm text-gray-400">
-          Loading…
+          {t("jobs.positionDetail.history.loading")}
         </div>
       ) : entries.length === 0 ? (
         <div className="flex h-32 items-center justify-center font-['Inter',sans-serif] text-sm text-gray-400">
-          No history recorded yet.
+          {t("jobs.positionDetail.history.noHistory")}
         </div>
       ) : (
         <ol className="relative ml-2 border-l border-gray-100">
@@ -43,7 +46,9 @@ export function JobPositionHistoryTab({
               </p>
 
               <p className="font-['Inter',sans-serif] text-xs text-gray-400">
-                by {entry.performedByName ?? "System"}
+                {t("jobs.positionDetail.history.by", {
+                  name: entry.performedByName ?? t("jobs.positionDetail.history.systemFallback"),
+                })}
               </p>
             </li>
           ))}

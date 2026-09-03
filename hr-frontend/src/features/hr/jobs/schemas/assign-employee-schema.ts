@@ -15,8 +15,9 @@ export const assignEmployeeSchema = z
 
 export type AssignEmployeeFormValues = z.infer<typeof assignEmployeeSchema>;
 
+// Labels are i18n key paths (not display text) — translate with t() at the call site.
 export const ASSIGNMENT_TYPE_OPTIONS = [
-  { value: "1", label: "Permanent" },
-  { value: "2", label: "Acting" },
-  { value: "3", label: "Temporary" },
+  { value: "1", label: "jobs.assignmentTypes.permanent" },
+  { value: "2", label: "jobs.assignmentTypes.acting" },
+  { value: "3", label: "jobs.assignmentTypes.temporary" },
 ];
