@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 
 import { useEmploymentDirectory } from "@/features/hr/employment/api/use-employment-directory";
@@ -9,6 +10,7 @@ import type { EmployeeSummary } from "@/lib/api/generated/model";
 const NO_EMPLOYEES: EmployeeSummary[] = [];
 
 export function EmploymentHomePage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const directoryQuery = useEmploymentDirectory();
   const statistics = usePositionAssignmentStatistics();
@@ -46,40 +48,40 @@ export function EmploymentHomePage() {
     <div className="flex flex-col gap-4 p-4 md:p-6">
       <div>
         <h1 className="font-['Inter',sans-serif] text-2xl font-bold text-[#1a2535]">
-          Employment
+          {t("employment.home.title")}
         </h1>
 
         <p className="font-['Inter',sans-serif] text-sm text-gray-400">
-          Manage employment records and position assignments
+          {t("employment.home.subtitle")}
         </p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
         <EmploymentSummaryCard
-          title="Employment Records"
+          title={t("employment.home.recordsCard.title")}
           headline={employees.length}
-          headlineLabel="Total Records"
+          headlineLabel={t("employment.home.recordsCard.headlineLabel")}
           loading={directoryQuery.isLoading}
           stats={[
-            { value: recordStats.active, label: "Active" },
-            { value: recordStats.hiredThisYear, label: "This Year" },
-            { value: recordStats.hiredThisMonth, label: "This Month" },
+            { value: recordStats.active, label: t("employment.home.recordsCard.active") },
+            { value: recordStats.hiredThisYear, label: t("employment.home.recordsCard.thisYear") },
+            { value: recordStats.hiredThisMonth, label: t("employment.home.recordsCard.thisMonth") },
           ]}
-          actionLabel="View Employment Records"
+          actionLabel={t("employment.home.recordsCard.actionLabel")}
           onAction={() => navigate("/hr/employment/records")}
         />
 
         <EmploymentSummaryCard
-          title="Position Assignments"
+          title={t("employment.home.positionsCard.title")}
           headline={statistics.data?.totalPositions ?? 0}
-          headlineLabel="Total Positions"
+          headlineLabel={t("employment.home.positionsCard.headlineLabel")}
           loading={statistics.isLoading}
           stats={[
-            { value: statistics.data?.occupiedPositions ?? 0, label: "Occupied" },
-            { value: statistics.data?.openPositions ?? 0, label: "Open" },
-            { value: statistics.data?.inactivePositions ?? 0, label: "Inactive" },
+            { value: statistics.data?.occupiedPositions ?? 0, label: t("employment.home.positionsCard.occupied") },
+            { value: statistics.data?.openPositions ?? 0, label: t("employment.home.positionsCard.open") },
+            { value: statistics.data?.inactivePositions ?? 0, label: t("employment.home.positionsCard.inactive") },
           ]}
-          actionLabel="View Position Assignments"
+          actionLabel={t("employment.home.positionsCard.actionLabel")}
           onAction={() => navigate("/hr/jobs/positions")}
         />
       </div>

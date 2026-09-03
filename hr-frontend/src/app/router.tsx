@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { createBrowserRouter, Navigate } from "react-router";
 
 import { AppLayout } from "@/components/layout/app-layout";
@@ -35,11 +36,13 @@ import { HiresResignationsReportPage } from "@/features/hr/reports/pages/hires-r
 import { ContractTypesReportPage } from "@/features/hr/reports/pages/contract-types-report-page";
 import { HrAccessGate } from "@/features/hr/access-delegation/components/hr-access-gate";
 import { AccessDelegationPage } from "@/features/hr/access-delegation/pages/access-delegation-page";
-function Placeholder({ name }: { name: string }) {
+function Placeholder({ nameKey }: { nameKey: string }) {
+  const { t } = useTranslation();
+
   return (
     <div className="p-6">
       <p className="font-['Inter',sans-serif] text-[15px] text-[#6b7280]">
-        {name} page — coming soon.
+        {t("common.comingSoonPage", { name: t(nameKey) })}
       </p>
     </div>
   );
@@ -57,12 +60,12 @@ export const router = createBrowserRouter([
           { index: true, element: <DashboardRouter /> },
           {
             path: "notifications",
-            element: <Placeholder name="Notifications" />,
+            element: <Placeholder nameKey="sidebar.notifications" />,
           },
-          { path: "requests", element: <Placeholder name="Requests" /> },
-          { path: "projects", element: <Placeholder name="Projects" /> },
-          { path: "reports", element: <Placeholder name="Reports" /> },
-          { path: "settings", element: <Placeholder name="Settings" /> },
+          { path: "requests", element: <Placeholder nameKey="sidebar.requests" /> },
+          { path: "projects", element: <Placeholder nameKey="sidebar.projects" /> },
+          { path: "reports", element: <Placeholder nameKey="sidebar.reports" /> },
+          { path: "settings", element: <Placeholder nameKey="sidebar.settings" /> },
           {
             path: "hr",
             element: <HrAccessGate />,

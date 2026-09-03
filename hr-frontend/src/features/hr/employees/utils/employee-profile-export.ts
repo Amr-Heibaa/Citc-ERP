@@ -1,5 +1,6 @@
 import type { EmployeeDetail } from "@/lib/api/generated/model";
 
+import i18n from "@/i18n";
 import { formatDate } from "@/features/hr/shared/utils/format";
 import { escapeHtml, printHtmlReport } from "@/features/hr/shared/utils/export";
 
@@ -23,7 +24,7 @@ function field(label: string, value: unknown) {
 function contractsTable(emp: EmployeeDetail) {
   const contracts = emp.contracts ?? [];
   if (contracts.length === 0) {
-    return `<p class="profile-empty">No contracts on record.</p>`;
+    return `<p class="profile-empty">${escapeHtml(i18n.t("employees.profileExport.noContracts"))}</p>`;
   }
 
   const rows = contracts
@@ -34,7 +35,11 @@ function contractsTable(emp: EmployeeDetail) {
           <td>${escapeHtml(c.contractTypeName ?? c.contractTypeCode ?? "—")}</td>
           <td>${escapeHtml(formatDate(c.startDate))}</td>
           <td>${escapeHtml(formatDate(c.endDate))}</td>
-          <td>${escapeHtml(c.active ? "Active" : "Ended")}</td>
+          <td>${escapeHtml(
+            c.active
+              ? i18n.t("employees.profileExport.contractActive")
+              : i18n.t("employees.profileExport.contractEnded"),
+          )}</td>
         </tr>
       `,
     )
@@ -43,7 +48,7 @@ function contractsTable(emp: EmployeeDetail) {
   return `
     <table>
       <thead>
-        <tr><th>Contract #</th><th>Type</th><th>Start</th><th>End</th><th>Status</th></tr>
+        <tr><th>${escapeHtml(i18n.t("employees.profileExport.columns.contractNumber"))}</th><th>${escapeHtml(i18n.t("employees.profileExport.columns.type"))}</th><th>${escapeHtml(i18n.t("employees.profileExport.columns.start"))}</th><th>${escapeHtml(i18n.t("employees.profileExport.columns.end"))}</th><th>${escapeHtml(i18n.t("employees.profileExport.columns.status"))}</th></tr>
       </thead>
       <tbody>${rows}</tbody>
     </table>
@@ -53,7 +58,7 @@ function contractsTable(emp: EmployeeDetail) {
 function historyTable(emp: EmployeeDetail) {
   const history = emp.history ?? [];
   if (history.length === 0) {
-    return `<p class="profile-empty">No employment history on record.</p>`;
+    return `<p class="profile-empty">${escapeHtml(i18n.t("employees.profileExport.noHistory"))}</p>`;
   }
 
   const rows = history
@@ -64,7 +69,7 @@ function historyTable(emp: EmployeeDetail) {
           <td>${escapeHtml(h.positionTitle ?? "—")}</td>
           <td>${escapeHtml(h.reportingToName ?? "—")}</td>
           <td>${escapeHtml(formatDate(h.startDate))}</td>
-          <td>${escapeHtml(h.current ? "Current" : formatDate(h.endDate))}</td>
+          <td>${escapeHtml(h.current ? i18n.t("employees.profileExport.current") : formatDate(h.endDate))}</td>
         </tr>
       `,
     )
@@ -73,7 +78,7 @@ function historyTable(emp: EmployeeDetail) {
   return `
     <table>
       <thead>
-        <tr><th>Unit</th><th>Position</th><th>Reports To</th><th>Start</th><th>End</th></tr>
+        <tr><th>${escapeHtml(i18n.t("employees.profileExport.columns.unit"))}</th><th>${escapeHtml(i18n.t("employees.profileExport.columns.position"))}</th><th>${escapeHtml(i18n.t("employees.profileExport.columns.reportsTo"))}</th><th>${escapeHtml(i18n.t("employees.profileExport.columns.start"))}</th><th>${escapeHtml(i18n.t("employees.profileExport.columns.end"))}</th></tr>
       </thead>
       <tbody>${rows}</tbody>
     </table>
@@ -89,6 +94,9 @@ function profileSectionHtml(emp: EmployeeDetail) {
         name.split(/\s+/).map((p) => p[0]).slice(0, 2).join("").toUpperCase(),
       )}</div>`;
 
+  const field2 = (key: string, value: unknown) =>
+    field(i18n.t(`employees.profileExport.fields.${key}`), value);
+
   return `
     <section class="profile-section">
       <div class="profile-banner">
@@ -96,53 +104,53 @@ function profileSectionHtml(emp: EmployeeDetail) {
         <div>
           <h2 class="profile-name">${escapeHtml(name)}</h2>
           <p class="profile-subtitle">${escapeHtml(subtitle || "—")}</p>
-          <p class="profile-subtitle">Employee #${escapeHtml(emp.employeeNumber ?? "—")} · ${escapeHtml(emp.statusName ?? emp.statusCode ?? "—")}</p>
+          <p class="profile-subtitle">${escapeHtml(i18n.t("employees.profileExport.employeeNumberPrefix"))}${escapeHtml(emp.employeeNumber ?? "—")} · ${escapeHtml(emp.statusName ?? emp.statusCode ?? "—")}</p>
         </div>
       </div>
 
-      <h3 class="profile-heading">Personal Information</h3>
+      <h3 class="profile-heading">${escapeHtml(i18n.t("employees.profileExport.personalInformation"))}</h3>
       <div class="profile-grid">
-        ${field("Full Name", name)}
-        ${field("Gender", emp.genderLabel)}
-        ${field("Birth Date", formatDate(emp.birthDate))}
-        ${field("National ID", emp.nationalId)}
-        ${field("Marital Status", emp.maritalStatus)}
-        ${field("Qualification", emp.qualification)}
-        ${field("Specialization", emp.specialization)}
-        ${field("Personal Email", emp.personalEmail)}
-        ${field("Business Email", emp.businessEmail)}
-        ${field("Mobile", emp.mobileNumber)}
-        ${field("Phone", emp.phoneNumber)}
-        ${field("Address", [emp.addressLine1, emp.addressLine2].filter(Boolean).join(", "))}
+        ${field2("fullName", name)}
+        ${field2("gender", emp.genderLabel)}
+        ${field2("birthDate", formatDate(emp.birthDate))}
+        ${field2("nationalId", emp.nationalId)}
+        ${field2("maritalStatus", emp.maritalStatus)}
+        ${field2("qualification", emp.qualification)}
+        ${field2("specialization", emp.specialization)}
+        ${field2("personalEmail", emp.personalEmail)}
+        ${field2("businessEmail", emp.businessEmail)}
+        ${field2("mobile", emp.mobileNumber)}
+        ${field2("phone", emp.phoneNumber)}
+        ${field2("address", [emp.addressLine1, emp.addressLine2].filter(Boolean).join(", "))}
       </div>
 
-      <h3 class="profile-heading">Employment</h3>
+      <h3 class="profile-heading">${escapeHtml(i18n.t("employees.profileExport.employment"))}</h3>
       <div class="profile-grid">
-        ${field("Department", emp.department)}
-        ${field("Branch", emp.branch)}
-        ${field("Section", emp.section)}
-        ${field("Position", emp.positionTitle)}
-        ${field("Grade", emp.gradeName)}
-        ${field("Manager", emp.manager)}
-        ${field("Team Leader", emp.teamLeader)}
-        ${field("Hire Date", formatDate(emp.hireDate))}
-        ${field("Start Date", formatDate(emp.startDate))}
-        ${field("Termination Date", formatDate(emp.terminationDate))}
-        ${field("Work Location", emp.workLocation)}
-        ${field("Total Experience (yrs)", emp.totalExperienceYears)}
+        ${field2("department", emp.department)}
+        ${field2("branch", emp.branch)}
+        ${field2("section", emp.section)}
+        ${field2("position", emp.positionTitle)}
+        ${field2("grade", emp.gradeName)}
+        ${field2("manager", emp.manager)}
+        ${field2("teamLeader", emp.teamLeader)}
+        ${field2("hireDate", formatDate(emp.hireDate))}
+        ${field2("startDate", formatDate(emp.startDate))}
+        ${field2("terminationDate", formatDate(emp.terminationDate))}
+        ${field2("workLocation", emp.workLocation)}
+        ${field2("totalExperienceYears", emp.totalExperienceYears)}
       </div>
 
-      <h3 class="profile-heading">Skills</h3>
+      <h3 class="profile-heading">${escapeHtml(i18n.t("employees.profileExport.skills"))}</h3>
       <p class="profile-skills">${
         emp.skills && emp.skills.length > 0
           ? emp.skills.map(escapeHtml).join(", ")
-          : "No skills recorded."
+          : escapeHtml(i18n.t("employees.profileExport.noSkills"))
       }</p>
 
-      <h3 class="profile-heading">Contracts</h3>
+      <h3 class="profile-heading">${escapeHtml(i18n.t("employees.profileExport.contracts"))}</h3>
       ${contractsTable(emp)}
 
-      <h3 class="profile-heading">Employment History</h3>
+      <h3 class="profile-heading">${escapeHtml(i18n.t("employees.profileExport.employmentHistory"))}</h3>
       ${historyTable(emp)}
     </section>
   `;
@@ -250,7 +258,9 @@ export function printEmployeeProfiles(
   `;
 
   printHtmlReport({
-    title: options?.title ?? (employees.length === 1 ? fullName(employees[0]) : "Employee Profiles"),
+    title:
+      options?.title ??
+      (employees.length === 1 ? fullName(employees[0]) : i18n.t("employees.export.employeeProfiles")),
     subtitle: options?.subtitle,
     bodyHtml,
     orientation: "portrait",

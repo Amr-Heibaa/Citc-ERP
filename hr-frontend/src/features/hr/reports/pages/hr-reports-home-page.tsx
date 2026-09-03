@@ -1,35 +1,37 @@
 import { CalendarRange, FileBarChart2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 
-const REPORT_CARDS = [
-  {
-    id: "hires-resignations",
-    title: "Hires & Resignations",
-    description: "See who joined or left within a date range you choose",
-    icon: CalendarRange,
-    to: "/hr/reports/hires-resignations",
-  },
-  {
-    id: "contract-types",
-    title: "Contract Types",
-    description: "See how contracts break down by contract type",
-    icon: FileBarChart2,
-    to: "/hr/reports/contract-types",
-  },
-];
-
 export function HrReportsHomePage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
+
+  const REPORT_CARDS = [
+    {
+      id: "hires-resignations",
+      title: t("reports.home.hiresResignations.title"),
+      description: t("reports.home.hiresResignations.description"),
+      icon: CalendarRange,
+      to: "/hr/reports/hires-resignations",
+    },
+    {
+      id: "contract-types",
+      title: t("reports.home.contractTypes.title"),
+      description: t("reports.home.contractTypes.description"),
+      icon: FileBarChart2,
+      to: "/hr/reports/contract-types",
+    },
+  ];
 
   return (
     <div className="flex flex-col gap-4 p-4 md:p-6">
       <div>
         <h1 className="font-['Inter',sans-serif] text-2xl font-bold text-[#1a2535]">
-          HR Reports
+          {t("reports.home.title")}
         </h1>
 
         <p className="font-['Inter',sans-serif] text-sm text-gray-400">
-          Run and export HR reports
+          {t("reports.home.subtitle")}
         </p>
       </div>
 

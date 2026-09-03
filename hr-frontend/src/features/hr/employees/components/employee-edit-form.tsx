@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -21,11 +22,6 @@ import {
 import { parseEgyptianNationalId } from "@/features/hr/employees/utils/egyptian-national-id";
 import type { EmployeeDetail } from "@/lib/api/generated/model";
 
-const GENDER_OPTIONS = [
-  { value: "Male", label: "Male" },
-  { value: "Female", label: "Female" },
-];
-
 export function EmployeeEditForm({
   employee,
   onSaved,
@@ -35,9 +31,15 @@ export function EmployeeEditForm({
   onSaved: () => void;
   onCancel: () => void;
 }) {
+  const { t } = useTranslation();
   const statuses = useStatuses();
   const orgUnits = useOrgUnits();
   const updateEmployee = useUpdateEmployee(employee.employeeId ?? 0);
+
+  const GENDER_OPTIONS = [
+    { value: "Male", label: t("employees.editForm.male") },
+    { value: "Female", label: t("employees.editForm.female") },
+  ];
 
   const [photoPreview, setPhotoPreview] = useState<string | null>(
     employee.profilePhotoDataUrl ?? null,
@@ -82,13 +84,13 @@ export function EmployeeEditForm({
     try {
       await updateEmployee.mutateAsync(toUpdateEmployeeRequest(values));
 
-      toast.success("Employee updated successfully");
+      toast.success(t("employees.editForm.updatedSuccess"));
       onSaved();
     } catch (error) {
       const message =
         typeof error === "object" && error !== null && "message" in error
           ? String(error.message)
-          : "Failed to update employee";
+          : t("employees.editForm.updateError");
 
       toast.error(message);
     }
@@ -100,16 +102,16 @@ export function EmployeeEditForm({
       className="flex min-h-0 flex-1 flex-col overflow-hidden"
     >
       <div className="flex-1 space-y-5 overflow-y-auto px-6 py-5">
-        <EditSection title="Employment">
-          <LabeledField label="Employee Number" error={errors.employeeNumber?.message}>
+        <EditSection title={t("employees.editForm.employmentSection")}>
+          <LabeledField label={t("employees.editForm.employeeNumber")} error={errors.employeeNumber?.message}>
             <Input {...register("employeeNumber")} />
           </LabeledField>
 
-          <LabeledField label="Employee Status">
+          <LabeledField label={t("employees.editForm.employeeStatus")}>
             <SelectField
               control={control}
               name="employeeStatusId"
-              placeholder="Select status"
+              placeholder={t("employees.editForm.selectStatus")}
               options={
                 statuses.data?.map((status) => ({
                   value: String(status.id),
@@ -119,11 +121,11 @@ export function EmployeeEditForm({
             />
           </LabeledField>
 
-          <LabeledField label="Organization Unit">
+          <LabeledField label={t("employees.editForm.organizationUnit")}>
             <SelectField
               control={control}
               name="currentOrgUnitId"
-              placeholder="Select organization unit"
+              placeholder={t("employees.editForm.selectOrganizationUnit")}
               options={
                 orgUnits.data?.map((unit) => ({
                   value: String(unit.id),
@@ -133,33 +135,33 @@ export function EmployeeEditForm({
             />
           </LabeledField>
 
-          <LabeledField label="Hire Date">
+          <LabeledField label={t("employees.editForm.hireDate")}>
             <Input {...register("hireDate")} type="date" />
           </LabeledField>
 
-          <LabeledField label="Start Date">
+          <LabeledField label={t("employees.editForm.startDate")}>
             <Input {...register("startDate")} type="date" />
           </LabeledField>
 
-          <LabeledField label="Termination Date">
+          <LabeledField label={t("employees.editForm.terminationDate")}>
             <Input {...register("terminationDate")} type="date" />
           </LabeledField>
         </EditSection>
 
-        <EditSection title="Personal Information">
+        <EditSection title={t("employees.editForm.personalSection")}>
           <div className="md:col-span-2">
-            <LabeledField label="Profile Photo">
+            <LabeledField label={t("employees.editForm.profilePhoto")}>
               <div className="flex items-center gap-4">
                 <div className="flex size-24 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[#1a2535]">
                   {photoPreview ? (
                     <img
                       src={photoPreview}
-                      alt={employee.displayName ?? "Employee"}
+                      alt={employee.displayName ?? t("employment.table.unnamedEmployee")}
                       className="size-full object-cover"
                     />
                   ) : (
                     <span className="text-sm font-semibold text-white">
-                      No Photo
+                      {t("employees.editForm.noPhoto")}
                     </span>
                   )}
                 </div>
@@ -183,7 +185,9 @@ export function EmployeeEditForm({
                         setPhotoPreview(photo.dataUrl);
                       } catch (error) {
                         toast.error(
-                          error instanceof Error ? error.message : "Invalid photo",
+                          error instanceof Error
+                            ? error.message
+                            : t("employees.editForm.invalidPhoto"),
                         );
 
                         event.target.value = "";
@@ -192,47 +196,47 @@ export function EmployeeEditForm({
                   />
 
                   <p className="text-xs text-gray-400">
-                    JPG, PNG, GIF or WebP. Maximum 2 MB.
+                    {t("employees.editForm.photoHint")}
                   </p>
                 </div>
               </div>
             </LabeledField>
           </div>
 
-          <LabeledField label="First Name" error={errors.firstName?.message}>
+          <LabeledField label={t("employees.editForm.firstName")} error={errors.firstName?.message}>
             <Input {...register("firstName")} />
           </LabeledField>
 
-          <LabeledField label="Other Name">
+          <LabeledField label={t("employees.editForm.otherName")}>
             <Input {...register("otherName")} />
           </LabeledField>
 
-          <LabeledField label="Display Name">
+          <LabeledField label={t("employees.editForm.displayName")}>
             <Input {...register("displayName")} />
           </LabeledField>
 
-          <LabeledField label="Gender" error={errors.gender?.message}>
+          <LabeledField label={t("employees.editForm.gender")} error={errors.gender?.message}>
             <SelectField
               control={control}
               name="gender"
-              placeholder="Select gender"
+              placeholder={t("employees.editForm.selectGender")}
               options={GENDER_OPTIONS}
             />
           </LabeledField>
 
-          <LabeledField label="Birth Date">
+          <LabeledField label={t("employees.editForm.birthDate")}>
             <Input {...register("birthDate")} type="date" />
           </LabeledField>
 
-          <LabeledField label="National ID">
+          <LabeledField label={t("employees.editForm.nationalId")}>
             <Input {...register("nationalId")} />
           </LabeledField>
 
-          <LabeledField label="National ID Expiry Date">
+          <LabeledField label={t("employees.editForm.nationalIdExpiryDate")}>
             <Input {...register("nationalIdExpiryDate")} type="date" />
           </LabeledField>
 
-          <LabeledField label="Military Exemption Expiry">
+          <LabeledField label={t("employees.editForm.militaryExemptionExpiry")}>
             <Input
               {...register("militaryExemptionExpiryDate")}
               type="date"
@@ -240,42 +244,42 @@ export function EmployeeEditForm({
             />
           </LabeledField>
 
-          <LabeledField label="Qualification">
+          <LabeledField label={t("employees.editForm.qualification")}>
             <Input
               {...register("qualification")}
               maxLength={255}
-              placeholder="Bachelor of Computer Science"
+              placeholder={t("employees.editForm.qualificationPlaceholder")}
             />
           </LabeledField>
         </EditSection>
 
-        <EditSection title="Official Information">
-          <LabeledField label="Social Insurance Number">
+        <EditSection title={t("employees.editForm.officialSection")}>
+          <LabeledField label={t("employees.editForm.socialInsuranceNumber")}>
             <Input {...register("socialInsuranceNumber")} maxLength={50} />
           </LabeledField>
 
-          <LabeledField label="Marital Status">
+          <LabeledField label={t("employees.editForm.maritalStatus")}>
             <Input {...register("maritalStatus")} maxLength={50} />
           </LabeledField>
 
-          <LabeledField label="Graduation Date">
+          <LabeledField label={t("employees.editForm.graduationDate")}>
             <Input {...register("graduationDate")} type="date" />
           </LabeledField>
 
-          <LabeledField label="Specialization">
+          <LabeledField label={t("employees.editForm.specialization")}>
             <Input {...register("specialization")} maxLength={255} />
           </LabeledField>
 
-          <LabeledField label="Work Location">
+          <LabeledField label={t("employees.editForm.workLocation")}>
             <Input {...register("workLocation")} maxLength={255} />
           </LabeledField>
 
-          <LabeledField label="Health Insurance Card Number">
+          <LabeledField label={t("employees.editForm.healthInsuranceCardNumber")}>
             <Input {...register("healthInsuranceCardNumber")} maxLength={100} />
           </LabeledField>
 
           <LabeledField
-            label="Total Experience Years"
+            label={t("employees.editForm.totalExperienceYears")}
             error={errors.totalExperienceYears?.message}
           >
             <Input
@@ -287,7 +291,7 @@ export function EmployeeEditForm({
           </LabeledField>
 
           <div className="md:col-span-2">
-            <LabeledField label="Leave Notes">
+            <LabeledField label={t("employees.editForm.leaveNotes")}>
               <textarea
                 {...register("leaveNotes")}
                 rows={3}
@@ -297,64 +301,63 @@ export function EmployeeEditForm({
           </div>
         </EditSection>
 
-        <EditSection title="Skills">
+        <EditSection title={t("employees.editForm.skillsSection")}>
           <div className="md:col-span-2">
-            <LabeledField label="Employee Skills">
+            <LabeledField label={t("employees.editForm.employeeSkills")}>
               <div className="flex flex-col gap-2">
                 <Input
                   {...register("skills")}
-                  placeholder="Java, Spring Boot, React, PostgreSQL"
+                  placeholder={t("employees.editForm.skillsPlaceholder")}
                 />
 
                 <p className="text-xs text-gray-400">
-                  Separate multiple skills using commas. Remove all text to
-                  clear the employee skills.
+                  {t("employees.editForm.skillsHint")}
                 </p>
               </div>
             </LabeledField>
           </div>
         </EditSection>
 
-        <EditSection title="Contact Information">
-          <LabeledField label="Personal Email" error={errors.personalEmail?.message}>
+        <EditSection title={t("employees.editForm.contactSection")}>
+          <LabeledField label={t("employees.editForm.personalEmail")} error={errors.personalEmail?.message}>
             <Input {...register("personalEmail")} type="email" />
           </LabeledField>
 
-          <LabeledField label="Business Email" error={errors.businessEmail?.message}>
+          <LabeledField label={t("employees.editForm.businessEmail")} error={errors.businessEmail?.message}>
             <Input {...register("businessEmail")} type="email" />
           </LabeledField>
 
-          <LabeledField label="Phone Number">
+          <LabeledField label={t("employees.editForm.phoneNumber")}>
             <Input {...register("phoneNumber")} />
           </LabeledField>
 
-          <LabeledField label="Mobile Number">
+          <LabeledField label={t("employees.editForm.mobileNumber")}>
             <Input {...register("mobileNumber")} />
           </LabeledField>
         </EditSection>
 
-        <EditSection title="Address">
-          <LabeledField label="Country ID">
+        <EditSection title={t("employees.editForm.addressSection")}>
+          <LabeledField label={t("employees.editForm.countryId")}>
             <Input {...register("countryId")} type="number" />
           </LabeledField>
 
-          <LabeledField label="State ID">
+          <LabeledField label={t("employees.editForm.stateId")}>
             <Input {...register("stateId")} type="number" />
           </LabeledField>
 
-          <LabeledField label="City ID">
+          <LabeledField label={t("employees.editForm.cityId")}>
             <Input {...register("cityId")} type="number" />
           </LabeledField>
 
-          <LabeledField label="Postal Code">
+          <LabeledField label={t("employees.editForm.postalCode")}>
             <Input {...register("postalCode")} />
           </LabeledField>
 
-          <LabeledField label="Address Line 1">
+          <LabeledField label={t("employees.editForm.addressLine1")}>
             <Input {...register("addressLine1")} />
           </LabeledField>
 
-          <LabeledField label="Address Line 2">
+          <LabeledField label={t("employees.editForm.addressLine2")}>
             <Input {...register("addressLine2")} />
           </LabeledField>
         </EditSection>
@@ -362,11 +365,13 @@ export function EmployeeEditForm({
 
       <div className="flex justify-end gap-3 border-t border-gray-100 px-6 py-4">
         <Button type="button" variant="outline" onClick={onCancel}>
-          Cancel
+          {t("employees.editForm.cancel")}
         </Button>
 
         <Button type="submit" disabled={updateEmployee.isPending}>
-          {updateEmployee.isPending ? "Saving…" : "Save Changes"}
+          {updateEmployee.isPending
+            ? t("employees.editForm.saving")
+            : t("employees.editForm.saveChanges")}
         </Button>
       </div>
     </form>

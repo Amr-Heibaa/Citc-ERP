@@ -1,5 +1,6 @@
 import { Pencil } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -17,6 +18,7 @@ import { SettingsListShell } from "@/features/hr/hr-settings/components/settings
 import type { ContractTypeSetting } from "@/lib/api/generated/model";
 
 export function ContractTypesPage() {
+  const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [active, setActive] = useState<boolean | undefined>(undefined);
   const [page, setPage] = useState(0);
@@ -40,9 +42,9 @@ export function ContractTypesPage() {
   return (
     <>
       <SettingsListShell
-        title="Contract Types"
-        subtitle="Manage the contract type reference list used on employee contracts."
-        backLabel="HR Settings"
+        title={t("hrSettings.contractTypes.title")}
+        subtitle={t("hrSettings.contractTypes.subtitle")}
+        backLabel={t("hrSettings.contractTypes.backLabel")}
         backTo="/hr/settings"
         search={search}
         onSearchChange={(value) => {
@@ -54,7 +56,7 @@ export function ContractTypesPage() {
           setActive(value);
           setPage(0);
         }}
-        addLabel="Add Contract Type"
+        addLabel={t("hrSettings.contractTypes.addLabel")}
         onAdd={openCreate}
         page={page}
         totalPages={contractTypes.data?.totalPages ?? 0}
@@ -63,25 +65,27 @@ export function ContractTypesPage() {
       >
         {contractTypes.isLoading ? (
           <div className="flex h-48 items-center justify-center font-['Inter',sans-serif] text-sm text-gray-400">
-            Loading contract types…
+            {t("hrSettings.contractTypes.loading")}
           </div>
         ) : contractTypes.isError ? (
           <div className="flex h-48 items-center justify-center font-['Inter',sans-serif] text-sm text-red-600">
-            Unable to load contract types.
+            {t("hrSettings.contractTypes.unableToLoad")}
           </div>
         ) : rows.length === 0 ? (
           <div className="flex h-48 items-center justify-center font-['Inter',sans-serif] text-sm text-gray-400">
-            No contract types match the current filters.
+            {t("hrSettings.contractTypes.noResults")}
           </div>
         ) : (
           <Table>
             <TableHeader className="bg-[#f4f6f9]">
               <TableRow>
-                <TableHead>Code</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Usage</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead>{t("hrSettings.contractTypes.columns.code")}</TableHead>
+                <TableHead>{t("hrSettings.contractTypes.columns.name")}</TableHead>
+                <TableHead>{t("hrSettings.contractTypes.columns.usage")}</TableHead>
+                <TableHead>{t("hrSettings.contractTypes.columns.status")}</TableHead>
+                <TableHead className="text-right">
+                  {t("hrSettings.contractTypes.columns.actions")}
+                </TableHead>
               </TableRow>
             </TableHeader>
 
@@ -108,7 +112,7 @@ export function ContractTypesPage() {
                     <Button
                       variant="ghost"
                       size="icon"
-                      title="Edit contract type"
+                      title={t("hrSettings.contractTypes.editTooltip")}
                       onClick={() => openEdit(contractType)}
                     >
                       <Pencil className="size-4" />

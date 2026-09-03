@@ -1,5 +1,6 @@
 import type { EmployeeSummary } from "@/lib/api/generated/model";
 
+import i18n from "@/i18n";
 import { formatDate } from "@/features/hr/shared/utils/format";
 import {
   downloadCsv,
@@ -65,21 +66,21 @@ export function printHiresResignationsReport(
   const headerHtml = hireHeaders.map((h) => `<th>${escapeHtml(h)}</th>`).join("");
 
   const bodyHtml = `
-    <h2 style="margin: 22px 0 8px; font-size: 15px;">Hires (${hires.length})</h2>
+    <h2 style="margin: 22px 0 8px; font-size: 15px;">${escapeHtml(i18n.t("reports.hiresResignationsReport.hires", { count: hires.length }))}</h2>
     <table>
       <thead><tr>${headerHtml}</tr></thead>
-      <tbody>${hireRowsHtml || `<tr><td colspan="${hireHeaders.length}">No hires in this range</td></tr>`}</tbody>
+      <tbody>${hireRowsHtml || `<tr><td colspan="${hireHeaders.length}">${escapeHtml(i18n.t("reports.hiresResignationsReport.noHires"))}</td></tr>`}</tbody>
     </table>
 
-    <h2 style="margin: 26px 0 8px; font-size: 15px;">Resignations (${resignations.length})</h2>
+    <h2 style="margin: 26px 0 8px; font-size: 15px;">${escapeHtml(i18n.t("reports.hiresResignationsReport.resignations", { count: resignations.length }))}</h2>
     <table>
       <thead><tr>${headerHtml}</tr></thead>
-      <tbody>${resignationRowsHtml || `<tr><td colspan="${hireHeaders.length}">No resignations in this range</td></tr>`}</tbody>
+      <tbody>${resignationRowsHtml || `<tr><td colspan="${hireHeaders.length}">${escapeHtml(i18n.t("reports.hiresResignationsReport.noResignations"))}</td></tr>`}</tbody>
     </table>
   `;
 
   printHtmlReport({
-    title: "Hires & Resignations Report",
+    title: i18n.t("reports.hiresResignationsReport.title"),
     subtitle: rangeLabel,
     bodyHtml,
     orientation: "landscape",

@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -40,6 +41,7 @@ export function TerminateEmploymentDialog({
   onOpenChange: (open: boolean) => void;
   overview: EmploymentOverview;
 }) {
+  const { t } = useTranslation();
   const employeeId = overview.employeeId ?? 0;
   const statuses = useStatuses();
   const terminateEmployment = useTerminateEmployment(employeeId);
@@ -74,11 +76,11 @@ export function TerminateEmploymentDialog({
   const submit = handleSubmit(async (values) => {
     try {
       await terminateEmployment.mutateAsync(toTerminateRequest(values));
-      toast.success("Employment terminated");
+      toast.success(t("employees.employmentActions.terminate.success"));
       onOpenChange(false);
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Unable to terminate employment",
+        error instanceof Error ? error.message : t("employees.employmentActions.terminate.error"),
       );
     }
   });
@@ -88,23 +90,21 @@ export function TerminateEmploymentDialog({
       <DialogContent className="sm:max-w-lg gap-0 overflow-hidden p-0">
         <DialogHeader className="border-b border-gray-100 px-6 py-5">
           <DialogTitle className="text-xl text-[#1a2535]">
-            Terminate Employment
+            {t("employees.employmentActions.terminate.title")}
           </DialogTitle>
 
           <DialogDescription>
-            This will end the active position assignment, close the current
-            employment period and any active contracts, and clear the
-            employee&apos;s organization unit.
+            {t("employees.employmentActions.terminate.description")}
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={submit}>
           <div className="grid grid-cols-1 gap-4 px-6 py-5 sm:grid-cols-2">
-            <LabeledField label="Status" error={errors.employeeStatusId?.message}>
+            <LabeledField label={t("employees.employmentActions.common.status")} error={errors.employeeStatusId?.message}>
               <SelectField
                 control={control}
                 name="employeeStatusId"
-                placeholder="Select status"
+                placeholder={t("employees.employmentActions.common.selectStatus")}
                 options={terminalStatuses.map((status) => ({
                   value: String(status.id),
                   label: status.name,
@@ -113,26 +113,31 @@ export function TerminateEmploymentDialog({
             </LabeledField>
 
             <LabeledField
-              label="Termination Date"
+              label={t("employees.employmentActions.terminate.terminationDate")}
               error={errors.terminationDate?.message}
             >
               <Input type="date" {...register("terminationDate")} />
             </LabeledField>
 
             <div className="sm:col-span-2">
-              <LabeledField label="Reason (Optional)">
-                <Input {...register("reason")} placeholder="Reason for termination" />
+              <LabeledField label={t("employees.employmentActions.common.reasonOptional")}>
+                <Input
+                  {...register("reason")}
+                  placeholder={t("employees.employmentActions.terminate.reasonPlaceholder")}
+                />
               </LabeledField>
             </div>
           </div>
 
           <DialogFooter className="border-t border-gray-100 px-6 py-4">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
+              {t("employees.employmentActions.common.cancel")}
             </Button>
 
             <Button type="submit" variant="destructive" disabled={terminateEmployment.isPending}>
-              {terminateEmployment.isPending ? "Terminating…" : "Terminate Employment"}
+              {terminateEmployment.isPending
+                ? t("employees.employmentActions.terminate.confirming")
+                : t("employees.employmentActions.terminate.confirm")}
             </Button>
           </DialogFooter>
         </form>

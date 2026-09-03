@@ -12,6 +12,7 @@ import {
   XCircle,
 } from "lucide-react";
 import { useForm, useWatch } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
@@ -49,6 +50,8 @@ type EmployeeContractImportDialogProps = {
   onOpenChange: (open: boolean) => void;
 };
 
+// Excel template headers/example values are a data contract matched by the
+// backend import parser, not on-screen UI copy — intentionally left in English.
 const TEMPLATE_HEADERS = [
   "Contract Type",
   "Contract Number",
@@ -145,6 +148,7 @@ export function EmployeeContractImportDialog({
   open,
   onOpenChange,
 }: EmployeeContractImportDialogProps) {
+  const { t } = useTranslation();
   const [file, setFile] = useState<File | null>(null);
   const docxMode = isDocxFile(file);
 
@@ -220,21 +224,21 @@ export function EmployeeContractImportDialog({
 
   async function handlePreview() {
     if (!file) {
-      toast.error("Select a file first");
+      toast.error(t("employees.contractImport.selectFileFirst"));
       return;
     }
 
     try {
       if (docxMode) {
         await docxPreviewMutation.mutateAsync(file);
-        toast.success("Contract details extracted from the file");
+        toast.success(t("employees.contractImport.extractedSuccess"));
       } else {
         await previewMutation.mutateAsync(file);
-        toast.success("Contract file validated");
+        toast.success(t("employees.contractImport.validatedSuccess"));
       }
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Unable to preview the contract file",
+        error instanceof Error ? error.message : t("employees.contractImport.unableToPreview"),
       );
     }
   }
@@ -245,17 +249,19 @@ export function EmployeeContractImportDialog({
     }
 
     if (preview.validRows === 0) {
-      toast.error("The file has no valid contracts");
+      toast.error(t("employees.contractImport.noValidContracts"));
       return;
     }
 
     try {
       const response = await confirmMutation.mutateAsync(file);
 
-      toast.success(`${response.importedRows} contracts imported`);
+      toast.success(
+        t("employees.contractImport.importedSuccess", { count: response.importedRows }),
+      );
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Unable to import contracts",
+        error instanceof Error ? error.message : t("employees.contractImport.unableToImport"),
       );
     }
   }
@@ -272,11 +278,15 @@ export function EmployeeContractImportDialog({
       });
 
       toast.success(
-        `Contract ${created.contractNumber ?? created.contractId ?? ""} created from file`,
+        t("employees.contractImport.createdFromFile", {
+          number: created.contractNumber ?? created.contractId ?? "",
+        }),
       );
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Unable to create the contract from this file",
+        error instanceof Error
+          ? error.message
+          : t("employees.contractImport.unableToCreateFromFile"),
       );
     }
   });
@@ -299,15 +309,16 @@ export function EmployeeContractImportDialog({
             <DialogHeader className="shrink-0 border-b border-gray-100 px-6 py-5 text-left">
               <DialogTitle className="flex items-center gap-2 text-xl text-[#1a2535]">
                 <Sparkles className="size-5 text-[#f5841f]" />
-                Review Extracted Contract
+                {t("employees.contractImport.reviewExtractedTitle")}
               </DialogTitle>
 
               <DialogDescription>
                 {docxPreview?.detectedTemplateNameEn
-                  ? `Detected template: ${docxPreview.detectedTemplateNameEn}. `
+                  ? t("employees.contractImport.detectedTemplate", {
+                      name: docxPreview.detectedTemplateNameEn,
+                    })
                   : ""}
-                Review the fields below, fix anything that needs it, then confirm to create the
-                contract.
+                {t("employees.contractImport.reviewDescription")}
               </DialogDescription>
             </DialogHeader>
 
@@ -340,14 +351,14 @@ export function EmployeeContractImportDialog({
                 disabled={pending}
                 onClick={() => docxPreviewMutation.reset()}
               >
-                Back
+                {t("employees.contractImport.back")}
               </Button>
 
               <Button type="submit" disabled={pending}>
                 {docxConfirmMutation.isPending && (
                   <Loader2 className="mr-2 size-4 animate-spin" />
                 )}
-                Confirm Import
+                {t("employees.contractImport.confirmImport")}
               </Button>
             </DialogFooter>
           </form>
@@ -356,12 +367,11 @@ export function EmployeeContractImportDialog({
             <DialogHeader className="shrink-0 border-b border-gray-100 px-6 py-5 text-left">
               <DialogTitle className="flex items-center gap-2 text-xl text-[#1a2535]">
                 <FileSpreadsheet className="size-5 text-[#f5841f]" />
-                Import Employee Contracts
+                {t("employees.contractImport.importTitle")}
               </DialogTitle>
 
               <DialogDescription>
-                Import contracts from an Excel file, or import a single filled contract Word
-                document to create a new contract automatically.
+                {t("employees.contractImport.importDescription")}
               </DialogDescription>
             </DialogHeader>
 
@@ -379,13 +389,11 @@ export function EmployeeContractImportDialog({
 
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-semibold text-[#1a2535]">
-                        Contract file
+                        {t("employees.contractImport.contractFile")}
                       </p>
 
                       <p className="truncate text-xs text-gray-400">
-                        {file
-                          ? file.name
-                          : "Select an .xlsx/.xls file for a bulk import, or a filled .docx contract to create one contract"}
+                        {file ? file.name : t("employees.contractImport.selectFilePrompt")}
                       </p>
                     </div>
 
@@ -414,7 +422,7 @@ export function EmployeeContractImportDialog({
                       onClick={downloadTemplate}
                     >
                       <Download className="mr-2 size-4" />
-                      Download Excel Template
+                      {t("employees.contractImport.downloadTemplate")}
                     </Button>
                   )}
                 </>
@@ -424,19 +432,19 @@ export function EmployeeContractImportDialog({
                 <>
                   <div className="grid shrink-0 grid-cols-1 gap-3 sm:grid-cols-3">
                     <SummaryCard
-                      label="Total"
+                      label={t("employees.contractImport.summary.total")}
                       value={preview.totalRows}
                       color="text-[#1a2535]"
                     />
 
                     <SummaryCard
-                      label="Valid"
+                      label={t("employees.contractImport.summary.valid")}
                       value={preview.validRows}
                       color="text-emerald-600"
                     />
 
                     <SummaryCard
-                      label="Invalid"
+                      label={t("employees.contractImport.summary.invalid")}
                       value={preview.invalidRows}
                       color="text-red-600"
                     />
@@ -446,13 +454,23 @@ export function EmployeeContractImportDialog({
                     <table className="w-full min-w-[950px] text-left text-sm">
                       <thead className="sticky top-0 bg-[#f4f6f9] text-xs text-gray-500">
                         <tr>
-                          <th className="px-4 py-3">Row</th>
-                          <th className="px-4 py-3">Contract Type</th>
-                          <th className="px-4 py-3">Contract Number</th>
-                          <th className="px-4 py-3">Start Date</th>
-                          <th className="px-4 py-3">Work Type</th>
-                          <th className="px-4 py-3">Status</th>
-                          <th className="px-4 py-3">Message</th>
+                          <th className="px-4 py-3">{t("employees.contractImport.previewTable.row")}</th>
+                          <th className="px-4 py-3">
+                            {t("employees.contractImport.previewTable.contractType")}
+                          </th>
+                          <th className="px-4 py-3">
+                            {t("employees.contractImport.previewTable.contractNumber")}
+                          </th>
+                          <th className="px-4 py-3">
+                            {t("employees.contractImport.previewTable.startDate")}
+                          </th>
+                          <th className="px-4 py-3">
+                            {t("employees.contractImport.previewTable.workType")}
+                          </th>
+                          <th className="px-4 py-3">{t("employees.contractImport.previewTable.status")}</th>
+                          <th className="px-4 py-3">
+                            {t("employees.contractImport.previewTable.message")}
+                          </th>
                         </tr>
                       </thead>
 
@@ -475,20 +493,20 @@ export function EmployeeContractImportDialog({
                               {row.fulltime == null
                                 ? "—"
                                 : row.fulltime
-                                  ? "Full Time"
-                                  : "Part Time"}
+                                  ? t("employees.contractImport.previewTable.fullTime")
+                                  : t("employees.contractImport.previewTable.partTime")}
                             </td>
 
                             <td className="px-4 py-3">
                               {row.valid ? (
                                 <Badge className="border-0 bg-emerald-100 text-emerald-700">
                                   <CheckCircle2 className="mr-1 size-3" />
-                                  Valid
+                                  {t("employees.contractImport.previewTable.valid")}
                                 </Badge>
                               ) : (
                                 <Badge className="border-0 bg-red-100 text-red-700">
                                   <XCircle className="mr-1 size-3" />
-                                  Invalid
+                                  {t("employees.contractImport.previewTable.invalid")}
                                 </Badge>
                               )}
                             </td>
@@ -506,7 +524,9 @@ export function EmployeeContractImportDialog({
                               )}
 
                               {errors.length === 0 && warnings.length === 0 && (
-                                <span className="text-gray-400">Ready</span>
+                                <span className="text-gray-400">
+                                  {t("employees.contractImport.previewTable.ready")}
+                                </span>
                               )}
                             </td>
                           </tr>
@@ -522,19 +542,19 @@ export function EmployeeContractImportDialog({
                 <>
                   <div className="grid shrink-0 grid-cols-1 gap-3 sm:grid-cols-3">
                     <SummaryCard
-                      label="Total"
+                      label={t("employees.contractImport.summary.total")}
                       value={result.totalRows}
                       color="text-[#1a2535]"
                     />
 
                     <SummaryCard
-                      label="Imported"
+                      label={t("employees.contractImport.summary.imported")}
                       value={result.importedRows}
                       color="text-emerald-600"
                     />
 
                     <SummaryCard
-                      label="Skipped"
+                      label={t("employees.contractImport.summary.skipped")}
                       value={result.skippedRows}
                       color="text-amber-600"
                     />
@@ -542,17 +562,21 @@ export function EmployeeContractImportDialog({
 
                   <div className="flex items-center gap-3 rounded-xl bg-emerald-50 px-4 py-4 text-sm text-emerald-700">
                     <CheckCircle2 className="size-5" />
-                    Contract import finished.
+                    {t("employees.contractImport.importFinished")}
                   </div>
 
                   <div className="min-h-0 flex-1 overflow-auto rounded-xl border">
                     <table className="w-full text-left text-sm">
                       <thead className="sticky top-0 bg-[#f4f6f9] text-xs text-gray-500">
                         <tr>
-                          <th className="px-4 py-3">Row</th>
-                          <th className="px-4 py-3">Contract Number</th>
-                          <th className="px-4 py-3">Status</th>
-                          <th className="px-4 py-3">Message</th>
+                          <th className="px-4 py-3">{t("employees.contractImport.resultTable.row")}</th>
+                          <th className="px-4 py-3">
+                            {t("employees.contractImport.resultTable.contractNumber")}
+                          </th>
+                          <th className="px-4 py-3">{t("employees.contractImport.resultTable.status")}</th>
+                          <th className="px-4 py-3">
+                            {t("employees.contractImport.resultTable.message")}
+                          </th>
                         </tr>
                       </thead>
 
@@ -591,12 +615,13 @@ export function EmployeeContractImportDialog({
                   <CheckCircle2 className="size-10 text-emerald-500" />
 
                   <p className="text-sm font-semibold text-[#1a2535]">
-                    Contract {docxResult.contractNumber ?? docxResult.contractId} created
+                    {t("employees.contractImport.docxCreatedTitle", {
+                      number: docxResult.contractNumber ?? docxResult.contractId,
+                    })}
                   </p>
 
                   <p className="max-w-md text-xs text-gray-400">
-                    The contract was created from the imported file and the original document
-                    was attached to it.
+                    {t("employees.contractImport.docxCreatedDescription")}
                   </p>
                 </div>
               )}
@@ -605,7 +630,7 @@ export function EmployeeContractImportDialog({
             <DialogFooter className="shrink-0 border-t border-gray-100 px-6 py-4">
               {result || docxResult ? (
                 <Button type="button" onClick={() => handleOpenChange(false)}>
-                  Done
+                  {t("employees.contractImport.done")}
                 </Button>
               ) : preview ? (
                 <>
@@ -615,7 +640,7 @@ export function EmployeeContractImportDialog({
                     disabled={pending}
                     onClick={() => previewMutation.reset()}
                   >
-                    Back
+                    {t("employees.contractImport.back")}
                   </Button>
 
                   <Button
@@ -626,7 +651,7 @@ export function EmployeeContractImportDialog({
                     {confirmMutation.isPending && (
                       <Loader2 className="mr-2 size-4 animate-spin" />
                     )}
-                    Confirm Import
+                    {t("employees.contractImport.confirmImport")}
                   </Button>
                 </>
               ) : (
@@ -638,7 +663,9 @@ export function EmployeeContractImportDialog({
                   ) : (
                     <FileSpreadsheet className="mr-2 size-4" />
                   )}
-                  {docxMode ? "Extract Contract" : "Preview"}
+                  {docxMode
+                    ? t("employees.contractImport.extractContract")
+                    : t("employees.contractImport.preview")}
                 </Button>
               )}
             </DialogFooter>

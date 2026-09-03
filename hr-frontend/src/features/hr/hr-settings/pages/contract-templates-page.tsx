@@ -1,5 +1,6 @@
 import { Download, Upload } from "lucide-react";
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 
@@ -34,6 +35,7 @@ import type { ContractTemplateSummary } from "@/lib/api/generated/model";
 const ALL_TYPES = "__all__";
 
 function TemplateActivationButton({ template }: { template: ContractTemplateSummary }) {
+  const { t } = useTranslation();
   const templateId = template.contractTemplateId ?? 0;
   const activate = useActivateTemplate(templateId);
   const deactivate = useDeactivateTemplate(templateId);
@@ -43,26 +45,31 @@ function TemplateActivationButton({ template }: { template: ContractTemplateSumm
     try {
       if (template.active) {
         await deactivate.mutateAsync();
-        toast.success("Template deactivated");
+        toast.success(t("hrSettings.contractTemplates.deactivatedSuccess"));
       } else {
         await activate.mutateAsync();
-        toast.success("Template activated");
+        toast.success(t("hrSettings.contractTemplates.activatedSuccess"));
       }
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Unable to update the template status",
+        error instanceof Error
+          ? error.message
+          : t("hrSettings.contractTemplates.unableToUpdateStatus"),
       );
     }
   }
 
   return (
     <Button variant="ghost" size="sm" disabled={pending} onClick={handleClick}>
-      {template.active ? "Deactivate" : "Activate"}
+      {template.active
+        ? t("hrSettings.contractTemplates.deactivate")
+        : t("hrSettings.contractTemplates.activate")}
     </Button>
   );
 }
 
 export function ContractTemplatesPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [contractTypeId, setContractTypeId] = useState("");
   const [fileDialogOpen, setFileDialogOpen] = useState(false);
@@ -98,7 +105,7 @@ export function ContractTemplatesPage() {
       template.contractTemplateId,
       `${template.templateCode ?? "template"}-v${template.versionNumber ?? 1}`,
     ).catch(() => {
-      toast.error("Unable to download the template file");
+      toast.error(t("hrSettings.contractTemplates.unableToDownload"));
     });
   }
 
@@ -112,15 +119,15 @@ export function ContractTemplatesPage() {
               onClick={() => navigate("/hr/settings")}
               className="font-['Inter',sans-serif] text-xs text-gray-400 hover:text-gray-600"
             >
-              ← HR Settings
+              ← {t("hrSettings.contractTemplates.backLabel")}
             </button>
 
             <h1 className="mt-1 font-['Inter',sans-serif] text-2xl font-bold text-[#1a2535]">
-              Contract Templates
+              {t("hrSettings.contractTemplates.title")}
             </h1>
 
             <p className="mt-0.5 font-['Inter',sans-serif] text-sm text-gray-400">
-              Manage the document templates used to generate employee contracts.
+              {t("hrSettings.contractTemplates.subtitle")}
             </p>
           </div>
         </div>
@@ -131,11 +138,11 @@ export function ContractTemplatesPage() {
             onValueChange={(value) => setContractTypeId(value === ALL_TYPES ? "" : value)}
           >
             <SelectTrigger className="h-10 w-full font-['Inter',sans-serif] text-sm text-gray-600 lg:w-56">
-              <SelectValue placeholder="All Contract Types" />
+              <SelectValue placeholder={t("hrSettings.contractTemplates.allTypes")} />
             </SelectTrigger>
 
             <SelectContent>
-              <SelectItem value={ALL_TYPES}>All Contract Types</SelectItem>
+              <SelectItem value={ALL_TYPES}>{t("hrSettings.contractTemplates.allTypes")}</SelectItem>
 
               {contractTypes.data?.map((type) => (
                 <SelectItem key={type.id} value={String(type.id)}>
@@ -149,27 +156,29 @@ export function ContractTemplatesPage() {
         <div className="overflow-hidden rounded-xl border border-gray-100 bg-white">
           {templates.isLoading ? (
             <div className="flex h-48 items-center justify-center font-['Inter',sans-serif] text-sm text-gray-400">
-              Loading contract templates…
+              {t("hrSettings.contractTemplates.loading")}
             </div>
           ) : templates.isError ? (
             <div className="flex h-48 items-center justify-center font-['Inter',sans-serif] text-sm text-red-600">
-              Unable to load contract templates.
+              {t("hrSettings.contractTemplates.unableToLoad")}
             </div>
           ) : filtered.length === 0 ? (
             <div className="flex h-48 items-center justify-center font-['Inter',sans-serif] text-sm text-gray-400">
-              No contract templates match the current filter.
+              {t("hrSettings.contractTemplates.noResults")}
             </div>
           ) : (
             <Table>
               <TableHeader className="bg-[#f4f6f9]">
                 <TableRow>
-                  <TableHead>Template</TableHead>
-                  <TableHead>Contract Type</TableHead>
-                  <TableHead>Version</TableHead>
-                  <TableHead>Effective From</TableHead>
-                  <TableHead>Effective To</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                  <TableHead>{t("hrSettings.contractTemplates.columns.template")}</TableHead>
+                  <TableHead>{t("hrSettings.contractTemplates.columns.contractType")}</TableHead>
+                  <TableHead>{t("hrSettings.contractTemplates.columns.version")}</TableHead>
+                  <TableHead>{t("hrSettings.contractTemplates.columns.effectiveFrom")}</TableHead>
+                  <TableHead>{t("hrSettings.contractTemplates.columns.effectiveTo")}</TableHead>
+                  <TableHead>{t("hrSettings.contractTemplates.columns.status")}</TableHead>
+                  <TableHead className="text-right">
+                    {t("hrSettings.contractTemplates.columns.actions")}
+                  </TableHead>
                 </TableRow>
               </TableHeader>
 
@@ -210,7 +219,7 @@ export function ContractTemplatesPage() {
                           <Button
                             variant="ghost"
                             size="icon"
-                            title="Download template file"
+                            title={t("hrSettings.contractTemplates.downloadTooltip")}
                             onClick={() => handleDownload(template)}
                           >
                             <Download className="size-4" />
@@ -220,7 +229,11 @@ export function ContractTemplatesPage() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          title={template.fileUploaded ? "Upload new version" : "Upload template file"}
+                          title={
+                            template.fileUploaded
+                              ? t("hrSettings.contractTemplates.uploadNewVersionTooltip")
+                              : t("hrSettings.contractTemplates.uploadFileTooltip")
+                          }
                           onClick={() => openFileDialog(template)}
                         >
                           <Upload className="size-4" />

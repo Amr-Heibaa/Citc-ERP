@@ -1,5 +1,6 @@
 import { Download } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -24,12 +25,13 @@ const FORMAT_LABELS: Record<ContractExportFormat, string> = {
 export function ContractExportMenu({
   employeeId,
   contractId,
-  label = "Export",
+  label,
 }: {
   employeeId: number;
   contractId?: number;
   label?: string;
 }) {
+  const { t } = useTranslation();
   const [pending, setPending] = useState(false);
 
   async function handleExport(format: ContractExportFormat) {
@@ -43,7 +45,7 @@ export function ContractExportMenu({
       }
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Unable to export contract",
+        error instanceof Error ? error.message : t("employees.contractExportMenu.unableToExport"),
       );
     } finally {
       setPending(false);
@@ -55,7 +57,7 @@ export function ContractExportMenu({
       <DropdownMenuTrigger asChild>
         <Button type="button" variant="outline" size="sm" disabled={pending}>
           <Download className="size-3.5" />
-          {label}
+          {label ?? t("common.export")}
         </Button>
       </DropdownMenuTrigger>
 

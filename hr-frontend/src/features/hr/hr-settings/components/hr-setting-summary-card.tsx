@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 export function HrSettingSummaryCard({
   title,
   total,
@@ -15,6 +17,8 @@ export function HrSettingSummaryCard({
   actionLabel: string;
   onAction: () => void;
 }) {
+  const { t } = useTranslation();
+
   return (
     <div className="flex flex-col rounded-xl border border-gray-100 bg-white p-6 text-center">
       <h3 className="font-['Inter',sans-serif] text-base font-bold text-[#1a2535]">
@@ -26,13 +30,13 @@ export function HrSettingSummaryCard({
       </p>
 
       <p className="mt-1 font-['Inter',sans-serif] text-sm text-gray-400">
-        {error ? "Unable to load" : "Total Records"}
+        {error ? t("hrSettings.summaryCard.unableToLoad") : t("hrSettings.summaryCard.totalRecords")}
       </p>
 
       <div className="my-5 h-px w-full bg-gray-100" />
 
       <p className="font-['Inter',sans-serif] text-sm text-gray-500">
-        {loading || error ? "—" : active} active
+        {loading || error ? "—" : t("hrSettings.summaryCard.activeSuffix", { count: active })}
       </p>
 
       <button

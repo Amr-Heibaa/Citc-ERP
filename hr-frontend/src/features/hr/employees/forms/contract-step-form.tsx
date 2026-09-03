@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 
 import { Input } from "@/components/ui/input";
 import { useContractTypes } from "@/features/hr/employees/api/use-employees";
@@ -14,11 +15,6 @@ import {
   type EmployeeWizardData,
 } from "@/features/hr/employees/schemas/employee-schema";
 
-const WORK_TYPE_OPTIONS = [
-  { value: "Full Time", label: "Full Time" },
-  { value: "Part Time", label: "Part Time" },
-];
-
 export function ContractStepForm({
   defaults,
   submit,
@@ -32,6 +28,13 @@ export function ContractStepForm({
   skip: () => void;
   pending: boolean;
 }) {
+  const { t } = useTranslation();
+
+  const WORK_TYPE_OPTIONS = [
+    { value: "Full Time", label: t("employees.contractForm.fields.fullTime") },
+    { value: "Part Time", label: t("employees.contractForm.fields.partTime") },
+  ];
+
   const types = useContractTypes();
 
   const {
@@ -61,17 +64,17 @@ export function ContractStepForm({
     <form onSubmit={handleSubmit(submit)} className="flex min-h-0 flex-1 flex-col">
       <WizardHeader
         step={5}
-        title="Contract"
-        description="The employee contract information"
+        title={t("employees.wizard.contract.title")}
+        description={t("employees.wizard.contract.description")}
       />
 
       <div className="flex min-h-0 flex-1">
         <div className="grid flex-1 grid-cols-1 content-center gap-x-5 gap-y-4 px-8 py-3 md:grid-cols-2">
-          <LabeledField label="Contract Type">
+          <LabeledField label={t("employees.wizard.contract.contractType")}>
             <SelectField
               control={control}
               name="contractTypeId"
-              placeholder="Contract Type"
+              placeholder={t("employees.wizard.contract.contractType")}
               options={
                 types.data?.map((type) => ({
                   value: String(type.id),
@@ -81,55 +84,55 @@ export function ContractStepForm({
             />
           </LabeledField>
 
-          <LabeledField label="Contract Number">
+          <LabeledField label={t("employees.wizard.contract.contractNumber")}>
             <Input {...register("contractNumber")} />
           </LabeledField>
 
-          <LabeledField label="Start Date">
+          <LabeledField label={t("employees.wizard.contract.startDate")}>
             <Input {...register("contractStartDate")} type="date" />
           </LabeledField>
 
-          <LabeledField label="End Date">
+          <LabeledField label={t("employees.wizard.contract.endDate")}>
             <Input {...register("contractEndDate")} type="date" />
           </LabeledField>
 
           <LabeledField
-            label="Working Hours / Week"
+            label={t("employees.wizard.contract.workingHoursWeek")}
             error={errors.workingHoursPerWeek?.message}
           >
             <Input {...register("workingHoursPerWeek")} />
           </LabeledField>
 
           <LabeledField
-            label="Working Hours / Month"
+            label={t("employees.wizard.contract.workingHoursMonth")}
             error={errors.workingHoursPerMonth?.message}
           >
             <Input {...register("workingHoursPerMonth")} />
           </LabeledField>
 
           <LabeledField
-            label="Probation Period (Days)"
+            label={t("employees.wizard.contract.probationPeriodDays")}
             error={errors.probationPeriodDays?.message}
           >
             <Input {...register("probationPeriodDays")} />
           </LabeledField>
 
-          <LabeledField label="Work Type">
+          <LabeledField label={t("employees.wizard.contract.workType")}>
             <SelectField
               control={control}
               name="workType"
-              placeholder="Work Type"
+              placeholder={t("employees.wizard.contract.workType")}
               options={WORK_TYPE_OPTIONS}
             />
           </LabeledField>
 
           <div className="md:col-span-2">
-            <LabeledField label="Contract Notes">
+            <LabeledField label={t("employees.wizard.contract.contractNotes")}>
               <textarea
                 {...register("contractNotes")}
                 rows={3}
                 className="flex w-full rounded-md border border-input bg-[#f4f6f9] px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
-                placeholder="Contract notes"
+                placeholder={t("employees.wizard.contract.contractNotesPlaceholder")}
               />
             </LabeledField>
           </div>

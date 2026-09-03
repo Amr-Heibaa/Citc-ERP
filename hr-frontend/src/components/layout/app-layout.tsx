@@ -140,7 +140,7 @@ export function AppLayout() {
 
             <div className="flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-full bg-[#f5841f] md:size-9">
               <span className="font-['Inter',sans-serif] text-[12px] font-bold text-white">
-                {initials(user?.username ?? "User")}
+                {initials(user?.username ?? t("sidebar.user"))}
               </span>
             </div>
           </div>

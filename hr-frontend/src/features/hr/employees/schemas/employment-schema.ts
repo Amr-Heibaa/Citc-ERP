@@ -10,10 +10,11 @@ export const TERMINAL_STATUS_CODES = [
 
 export const REACTIVATION_STATUS_CODES = ["ACTIVE", "PROBATION"];
 
+// Labels are i18n key paths (not display text) — translate with t() at the call site.
 export const ASSIGNMENT_TYPE_OPTIONS = [
-  { value: "1", label: "Permanent" },
-  { value: "2", label: "Acting" },
-  { value: "3", label: "Temporary" },
+  { value: "1", label: "jobs.assignmentTypes.permanent" },
+  { value: "2", label: "jobs.assignmentTypes.acting" },
+  { value: "3", label: "jobs.assignmentTypes.temporary" },
 ];
 
 export const updateStatusSchema = z.object({

@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -44,6 +45,7 @@ export function AssignmentChangeDialog({
   onOpenChange: (open: boolean) => void;
   overview: EmploymentOverview;
 }) {
+  const { t } = useTranslation();
   const employeeId = overview.employeeId ?? 0;
   const positions = usePositionsForEmployment(overview.organizationId);
   const changeAssignment = useChangeEmploymentAssignment(employeeId);
@@ -74,11 +76,13 @@ export function AssignmentChangeDialog({
   const submit = handleSubmit(async (values) => {
     try {
       await changeAssignment.mutateAsync(toAssignmentChangeRequest(values));
-      toast.success("Assignment updated");
+      toast.success(t("employees.employmentActions.assignmentChange.success"));
       onOpenChange(false);
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Unable to change assignment",
+        error instanceof Error
+          ? error.message
+          : t("employees.employmentActions.assignmentChange.error"),
       );
     }
   });
@@ -93,24 +97,25 @@ export function AssignmentChangeDialog({
       <DialogContent className="sm:max-w-lg gap-0 overflow-hidden p-0">
         <DialogHeader className="border-b border-gray-100 px-6 py-5">
           <DialogTitle className="text-xl text-[#1a2535]">
-            Transfer / Promote / Demote
+            {t("employees.employmentActions.assignmentChange.title")}
           </DialogTitle>
 
           <DialogDescription>
-            Move this employee to a new position. The movement type (transfer,
-            promotion or demotion) is determined automatically from the target
-            unit and grade.
+            {t("employees.employmentActions.assignmentChange.description")}
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={submit}>
           <div className="grid grid-cols-1 gap-4 px-6 py-5 sm:grid-cols-2">
             <div className="sm:col-span-2">
-              <LabeledField label="New Position" error={errors.positionId?.message}>
+              <LabeledField
+                label={t("employees.employmentActions.common.newPosition")}
+                error={errors.positionId?.message}
+              >
                 <SelectField
                   control={control}
                   name="positionId"
-                  placeholder="Select position"
+                  placeholder={t("employees.employmentActions.common.selectPosition")}
                   options={candidatePositions.flatMap((position) =>
                     position.positionId == null
                       ? []
@@ -126,39 +131,47 @@ export function AssignmentChangeDialog({
             </div>
 
             <LabeledField
-              label="Assignment Type"
+              label={t("employees.employmentActions.common.assignmentType")}
               error={errors.assignmentType?.message}
             >
               <SelectField
                 control={control}
                 name="assignmentType"
-                placeholder="Select type"
-                options={ASSIGNMENT_TYPE_OPTIONS}
+                placeholder={t("employees.employmentActions.common.selectType")}
+                options={ASSIGNMENT_TYPE_OPTIONS.map((option) => ({
+                  value: option.value,
+                  label: t(option.label),
+                }))}
               />
             </LabeledField>
 
-            <LabeledField label="Start Date" error={errors.startDate?.message}>
+            <LabeledField label={t("employees.employmentActions.common.startDate")} error={errors.startDate?.message}>
               <Input type="date" {...register("startDate")} />
             </LabeledField>
 
-            <LabeledField label="End Date (Optional)" error={errors.endDate?.message}>
+            <LabeledField label={t("employees.employmentActions.common.endDateOptional")} error={errors.endDate?.message}>
               <Input type="date" {...register("endDate")} />
             </LabeledField>
 
             <div className="sm:col-span-2">
-              <LabeledField label="Reason (Optional)">
-                <Input {...register("reason")} placeholder="Reason for movement" />
+              <LabeledField label={t("employees.employmentActions.common.reasonOptional")}>
+                <Input
+                  {...register("reason")}
+                  placeholder={t("employees.employmentActions.assignmentChange.reasonPlaceholder")}
+                />
               </LabeledField>
             </div>
           </div>
 
           <DialogFooter className="border-t border-gray-100 px-6 py-4">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
+              {t("employees.employmentActions.common.cancel")}
             </Button>
 
             <Button type="submit" disabled={changeAssignment.isPending}>
-              {changeAssignment.isPending ? "Saving…" : "Move Employee"}
+              {changeAssignment.isPending
+                ? t("employees.employmentActions.common.saving")
+                : t("employees.employmentActions.assignmentChange.confirm")}
             </Button>
           </DialogFooter>
         </form>

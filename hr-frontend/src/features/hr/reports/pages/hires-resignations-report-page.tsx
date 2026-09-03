@@ -1,5 +1,6 @@
 import { Download, FileSpreadsheet, FileText } from "lucide-react";
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -62,6 +63,8 @@ function ReportTable({
   dateField: "hireDate" | "terminationDate";
   emptyLabel: string;
 }) {
+  const { t } = useTranslation();
+
   return (
     <div className="overflow-hidden rounded-xl border border-gray-100 bg-white">
       {employees.length === 0 ? (
@@ -72,11 +75,11 @@ function ReportTable({
         <Table>
           <TableHeader className="bg-[#f4f6f9]">
             <TableRow>
-              <TableHead>Employee Number</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Department</TableHead>
-              <TableHead>Position</TableHead>
-              <TableHead>Date</TableHead>
+              <TableHead>{t("reports.hiresResignationsReport.columns.employeeNumber")}</TableHead>
+              <TableHead>{t("reports.hiresResignationsReport.columns.name")}</TableHead>
+              <TableHead>{t("reports.hiresResignationsReport.columns.department")}</TableHead>
+              <TableHead>{t("reports.hiresResignationsReport.columns.position")}</TableHead>
+              <TableHead>{t("reports.hiresResignationsReport.columns.date")}</TableHead>
             </TableRow>
           </TableHeader>
 
@@ -101,6 +104,7 @@ function defaultRange() {
 }
 
 export function HiresResignationsReportPage() {
+  const { t } = useTranslation();
   const [{ today, monthAgo }] = useState(defaultRange);
 
   const [from, setFrom] = useState(monthAgo);
@@ -137,11 +141,14 @@ export function HiresResignationsReportPage() {
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="font-['Inter',sans-serif] text-2xl font-bold text-[#1a2535]">
-            Hires & Resignations Report
+            {t("reports.hiresResignationsReport.title")}
           </h1>
 
           <p className="font-['Inter',sans-serif] text-sm text-gray-400">
-            {hires.length} hires · {resignations.length} resignations in the selected range
+            {t("reports.hiresResignationsReport.summary", {
+              hires: hires.length,
+              resignations: resignations.length,
+            })}
           </p>
         </div>
 
@@ -152,12 +159,12 @@ export function HiresResignationsReportPage() {
             disabled={!hasResults}
           >
             <Download className="size-4" />
-            CSV
+            {t("reports.hiresResignationsReport.csv")}
           </Button>
 
           <Button variant="outline" onClick={handleExcel} disabled={!hasResults || exporting}>
             <FileSpreadsheet className="size-4" />
-            Excel
+            {t("reports.hiresResignationsReport.excel")}
           </Button>
 
           <Button
@@ -166,7 +173,7 @@ export function HiresResignationsReportPage() {
             className="bg-[#1a2535] text-white hover:bg-[#243347]"
           >
             <FileText className="size-4" />
-            PDF
+            {t("reports.hiresResignationsReport.pdf")}
           </Button>
         </div>
       </div>
@@ -174,7 +181,7 @@ export function HiresResignationsReportPage() {
       <div className="flex flex-wrap items-end gap-3 rounded-xl border border-gray-200 bg-white p-4">
         <label className="flex flex-col gap-1">
           <span className="font-['Inter',sans-serif] text-xs font-medium text-gray-500">
-            From
+            {t("reports.hiresResignationsReport.from")}
           </span>
           <Input
             type="date"
@@ -187,7 +194,7 @@ export function HiresResignationsReportPage() {
 
         <label className="flex flex-col gap-1">
           <span className="font-['Inter',sans-serif] text-xs font-medium text-gray-500">
-            To
+            {t("reports.hiresResignationsReport.to")}
           </span>
           <Input
             type="date"
@@ -201,26 +208,34 @@ export function HiresResignationsReportPage() {
 
       {query.isLoading ? (
         <div className="flex h-48 items-center justify-center rounded-xl border border-gray-100 bg-white font-['Inter',sans-serif] text-sm text-gray-400">
-          Loading employees…
+          {t("reports.hiresResignationsReport.loading")}
         </div>
       ) : query.isError ? (
         <div className="flex h-48 items-center justify-center rounded-xl border border-gray-100 bg-white font-['Inter',sans-serif] text-sm text-red-600">
-          Unable to load employees.
+          {t("reports.hiresResignationsReport.unableToLoad")}
         </div>
       ) : (
         <>
           <div className="flex flex-col gap-2">
             <h2 className="font-['Inter',sans-serif] text-base font-bold text-[#1a2535]">
-              Hires ({hires.length})
+              {t("reports.hiresResignationsReport.hires", { count: hires.length })}
             </h2>
-            <ReportTable employees={hires} dateField="hireDate" emptyLabel="No hires in this range." />
+            <ReportTable
+              employees={hires}
+              dateField="hireDate"
+              emptyLabel={t("reports.hiresResignationsReport.noHires")}
+            />
           </div>
 
           <div className="flex flex-col gap-2">
             <h2 className="font-['Inter',sans-serif] text-base font-bold text-[#1a2535]">
-              Resignations ({resignations.length})
+              {t("reports.hiresResignationsReport.resignations", { count: resignations.length })}
             </h2>
-            <ReportTable employees={resignations} dateField="terminationDate" emptyLabel="No resignations in this range." />
+            <ReportTable
+              employees={resignations}
+              dateField="terminationDate"
+              emptyLabel={t("reports.hiresResignationsReport.noResignations")}
+            />
           </div>
         </>
       )}

@@ -1,3 +1,5 @@
+import i18n from "@/i18n";
+
 export type ExportRow = Record<string, unknown>;
 
 function timestampedFileName(baseName: string, extension: string) {
@@ -170,7 +172,7 @@ function reportShell(title: string, subtitle: string | undefined, bodyHtml: stri
       <body>
         <div class="report-header">
           <span class="report-brand">CITO</span>
-          <span class="report-meta">Generated ${escapeHtml(generatedAt)}</span>
+          <span class="report-meta">${escapeHtml(i18n.t("reportPrint.generatedAt", { date: generatedAt }))}</span>
         </div>
 
         <h1>${escapeHtml(title)}</h1>
@@ -178,7 +180,7 @@ function reportShell(title: string, subtitle: string | undefined, bodyHtml: stri
 
         ${bodyHtml}
 
-        <div class="report-footer">CITC ERP — HR Module</div>
+        <div class="report-footer">${escapeHtml(i18n.t("reportPrint.footer"))}</div>
 
         <script>
           window.onload = () => {
@@ -196,7 +198,7 @@ function openPrintWindow(html: string) {
   const printWindow = window.open("", "_blank", "width=1100,height=750");
 
   if (!printWindow) {
-    throw new Error("Allow pop-ups to export PDF");
+    throw new Error(i18n.t("reportPrint.popupBlocked"));
   }
 
   printWindow.opener = null;

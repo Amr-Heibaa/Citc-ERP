@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -26,6 +27,7 @@ export function ContractTemplateFileDialog({
   onOpenChange: (open: boolean) => void;
   template?: ContractTemplateSummary;
 }) {
+  const { t } = useTranslation();
   const [file, setFile] = useState<File | null>(null);
   const templateId = template?.contractTemplateId ?? 0;
   const isNewVersion = template?.fileUploaded ?? false;
@@ -51,16 +53,18 @@ export function ContractTemplateFileDialog({
     try {
       if (isNewVersion) {
         await createVersion.mutateAsync(file);
-        toast.success("New template version uploaded");
+        toast.success(t("hrSettings.templateFileDialog.newVersionUploaded"));
       } else {
         await uploadInitial.mutateAsync(file);
-        toast.success("Template file uploaded");
+        toast.success(t("hrSettings.templateFileDialog.fileUploaded"));
       }
 
       handleOpenChange(false);
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Unable to upload the template file",
+        error instanceof Error
+          ? error.message
+          : t("hrSettings.templateFileDialog.unableToUpload"),
       );
     }
   }
@@ -70,14 +74,16 @@ export function ContractTemplateFileDialog({
       <DialogContent className="sm:max-w-[420px]">
         <DialogHeader>
           <DialogTitle>
-            {isNewVersion ? "Upload New Version" : "Upload Template File"}
+            {isNewVersion
+              ? t("hrSettings.templateFileDialog.uploadNewVersionTitle")
+              : t("hrSettings.templateFileDialog.uploadFileTitle")}
           </DialogTitle>
 
           <DialogDescription>
             {template?.templateNameEn ?? template?.templateCode}
             {isNewVersion
-              ? " — this replaces the current version with a new one."
-              : " — this template has no file yet."}
+              ? t("hrSettings.templateFileDialog.replaceNotice")
+              : t("hrSettings.templateFileDialog.noFileNotice")}
           </DialogDescription>
         </DialogHeader>
 
@@ -89,11 +95,13 @@ export function ContractTemplateFileDialog({
 
         <DialogFooter>
           <Button variant="outline" onClick={() => handleOpenChange(false)}>
-            Cancel
+            {t("hrSettings.templateFileDialog.cancel")}
           </Button>
 
           <Button disabled={!file || pending} onClick={handleUpload}>
-            {pending ? "Uploading…" : "Upload"}
+            {pending
+              ? t("hrSettings.templateFileDialog.uploading")
+              : t("hrSettings.templateFileDialog.upload")}
           </Button>
         </DialogFooter>
       </DialogContent>

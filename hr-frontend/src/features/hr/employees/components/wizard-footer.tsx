@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 import { Button } from "@/components/ui/button";
 
 export function WizardFooter({
@@ -15,10 +17,12 @@ export function WizardFooter({
   submitDisabled?: boolean;
   final?: boolean;
 }) {
+  const { t } = useTranslation();
+
   return (
     <div className="flex shrink-0 items-center justify-between px-6 py-4">
       <p className="text-sm text-[#6b7280]">
-        Step {step} of 5
+        {t("employees.wizard.stepOf", { step })}
       </p>
 
       <div className="flex gap-3">
@@ -29,7 +33,7 @@ export function WizardFooter({
             onClick={onSkip}
             className="w-24"
           >
-            Skip
+            {t("employees.wizard.skip")}
           </Button>
         )}
 
@@ -40,7 +44,7 @@ export function WizardFooter({
             onClick={onBack}
             className="w-24"
           >
-            Back
+            {t("employees.wizard.back")}
           </Button>
         )}
 
@@ -50,10 +54,10 @@ export function WizardFooter({
           className="w-24 bg-[#1f2c3e] text-white"
         >
           {pending
-            ? "Saving…"
+            ? t("employees.wizard.saving")
             : final
-              ? "Add"
-              : "Next"}
+              ? t("employees.wizard.add")
+              : t("employees.wizard.next")}
         </Button>
       </div>
     </div>

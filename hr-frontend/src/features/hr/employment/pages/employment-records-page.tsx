@@ -1,5 +1,6 @@
 import { ChevronLeft } from "lucide-react";
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 
 import { useEmploymentDirectory } from "@/features/hr/employment/api/use-employment-directory";
@@ -23,6 +24,7 @@ function StatChip({ label, value }: { label: string; value: number }) {
 }
 
 export function EmploymentRecordsPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const directoryQuery = useEmploymentDirectory();
   const employees = directoryQuery.data ?? NO_EMPLOYEES;
@@ -115,25 +117,27 @@ export function EmploymentRecordsPage() {
         className="flex w-fit items-center gap-1 font-['Inter',sans-serif] text-sm text-gray-500 hover:text-[#1a2535]"
       >
         <ChevronLeft className="size-4" />
-        Employment
+        {t("employment.records.backLink")}
       </button>
 
       <div>
         <h1 className="font-['Inter',sans-serif] text-2xl font-bold text-[#1a2535]">
-          Employment Records
+          {t("employment.records.title")}
         </h1>
 
         <p className="font-['Inter',sans-serif] text-sm text-gray-400">
-          Browse employment status across the company. Select an employee to
-          manage their status, contracts, and assignment.
+          {t("employment.records.subtitle")}
         </p>
       </div>
 
       <div className="flex flex-wrap gap-3">
-        <StatChip label="Active" value={stats.active} />
-        <StatChip label="Probation" value={stats.probation} />
-        <StatChip label="On Leave" value={stats.onLeave} />
-        <StatChip label="Terminated / Inactive" value={stats.terminated} />
+        <StatChip label={t("employment.records.stats.active")} value={stats.active} />
+        <StatChip label={t("employment.records.stats.probation")} value={stats.probation} />
+        <StatChip label={t("employment.records.stats.onLeave")} value={stats.onLeave} />
+        <StatChip
+          label={t("employment.records.stats.terminated")}
+          value={stats.terminated}
+        />
       </div>
 
       <EmploymentFiltersBar orgUnits={orgUnits} statuses={statuses} />

@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -39,6 +40,7 @@ export function GrantAccessDialog({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
+  const { t } = useTranslation();
   const employees = useEmployeesForGrant();
   const grantAccess = useGrantHrAccess();
 
@@ -70,11 +72,11 @@ export function GrantAccessDialog({
   const submit = handleSubmit(async (values) => {
     try {
       await grantAccess.mutateAsync(toGrantAccessRequest(values));
-      toast.success("HR access granted");
+      toast.success(t("accessDelegation.grantDialog.success"));
       onOpenChange(false);
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Unable to grant HR access",
+        error instanceof Error ? error.message : t("accessDelegation.grantDialog.error"),
       );
     }
   });
@@ -84,23 +86,22 @@ export function GrantAccessDialog({
       <DialogContent className="sm:max-w-lg gap-0 overflow-hidden p-0">
         <DialogHeader className="border-b border-gray-100 px-6 py-5">
           <DialogTitle className="text-xl text-[#1a2535]">
-            Grant HR Access
+            {t("accessDelegation.grantDialog.title")}
           </DialogTitle>
 
           <DialogDescription>
-            Give an employee temporary or ongoing view and edit access to the
-            HR module.
+            {t("accessDelegation.grantDialog.description")}
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={submit}>
           <div className="grid grid-cols-1 gap-4 px-6 py-5 sm:grid-cols-2">
             <div className="sm:col-span-2">
-              <LabeledField label="Employee" error={errors.userId?.message}>
+              <LabeledField label={t("accessDelegation.grantDialog.employee")} error={errors.userId?.message}>
                 <SelectField
                   control={control}
                   name="userId"
-                  placeholder="Select employee"
+                  placeholder={t("accessDelegation.grantDialog.selectEmployee")}
                   options={eligibleEmployees.map((employee) => ({
                     value: String(employee.userId),
                     label: `${employee.displayName ?? "—"} (${employee.employeeNumber ?? "—"})`,
@@ -109,28 +110,36 @@ export function GrantAccessDialog({
               </LabeledField>
             </div>
 
-            <LabeledField label="Start Date" error={errors.startDate?.message}>
+            <LabeledField label={t("accessDelegation.grantDialog.startDate")} error={errors.startDate?.message}>
               <Input type="date" {...register("startDate")} />
             </LabeledField>
 
-            <LabeledField label="End Date (Optional)" error={errors.endDate?.message}>
+            <LabeledField
+              label={t("accessDelegation.grantDialog.endDateOptional")}
+              error={errors.endDate?.message}
+            >
               <Input type="date" {...register("endDate")} />
             </LabeledField>
 
             <div className="sm:col-span-2">
-              <LabeledField label="Reason" error={errors.reason?.message}>
-                <Input {...register("reason")} placeholder="Why is this access being granted?" />
+              <LabeledField label={t("accessDelegation.grantDialog.reason")} error={errors.reason?.message}>
+                <Input
+                  {...register("reason")}
+                  placeholder={t("accessDelegation.grantDialog.reasonPlaceholder")}
+                />
               </LabeledField>
             </div>
           </div>
 
           <DialogFooter className="border-t border-gray-100 px-6 py-4">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
+              {t("accessDelegation.grantDialog.cancel")}
             </Button>
 
             <Button type="submit" disabled={grantAccess.isPending}>
-              {grantAccess.isPending ? "Granting…" : "Grant Access"}
+              {grantAccess.isPending
+                ? t("accessDelegation.grantDialog.granting")
+                : t("accessDelegation.grantDialog.submit")}
             </Button>
           </DialogFooter>
         </form>

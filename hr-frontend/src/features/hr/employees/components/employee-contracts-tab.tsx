@@ -26,12 +26,6 @@ import {
 import { formatDate } from "@/features/hr/shared/utils/format";
 import type { ContractDetail, EmployeeDetail } from "@/lib/api/generated/model";
 
-const EXPORT_FORMAT_LABELS: Record<ContractExportFormat, string> = {
-  pdf: "Export as PDF",
-  xlsx: "Export as Excel",
-  docx: "Export as Word",
-};
-
 function ContractCard({
   contract,
   employeeId,
@@ -49,6 +43,12 @@ function ContractCard({
 }) {
   const { t } = useTranslation();
   const contractId = contract.contractId ?? 0;
+
+  const EXPORT_FORMAT_LABELS: Record<ContractExportFormat, string> = {
+    pdf: t("employees.contractsTab.exportAsPdf"),
+    xlsx: t("employees.contractsTab.exportAsExcel"),
+    docx: t("employees.contractsTab.exportAsWord"),
+  };
 
   const documents = useContractDocuments(employeeId, contractId);
   const currentDocument = documents.data?.find((doc) => doc.current);
@@ -73,7 +73,7 @@ function ContractCard({
       await downloadContractExport(employeeId, contractId, format);
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Unable to export contract",
+        error instanceof Error ? error.message : t("employees.contractsTab.unableToExport"),
       );
     }
   }

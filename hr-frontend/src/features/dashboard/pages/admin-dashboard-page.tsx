@@ -31,7 +31,7 @@ export function AdminDashboardPage() {
     year: "numeric",
   });
 
-  const displayName = myEmployee.data?.displayName ?? username ?? "Admin";
+  const displayName = myEmployee.data?.displayName ?? username ?? t("common.admin");
   const employeeNumber = myEmployee.data?.employeeNumber ?? "—";
 
   const history = useListHistory({ size: 5 });

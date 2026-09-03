@@ -13,6 +13,8 @@ const AVATAR_COLORS = [
   "bg-[#2ecc71]",
 ];
 
+const COLUMN_COUNT = 6;
+
 function EmploymentRow({
   employee,
   onSelect,
@@ -20,6 +22,7 @@ function EmploymentRow({
   employee: EmployeeSummary;
   onSelect: () => void;
 }) {
+  const { t } = useTranslation();
   const avatarColor =
     AVATAR_COLORS[(employee.employeeId ?? 0) % AVATAR_COLORS.length];
 
@@ -45,7 +48,7 @@ function EmploymentRow({
             {employee.profilePhotoDataUrl ? (
               <img
                 src={employee.profilePhotoDataUrl}
-                alt={employee.displayName ?? "Employee"}
+                alt={employee.displayName ?? t("employment.table.unnamedEmployee")}
                 className="size-full object-cover"
               />
             ) : (
@@ -57,7 +60,7 @@ function EmploymentRow({
 
           <div>
             <p className="font-['Inter',sans-serif] text-sm font-semibold text-[#1a2535]">
-              {employee.displayName ?? "Unnamed employee"}
+              {employee.displayName ?? t("employment.table.unnamedEmployee")}
             </p>
 
             <p className="font-['Inter',sans-serif] text-xs text-gray-400">
@@ -105,6 +108,17 @@ export function EmploymentTable({
   onRetry: () => void;
   onSelect: (employee: EmployeeSummary) => void;
 }) {
+  const { t } = useTranslation();
+
+  const columns = [
+    { key: "employee", label: t("employment.table.columns.employee"), padded: true },
+    { key: "orgUnit", label: t("employment.table.columns.organizationUnit") },
+    { key: "position", label: t("employment.table.columns.position") },
+    { key: "status", label: t("employment.table.columns.status") },
+    { key: "hireDate", label: t("employment.table.columns.hireDate") },
+    { key: "terminationDate", label: t("employment.table.columns.terminationDate") },
+  ];
+
   return (
     <div className="overflow-hidden rounded-xl border border-gray-100 bg-white">
       {isError ? (
@@ -113,17 +127,17 @@ export function EmploymentTable({
 
           <div>
             <p className="font-['Inter',sans-serif] font-semibold text-[#1a2535]">
-              Unable to load employment records
+              {t("employment.table.unableToLoad")}
             </p>
 
             <p className="font-['Inter',sans-serif] text-sm text-gray-400">
-              Check the server connection and try again.
+              {t("employment.table.checkConnection")}
             </p>
           </div>
 
           <Button variant="outline" onClick={onRetry}>
             <RefreshCw className="size-4" />
-            Try again
+            {t("employment.table.tryAgain")}
           </Button>
         </div>
       ) : (
@@ -131,14 +145,14 @@ export function EmploymentTable({
           <table className="w-full min-w-[900px]">
             <thead>
               <tr className="border-b border-gray-100">
-                {COLUMNS.map((label) => (
+                {columns.map((column) => (
                   <th
-                    key={label}
+                    key={column.key}
                     className={`${
-                      label === "Employee" ? "px-6" : "px-4"
+                      column.padded ? "px-6" : "px-4"
                     } py-4 text-left font-['Inter',sans-serif] text-sm font-semibold text-gray-600`}
                   >
-                    {label}
+                    {column.label}
                   </th>
                 ))}
               </tr>
@@ -148,7 +162,7 @@ export function EmploymentTable({
               {isLoading ? (
                 Array.from({ length: 6 }, (_, index) => (
                   <tr key={index} className="border-b border-gray-100">
-                    <td colSpan={COLUMNS.length} className="px-6 py-3">
+                    <td colSpan={COLUMN_COUNT} className="px-6 py-3">
                       <div className="h-11 animate-pulse rounded-lg bg-gray-100" />
                     </td>
                   </tr>
@@ -156,10 +170,10 @@ export function EmploymentTable({
               ) : employees.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={COLUMNS.length}
+                    colSpan={COLUMN_COUNT}
                     className="py-16 text-center font-['Inter',sans-serif] text-sm text-gray-400"
                   >
-                    No employment records match the current filters.
+                    {t("employment.table.noMatches")}
                   </td>
                 </tr>
               ) : (
@@ -178,7 +192,7 @@ export function EmploymentTable({
 
       {!isError && (
         <div className="border-t border-gray-100 px-6 py-3 font-['Inter',sans-serif] text-xs text-gray-400">
-          Showing {employees.length} of {total}
+          {t("employment.table.showingOf", { count: employees.length, total })}
         </div>
       )}
     </div>

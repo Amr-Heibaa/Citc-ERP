@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 
 import { Input } from "@/components/ui/input";
 import {
@@ -18,12 +19,6 @@ import {
   type PositionFormValues,
 } from "@/features/hr/employees/schemas/employee-schema";
 
-const ASSIGNMENT_TYPE_OPTIONS = [
-  { value: "1", label: "Permanent" },
-  { value: "2", label: "Acting" },
-  { value: "3", label: "Temporary" },
-];
-
 export function PositionStepForm({
   defaults,
   next,
@@ -35,6 +30,14 @@ export function PositionStepForm({
   back: () => void;
   skip: () => void;
 }) {
+  const { t } = useTranslation();
+
+  const ASSIGNMENT_TYPE_OPTIONS = [
+    { value: "1", label: t("jobs.assignmentTypes.permanent") },
+    { value: "2", label: t("jobs.assignmentTypes.acting") },
+    { value: "3", label: t("jobs.assignmentTypes.temporary") },
+  ];
+
   const positions = usePositions();
   const units = useOrgUnits();
   const employees = useEmployees();
@@ -60,15 +63,19 @@ export function PositionStepForm({
 
   return (
     <form onSubmit={handleSubmit(next)} className="flex min-h-0 flex-1 flex-col">
-      <WizardHeader step={4} title="Positions" description="Position information" />
+      <WizardHeader
+        step={4}
+        title={t("employees.wizard.position.title")}
+        description={t("employees.wizard.position.description")}
+      />
 
       <div className="flex min-h-0 flex-1">
         <div className="grid flex-1 grid-cols-1 content-center gap-x-6 gap-y-5 px-8 py-4 md:grid-cols-2">
-          <LabeledField label="Position">
+          <LabeledField label={t("employees.wizard.position.position")}>
             <SelectField
               control={control}
               name="positionId"
-              placeholder="Position"
+              placeholder={t("employees.wizard.position.position")}
               options={
                 visiblePositions?.map((position) => ({
                   value: String(position.id),
@@ -78,11 +85,11 @@ export function PositionStepForm({
             />
           </LabeledField>
 
-          <LabeledField label="Organization Unit">
+          <LabeledField label={t("employees.wizard.position.organizationUnit")}>
             <SelectField
               control={control}
               name="positionOrgUnitId"
-              placeholder="Organization Unit"
+              placeholder={t("employees.wizard.position.organizationUnit")}
               options={
                 units.data?.map((unit) => ({
                   value: String(unit.id),
@@ -92,19 +99,19 @@ export function PositionStepForm({
             />
           </LabeledField>
 
-          <LabeledField label="Position Start Date">
+          <LabeledField label={t("employees.wizard.position.positionStartDate")}>
             <Input {...register("positionStartDate")} type="date" />
           </LabeledField>
 
-          <LabeledField label="Position End Date">
+          <LabeledField label={t("employees.wizard.position.positionEndDate")}>
             <Input {...register("positionEndDate")} type="date" />
           </LabeledField>
 
-          <LabeledField label="Reports To">
+          <LabeledField label={t("employees.wizard.position.reportsTo")}>
             <SelectField
               control={control}
               name="reportingToEmployeeId"
-              placeholder="Reports To"
+              placeholder={t("employees.wizard.position.reportsTo")}
               options={
                 employees.data?.map((employee) => ({
                   value: String(employee.employeeId),
@@ -114,11 +121,11 @@ export function PositionStepForm({
             />
           </LabeledField>
 
-          <LabeledField label="Assignment Type">
+          <LabeledField label={t("employees.wizard.position.assignmentType")}>
             <SelectField
               control={control}
               name="assignmentType"
-              placeholder="Assignment Type"
+              placeholder={t("employees.wizard.position.assignmentType")}
               options={ASSIGNMENT_TYPE_OPTIONS}
             />
           </LabeledField>

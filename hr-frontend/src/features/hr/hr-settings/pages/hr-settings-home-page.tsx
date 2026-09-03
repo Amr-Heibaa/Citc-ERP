@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 
 import { useContractTemplates } from "@/features/hr/hr-settings/api/use-contract-templates";
@@ -7,6 +8,7 @@ import { HrSettingSummaryCard } from "@/features/hr/hr-settings/components/hr-se
 import { useGetMyAccess } from "@/lib/api/generated/ems/hr-access-controller/hr-access-controller";
 
 export function HrSettingsHomePage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const summary = useHrSettingsSummary();
   const data = summary.data;
@@ -27,11 +29,11 @@ export function HrSettingsHomePage() {
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="font-['Inter',sans-serif] text-2xl font-bold text-[#1a2535]">
-            HR Settings
+            {t("hrSettings.home.title")}
           </h1>
 
           <p className="font-['Inter',sans-serif] text-sm text-gray-400">
-            Manage system configuration and master data
+            {t("hrSettings.home.subtitle")}
           </p>
         </div>
 
@@ -42,7 +44,7 @@ export function HrSettingsHomePage() {
               onClick={() => navigate("/hr/settings/access-delegation")}
               className="font-['Inter',sans-serif] text-sm font-medium text-[#f5841f] hover:underline"
             >
-              Access Delegation →
+              {t("hrSettings.home.accessDelegation")}
             </button>
           )}
 
@@ -51,65 +53,65 @@ export function HrSettingsHomePage() {
             onClick={() => navigate("/hr/settings/history")}
             className="font-['Inter',sans-serif] text-sm font-medium text-[#f5841f] hover:underline"
           >
-            View History →
+            {t("hrSettings.home.viewHistory")}
           </button>
         </div>
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         <HrSettingSummaryCard
-          title="Employee Statuses"
+          title={t("hrSettings.home.cards.employeeStatuses")}
           total={data?.employeeStatusCount ?? 0}
           active={data?.activeEmployeeStatusCount ?? 0}
           loading={summary.isLoading}
-          actionLabel="View"
+          actionLabel={t("hrSettings.home.cards.view")}
           onAction={() => navigate("/hr/settings/employee-statuses")}
         />
 
         <HrSettingSummaryCard
-          title="Contract Types"
+          title={t("hrSettings.home.cards.contractTypes")}
           total={data?.contractTypeCount ?? 0}
           active={data?.activeContractTypeCount ?? 0}
           loading={summary.isLoading}
-          actionLabel="View"
+          actionLabel={t("hrSettings.home.cards.view")}
           onAction={() => navigate("/hr/settings/contract-types")}
         />
 
         <HrSettingSummaryCard
-          title="Skills"
+          title={t("hrSettings.home.cards.skills")}
           total={data?.skillCount ?? 0}
           active={data?.activeSkillCount ?? 0}
           loading={summary.isLoading}
-          actionLabel="View"
+          actionLabel={t("hrSettings.home.cards.view")}
           onAction={() => navigate("/hr/settings/skills")}
         />
 
         <HrSettingSummaryCard
-          title="Functional Relation Types"
+          title={t("hrSettings.home.cards.functionalRelationTypes")}
           total={data?.functionalRelationTypeCount ?? 0}
           active={data?.activeFunctionalRelationTypeCount ?? 0}
           loading={summary.isLoading}
-          actionLabel="View"
+          actionLabel={t("hrSettings.home.cards.view")}
           onAction={() => navigate("/hr/settings/functional-relation-types")}
         />
 
         <HrSettingSummaryCard
-          title="Job Grades"
+          title={t("hrSettings.home.cards.jobGrades")}
           total={gradeRows.length}
           active={activeGradesCount}
           loading={grades.isLoading}
           error={grades.isError}
-          actionLabel="View"
+          actionLabel={t("hrSettings.home.cards.view")}
           onAction={() => navigate("/hr/jobs/grades")}
         />
 
         <HrSettingSummaryCard
-          title="Contract Templates"
+          title={t("hrSettings.home.cards.contractTemplates")}
           total={templateRows.length}
           active={activeTemplatesCount}
           loading={templates.isLoading}
           error={templates.isError}
-          actionLabel="View"
+          actionLabel={t("hrSettings.home.cards.view")}
           onAction={() => navigate("/hr/settings/contract-templates")}
         />
       </div>
