@@ -1,3 +1,5 @@
+import reportLogo from "@/assets/report-logo.png";
+
 import i18n from "@/i18n";
 
 export type ExportRow = Record<string, unknown>;
@@ -89,11 +91,10 @@ const REPORT_STYLES = `
     margin-bottom: 20px;
   }
 
-  .report-brand {
-    font-size: 20px;
-    font-weight: 800;
-    letter-spacing: 0.5px;
-    color: #1a2535;
+  .report-logo {
+    height: 34px;
+    width: auto;
+    display: block;
   }
 
   .report-meta {
@@ -174,7 +175,7 @@ function reportShell(title: string, subtitle: string | undefined, bodyHtml: stri
 
       <body>
         <div class="report-header">
-          <span class="report-brand">CITO</span>
+          <img class="report-logo" src="${reportLogo}" alt="CITO" />
           <span class="report-meta">${escapeHtml(i18n.t("reportPrint.generatedAt", { date: generatedAt }))}</span>
         </div>
 
