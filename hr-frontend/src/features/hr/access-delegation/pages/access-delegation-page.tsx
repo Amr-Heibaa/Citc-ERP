@@ -2,7 +2,6 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
-import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -16,36 +15,15 @@ import {
 import {
   useAccessGrants,
   useMyHrAccess,
-  useRevokeHrAccess,
 } from "@/features/hr/access-delegation/api/use-hr-access";
 import { GrantAccessDialog } from "@/features/hr/access-delegation/components/grant-access-dialog";
+import { RevokeAccessDialog } from "@/features/hr/access-delegation/components/revoke-access-dialog";
 import { StatusBadge } from "@/features/hr/shared/components/status-badge";
 import { formatDate } from "@/features/hr/shared/utils/format";
 import type { HrAccessGrantView } from "@/lib/api/generated/model";
 
-function RevokeButton({ grant }: { grant: HrAccessGrantView }) {
+function RevokeButton({ grant, onRevoke }: { grant: HrAccessGrantView; onRevoke: () => void }) {
   const { t } = useTranslation();
-  const revokeAccess = useRevokeHrAccess(grant.hrAccessGrantId ?? 0);
-
-  async function handleRevoke() {
-    const reason = window.prompt(t("accessDelegation.revokePrompt"));
-
-    if (!reason || reason.trim().length < 5) {
-      if (reason !== null) {
-        toast.error(t("accessDelegation.revokeReasonTooShort"));
-      }
-      return;
-    }
-
-    try {
-      await revokeAccess.mutateAsync({ reason: reason.trim() });
-      toast.success(t("accessDelegation.revokedSuccess"));
-    } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : t("accessDelegation.unableToRevoke"),
-      );
-    }
-  }
 
   if (!grant.active) {
     return (
@@ -60,8 +38,7 @@ function RevokeButton({ grant }: { grant: HrAccessGrantView }) {
       variant="outline"
       size="sm"
       className="border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
-      disabled={revokeAccess.isPending}
-      onClick={handleRevoke}
+      onClick={onRevoke}
     >
       {t("accessDelegation.revoke")}
     </Button>
@@ -76,6 +53,7 @@ export function AccessDelegationPage() {
   const rows = grants.data ?? [];
 
   const [grantOpen, setGrantOpen] = useState(false);
+  const [revokeTarget, setRevokeTarget] = useState<HrAccessGrantView | undefined>();
 
   const canGrantAccess = myAccess.data?.canViewHr ?? false;
 
@@ -163,7 +141,7 @@ export function AccessDelegationPage() {
                     </TableCell>
 
                     <TableCell className="text-right">
-                      <RevokeButton grant={grant} />
+                      <RevokeButton grant={grant} onRevoke={() => setRevokeTarget(grant)} />
                     </TableCell>
                   </TableRow>
                 ))}
@@ -174,6 +152,14 @@ export function AccessDelegationPage() {
       )}
 
       <GrantAccessDialog open={grantOpen} onOpenChange={setGrantOpen} />
+
+      {revokeTarget && (
+        <RevokeAccessDialog
+          open={revokeTarget != null}
+          onOpenChange={(next) => !next && setRevokeTarget(undefined)}
+          grant={revokeTarget}
+        />
+      )}
     </div>
   );
 }

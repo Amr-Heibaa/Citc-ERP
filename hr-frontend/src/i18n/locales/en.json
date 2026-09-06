@@ -1670,10 +1670,14 @@
     },
     "revoked": "Revoked",
     "revoke": "Revoke",
-    "revokePrompt": "Reason for revoking this access?",
-    "revokeReasonTooShort": "Reason must be at least 5 characters",
     "revokedSuccess": "Access revoked",
     "unableToRevoke": "Unable to revoke access",
+    "revokeDialog": {
+      "title": "Revoke HR Access",
+      "description": "{{name}} will lose HR view and edit access.",
+      "reasonPlaceholder": "Why is this access being revoked?",
+      "revoking": "Revoking…"
+    },
     "grantDialog": {
       "title": "Grant HR Access",
       "description": "Give an employee temporary or ongoing view and edit access to the HR module.",
