@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 
@@ -14,6 +15,7 @@ import type { ContractFormValues } from "@/features/hr/employees/schemas/employe
 import { useEmployeeWizardStore } from "@/features/hr/employees/store/employee-wizard-store";
 
 export function EmployeeCreateWizard() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const mutation = useCreateEmployee();
 
@@ -41,14 +43,14 @@ export function EmployeeCreateWizard() {
         employee: toCreateEmployeeRequest(all),
       });
 
-      toast.success("Employee created successfully");
+      toast.success(t("employees.wizard.createdSuccess"));
       reset();
       navigate(`/hr/employees/${employeeId}`);
     } catch (error) {
       const message =
         typeof error === "object" && error !== null && "message" in error
           ? String(error.message)
-          : "Failed to create employee";
+          : t("employees.wizard.createError");
 
       toast.error(message);
     }
@@ -70,7 +72,7 @@ export function EmployeeCreateWizard() {
           height: "min(663px, 92vh)",
         }}
       >
-        <DialogTitle className="sr-only">Create Employee</DialogTitle>
+        <DialogTitle className="sr-only">{t("employees.wizard.createEmployeeTitle")}</DialogTitle>
 
         {step === 1 && (
           <IdentityStepForm

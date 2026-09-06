@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 
 import { Input } from "@/components/ui/input";
 import { LabeledField } from "@/features/hr/shared/components/labeled-field";
@@ -18,6 +19,8 @@ export function IdentityStepForm({
   defaults: EmployeeWizardData;
   next: (values: IdentityFormValues) => void;
 }) {
+  const { t } = useTranslation();
+
   const {
     register,
     handleSubmit,
@@ -41,31 +44,30 @@ export function IdentityStepForm({
     >
       <WizardHeader
         step={1}
-        title="Identity"
-        description="The username and email we create for user"
+        title={t("employees.wizard.identity.title")}
+        description={t("employees.wizard.identity.description")}
       />
       <div className="flex min-h-0 flex-1">
         <div className="flex flex-1 flex-col justify-center gap-5 px-8 py-4">
-          <LabeledField label="Username" error={errors.username?.message}>
-            <Input {...register("username")} placeholder="Username" />
+          <LabeledField label={t("employees.wizard.identity.username")} error={errors.username?.message}>
+            <Input {...register("username")} placeholder={t("employees.wizard.identity.username")} />
           </LabeledField>
 
-          <LabeledField label="Email" error={errors.email?.message}>
-            <Input {...register("email")} type="email" placeholder="Email" />
+          <LabeledField label={t("employees.wizard.identity.email")} error={errors.email?.message}>
+            <Input {...register("email")} type="email" placeholder={t("employees.wizard.identity.email")} />
           </LabeledField>
 
-          <LabeledField label="Password" error={errors.password?.message}>
+          <LabeledField label={t("employees.wizard.identity.password")} error={errors.password?.message}>
             <div className="space-y-2">
               <Input
                 {...register("password")}
                 type="password"
-                placeholder="Password"
+                placeholder={t("employees.wizard.identity.password")}
                 autoComplete="new-password"
               />
 
               <p className="text-xs text-[#6b7280]">
-                Use at least 6 characters with one capital letter, one number
-                and one special symbol.
+                {t("employees.wizard.identity.passwordHint")}
               </p>
             </div>
           </LabeledField>

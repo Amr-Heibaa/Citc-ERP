@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 
 import {
   useOrgUnits,
@@ -29,6 +30,7 @@ export function EmploymentStepForm({
   back: () => void;
   skip: () => void;
 }) {
+  const { t } = useTranslation();
   const statuses = useStatuses();
   const organizations = useOrganizations();
   const units = useOrgUnits();
@@ -56,17 +58,17 @@ export function EmploymentStepForm({
     <form onSubmit={handleSubmit(next)} className="flex min-h-0 flex-1 flex-col">
       <WizardHeader
         step={3}
-        title="Employment"
-        description="The employee employment information"
+        title={t("employees.wizard.employment.title")}
+        description={t("employees.wizard.employment.description")}
       />
 
       <div className="flex min-h-0 flex-1">
         <div className="grid flex-1 grid-cols-1 content-center gap-x-6 gap-y-5 px-8 py-4 md:grid-cols-2">
-          <LabeledField label="Employee Status">
+          <LabeledField label={t("employees.wizard.employment.employeeStatus")}>
             <SelectField
               control={control}
               name="employeeStatusId"
-              placeholder="Employee Status"
+              placeholder={t("employees.wizard.employment.employeeStatus")}
               options={
                 statuses.data?.map((status) => ({
                   value: String(status.id),
@@ -76,19 +78,19 @@ export function EmploymentStepForm({
             />
           </LabeledField>
 
-          <LabeledField label="Hire Date">
+          <LabeledField label={t("employees.wizard.employment.hireDate")}>
             <Input {...register("hireDate")} type="date" />
           </LabeledField>
 
-          <LabeledField label="Start Date">
+          <LabeledField label={t("employees.wizard.employment.startDate")}>
             <Input {...register("startDate")} type="date" />
           </LabeledField>
 
-          <LabeledField label="Organization">
+          <LabeledField label={t("employees.wizard.employment.organization")}>
             <SelectField
               control={control}
               name="organizationId"
-              placeholder="Organization"
+              placeholder={t("employees.wizard.employment.organization")}
               options={
                 organizations.data?.map((organization) => ({
                   value: String(organization.id),
@@ -98,11 +100,11 @@ export function EmploymentStepForm({
             />
           </LabeledField>
 
-          <LabeledField label="Organization Unit">
+          <LabeledField label={t("employees.wizard.employment.organizationUnit")}>
             <SelectField
               control={control}
               name="currentOrgUnitId"
-              placeholder="Organization Unit"
+              placeholder={t("employees.wizard.employment.organizationUnit")}
               options={
                 visibleUnits?.map((unit) => ({
                   value: String(unit.id),

@@ -1,5 +1,6 @@
 import { ArrowRight, Mail, MapPin, Phone, UserCog, UserMinus } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 
 import { Badge } from "@/components/ui/badge";
@@ -47,6 +48,7 @@ export function JobPositionEmployeeTab({
 }: {
   position: JobPositionDetail;
 }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [changeOpen, setChangeOpen] = useState(false);
   const [endOpen, setEndOpen] = useState(false);
@@ -59,11 +61,11 @@ export function JobPositionEmployeeTab({
     return (
       <div className="flex h-48 flex-col items-center justify-center gap-1 text-center">
         <p className="font-['Inter',sans-serif] text-sm font-medium text-[#1a2535]">
-          No employee assigned
+          {t("jobs.positionDetail.employee.noEmployeeAssigned")}
         </p>
 
         <p className="font-['Inter',sans-serif] text-xs text-gray-400">
-          This position is currently open.
+          {t("jobs.positionDetail.employee.positionOpen")}
         </p>
 
         <button
@@ -71,7 +73,7 @@ export function JobPositionEmployeeTab({
           onClick={() => setChangeOpen(true)}
           className="mt-3 font-['Inter',sans-serif] text-sm font-medium text-[#f5841f] hover:underline"
         >
-          Assign an employee
+          {t("jobs.positionDetail.employee.assignAnEmployee")}
         </button>
 
         <AssignEmployeeDialog
@@ -89,13 +91,13 @@ export function JobPositionEmployeeTab({
     activeContract?.fulltime == null
       ? undefined
       : activeContract.fulltime
-        ? "Full Time"
-        : "Part Time";
+        ? t("jobs.positionDetail.employee.fullTime")
+        : t("jobs.positionDetail.employee.partTime");
 
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       <div className="space-y-6">
-        <Section title="Current Employee">
+        <Section title={t("jobs.positionDetail.employee.currentEmployee")}>
           <div className="flex items-center gap-4">
             <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#f5841f]">
               {emp?.profilePhotoDataUrl ? (
@@ -137,14 +139,14 @@ export function JobPositionEmployeeTab({
                 size="sm"
                 onClick={() => navigate(`/hr/employees/${assignment.employeeId}`)}
               >
-                View Employee Profile
+                {t("jobs.positionDetail.employee.viewEmployeeProfile")}
                 <ArrowRight className="size-3.5" />
               </Button>
             )}
           </div>
         </Section>
 
-        <Section title="Employee Contact">
+        <Section title={t("jobs.positionDetail.employee.employeeContact")}>
           <div className="space-y-3 font-['Inter',sans-serif] text-sm text-gray-600">
             <p className="flex items-center gap-2">
               <Phone className="size-4 text-gray-400" />
@@ -165,23 +167,29 @@ export function JobPositionEmployeeTab({
       </div>
 
       <div className="space-y-6">
-        <Section title="Employment Information">
-          <Row label="Employment Status" value={emp?.statusName} />
-          <Row label="Employee Type" value={employeeType} />
-          <Row label="Hire Date" value={formatDate(emp?.hireDate)} />
-          <Row label="Service Duration" value={formatDuration(emp?.hireDate)} />
-          <Row label="Current Assignment Since" value={formatDate(assignment.startDate)} />
+        <Section title={t("jobs.positionDetail.employee.employmentInformation")}>
+          <Row label={t("jobs.positionDetail.employee.employmentStatus")} value={emp?.statusName} />
+          <Row label={t("jobs.positionDetail.employee.employeeType")} value={employeeType} />
+          <Row label={t("jobs.positionDetail.employee.hireDate")} value={formatDate(emp?.hireDate)} />
+          <Row label={t("jobs.positionDetail.employee.serviceDuration")} value={formatDuration(emp?.hireDate)} />
+          <Row
+            label={t("jobs.positionDetail.employee.currentAssignmentSince")}
+            value={formatDate(assignment.startDate)}
+          />
         </Section>
 
-        <Section title="Assignment Summary">
-          <Row label="Assignment Type" value={assignment.assignmentType} />
-          <Row label="Start Date" value={formatDate(assignment.startDate)} />
-          <Row label="End Date" value={formatDate(assignment.endDate)} />
-          <Row label="Assigned By" value={assignedByDetail.data?.displayName} />
-          <Row label="Assigned At" value={formatDate(assignment.assignedAt?.slice(0, 10))} />
+        <Section title={t("jobs.positionDetail.employee.assignmentSummary")}>
+          <Row label={t("jobs.positionDetail.employee.assignmentType")} value={assignment.assignmentType} />
+          <Row label={t("jobs.positionDetail.employee.startDate")} value={formatDate(assignment.startDate)} />
+          <Row label={t("jobs.positionDetail.employee.endDate")} value={formatDate(assignment.endDate)} />
+          <Row label={t("jobs.positionDetail.employee.assignedBy")} value={assignedByDetail.data?.displayName} />
+          <Row
+            label={t("jobs.positionDetail.employee.assignedAt")}
+            value={formatDate(assignment.assignedAt?.slice(0, 10))}
+          />
         </Section>
 
-        <Section title="Quick Actions">
+        <Section title={t("jobs.positionDetail.employee.quickActions")}>
           <div className="flex flex-col gap-1">
             <button
               type="button"
@@ -189,7 +197,7 @@ export function JobPositionEmployeeTab({
               className="flex items-center gap-2.5 rounded-lg px-2 py-2 font-['Inter',sans-serif] text-sm font-medium text-[#f5841f] transition-colors hover:bg-[#f5841f]/10"
             >
               <UserCog className="size-4" />
-              Change Employee
+              {t("jobs.positionDetail.employee.changeEmployee")}
             </button>
 
             <button
@@ -198,7 +206,7 @@ export function JobPositionEmployeeTab({
               className="flex items-center gap-2.5 rounded-lg px-2 py-2 font-['Inter',sans-serif] text-sm font-medium text-red-600 transition-colors hover:bg-red-50"
             >
               <UserMinus className="size-4" />
-              End Assignment
+              {t("jobs.positionDetail.employee.endAssignment")}
             </button>
           </div>
         </Section>

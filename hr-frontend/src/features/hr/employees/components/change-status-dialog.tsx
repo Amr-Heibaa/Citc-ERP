@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -40,6 +41,7 @@ export function ChangeStatusDialog({
   onOpenChange: (open: boolean) => void;
   overview: EmploymentOverview;
 }) {
+  const { t } = useTranslation();
   const employeeId = overview.employeeId ?? 0;
   const statuses = useStatuses();
   const updateStatus = useUpdateEmploymentStatus(employeeId);
@@ -76,11 +78,11 @@ export function ChangeStatusDialog({
   const submit = handleSubmit(async (values) => {
     try {
       await updateStatus.mutateAsync(toUpdateStatusRequest(values));
-      toast.success("Employment status updated");
+      toast.success(t("employees.employmentActions.changeStatus.success"));
       onOpenChange(false);
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Unable to update status",
+        error instanceof Error ? error.message : t("employees.employmentActions.changeStatus.error"),
       );
     }
   });
@@ -90,24 +92,22 @@ export function ChangeStatusDialog({
       <DialogContent className="sm:max-w-lg gap-0 overflow-hidden p-0">
         <DialogHeader className="border-b border-gray-100 px-6 py-5">
           <DialogTitle className="text-xl text-[#1a2535]">
-            Change Status
+            {t("employees.employmentActions.changeStatus.title")}
           </DialogTitle>
 
           <DialogDescription>
-            Update this employee&apos;s status. Terminal statuses (terminated,
-            resigned, retired, etc.) must be applied through Terminate
-            Employment instead.
+            {t("employees.employmentActions.changeStatus.description")}
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={submit}>
           <div className="grid grid-cols-1 gap-4 px-6 py-5 sm:grid-cols-2">
             <div className="sm:col-span-2">
-              <LabeledField label="Status" error={errors.employeeStatusId?.message}>
+              <LabeledField label={t("employees.employmentActions.common.status")} error={errors.employeeStatusId?.message}>
                 <SelectField
                   control={control}
                   name="employeeStatusId"
-                  placeholder="Select status"
+                  placeholder={t("employees.employmentActions.common.selectStatus")}
                   options={nonTerminalStatuses.map((status) => ({
                     value: String(status.id),
                     label: status.name,
@@ -117,26 +117,31 @@ export function ChangeStatusDialog({
             </div>
 
             <LabeledField
-              label="Effective Date"
+              label={t("employees.employmentActions.changeStatus.effectiveDate")}
               error={errors.effectiveDate?.message}
             >
               <Input type="date" {...register("effectiveDate")} />
             </LabeledField>
 
             <div className="sm:col-span-2">
-              <LabeledField label="Reason (Optional)">
-                <Input {...register("reason")} placeholder="Reason for change" />
+              <LabeledField label={t("employees.employmentActions.common.reasonOptional")}>
+                <Input
+                  {...register("reason")}
+                  placeholder={t("employees.employmentActions.changeStatus.reasonPlaceholder")}
+                />
               </LabeledField>
             </div>
           </div>
 
           <DialogFooter className="border-t border-gray-100 px-6 py-4">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
+              {t("employees.employmentActions.common.cancel")}
             </Button>
 
             <Button type="submit" disabled={updateStatus.isPending}>
-              {updateStatus.isPending ? "Saving…" : "Update Status"}
+              {updateStatus.isPending
+                ? t("employees.employmentActions.common.saving")
+                : t("employees.employmentActions.changeStatus.confirm")}
             </Button>
           </DialogFooter>
         </form>

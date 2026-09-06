@@ -4,23 +4,31 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
+import type { UpdateContractRequestSalaryBasis } from './updateContractRequestSalaryBasis';
 
 export interface UpdateContractRequest {
   contractTypeId: number;
+  contractTemplateId: number;
   /**
      * @minLength 0
      * @maxLength 50
      */
   contractNumber: string;
+  contractDate: string;
   startDate: string;
   endDate?: string;
-  /** @minimum 0 */
+  /** @minimum 0.01 */
   salary?: number;
+  salaryBasis: UpdateContractRequestSalaryBasis;
   /**
      * @minLength 3
      * @maxLength 10
      */
   salaryCurrency: string;
+  /** @minimum 0.01 */
+  hourlyRate?: number;
+  /** @minimum 0.01 */
+  maxMonthlyHours?: number;
   /** @minimum 0.01 */
   workingHoursPerWeek?: number;
   /** @minimum 0.01 */
@@ -31,6 +39,23 @@ export interface UpdateContractRequest {
      */
   probationPeriodDays?: number;
   fulltime: boolean;
+  /**
+     * @minLength 0
+     * @maxLength 255
+     */
+  projectName?: string;
+  /**
+     * @minLength 0
+     * @maxLength 255
+     */
+  externalEmployerName?: string;
+  externalLeaveStartDate?: string;
+  externalLeaveEndDate?: string;
+  /**
+     * @minimum 0
+     * @maximum 3650
+     */
+  noticePeriodDays?: number;
   /**
      * @minLength 0
      * @maxLength 4000

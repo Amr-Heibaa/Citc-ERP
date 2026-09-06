@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 
 import {
@@ -13,17 +14,21 @@ import { formatDate } from "@/features/hr/shared/utils/format";
 
 const ALL_DOMAINS = "__all__";
 
-const DOMAIN_OPTIONS = [
-  { value: "EMPLOYEE_STATUS", label: "Employee Statuses" },
-  { value: "CONTRACT_TYPE", label: "Contract Types" },
-  { value: "SKILL", label: "Skills" },
-  { value: "FUNCTIONAL_RELATION_TYPE", label: "Functional Relation Types" },
-];
-
 export function SettingsHistoryPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [domain, setDomain] = useState<string | undefined>(undefined);
   const [page, setPage] = useState(0);
+
+  const DOMAIN_OPTIONS = [
+    { value: "EMPLOYEE_STATUS", label: t("hrSettings.history.domains.employeeStatuses") },
+    { value: "CONTRACT_TYPE", label: t("hrSettings.history.domains.contractTypes") },
+    { value: "SKILL", label: t("hrSettings.history.domains.skills") },
+    {
+      value: "FUNCTIONAL_RELATION_TYPE",
+      label: t("hrSettings.history.domains.functionalRelationTypes"),
+    },
+  ];
 
   const history = useHrSettingsHistory(domain, undefined, page);
   const rows = history.data?.content ?? [];
@@ -36,15 +41,15 @@ export function SettingsHistoryPage() {
           onClick={() => navigate("/hr/settings")}
           className="font-['Inter',sans-serif] text-xs text-gray-400 hover:text-gray-600"
         >
-          ← HR Settings
+          ← {t("hrSettings.history.backLabel")}
         </button>
 
         <h1 className="mt-1 font-['Inter',sans-serif] text-2xl font-bold text-[#1a2535]">
-          Settings History
+          {t("hrSettings.history.title")}
         </h1>
 
         <p className="mt-0.5 font-['Inter',sans-serif] text-sm text-gray-400">
-          Audit trail of changes across all HR settings.
+          {t("hrSettings.history.subtitle")}
         </p>
       </div>
 
@@ -56,11 +61,11 @@ export function SettingsHistoryPage() {
         }}
       >
         <SelectTrigger className="h-10 w-full font-['Inter',sans-serif] text-sm text-gray-600 lg:w-64">
-          <SelectValue placeholder="All Domains" />
+          <SelectValue placeholder={t("hrSettings.history.allDomains")} />
         </SelectTrigger>
 
         <SelectContent>
-          <SelectItem value={ALL_DOMAINS}>All Domains</SelectItem>
+          <SelectItem value={ALL_DOMAINS}>{t("hrSettings.history.allDomains")}</SelectItem>
 
           {DOMAIN_OPTIONS.map((option) => (
             <SelectItem key={option.value} value={option.value}>
@@ -73,11 +78,11 @@ export function SettingsHistoryPage() {
       <div className="overflow-hidden rounded-xl border border-gray-100 bg-white">
         {history.isLoading ? (
           <div className="flex h-48 items-center justify-center font-['Inter',sans-serif] text-sm text-gray-400">
-            Loading history…
+            {t("hrSettings.history.loading")}
           </div>
         ) : rows.length === 0 ? (
           <div className="flex h-48 items-center justify-center font-['Inter',sans-serif] text-sm text-gray-400">
-            No events recorded yet.
+            {t("hrSettings.history.noEvents")}
           </div>
         ) : (
           <ol className="relative ml-2 border-l border-gray-200 p-4">
@@ -100,7 +105,10 @@ export function SettingsHistoryPage() {
                 </p>
 
                 <p className="font-['Inter',sans-serif] text-xs text-gray-400">
-                  {event.settingDomain} · by {event.performedByName ?? "System"}
+                  {event.settingDomain} ·{" "}
+                  {t("hrSettings.history.by", {
+                    name: event.performedByName ?? t("hrSettings.history.systemFallback"),
+                  })}
                 </p>
               </li>
             ))}
@@ -111,8 +119,11 @@ export function SettingsHistoryPage() {
       {(history.data?.totalElements ?? 0) > 0 && (
         <div className="flex items-center justify-between font-['Inter',sans-serif] text-xs text-gray-400">
           <span>
-            Page {page + 1} of {Math.max(history.data?.totalPages ?? 1, 1)} ·{" "}
-            {history.data?.totalElements} total
+            {t("hrSettings.history.pageOf", {
+              page: page + 1,
+              totalPages: Math.max(history.data?.totalPages ?? 1, 1),
+              total: history.data?.totalElements,
+            })}
           </span>
 
           <div className="flex gap-2">
@@ -122,7 +133,7 @@ export function SettingsHistoryPage() {
               onClick={() => setPage(page - 1)}
               className="rounded-md border border-gray-200 px-3 py-1.5 disabled:opacity-40"
             >
-              Previous
+              {t("hrSettings.history.previous")}
             </button>
 
             <button
@@ -131,7 +142,7 @@ export function SettingsHistoryPage() {
               onClick={() => setPage(page + 1)}
               className="rounded-md border border-gray-200 px-3 py-1.5 disabled:opacity-40"
             >
-              Next
+              {t("hrSettings.history.next")}
             </button>
           </div>
         </div>

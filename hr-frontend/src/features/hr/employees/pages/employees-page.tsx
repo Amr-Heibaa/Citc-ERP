@@ -1,10 +1,10 @@
 import { useMemo } from "react";
-import { FileUp, Trash2 } from "lucide-react";
+import { FileUp, Trash2, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 
 import { Button } from "@/components/ui/button";
-import { useEmployees } from "@/features/hr/employees/api/use-employees";
+import { useEmployees, useOrgUnits } from "@/features/hr/employees/api/use-employees";
 import { useEmployeesFiltersStore } from "@/features/hr/employees/store/employees-filters-store";
 import { EmployeeImportDialog } from "@/features/hr/employees/components/employee-import-dialog";
 import { EmployeesExportDialog } from "@/features/hr/employees/components/employees-export-dialog";
@@ -19,12 +19,28 @@ export function EmployeesPage() {
   const navigate = useNavigate();
   const employeesQuery = useEmployees();
   const employees = employeesQuery.data ?? NO_EMPLOYEES;
+  const orgUnits = useOrgUnits();
 
   const search = useEmployeesFiltersStore((state) => state.search);
   const department = useEmployeesFiltersStore((state) => state.department);
   const status = useEmployeesFiltersStore((state) => state.status);
+  const organizationId = useEmployeesFiltersStore((state) => state.organizationId);
+  const organizationName = useEmployeesFiltersStore((state) => state.organizationName);
+  const setOrganizationFilter = useEmployeesFiltersStore((state) => state.setOrganizationFilter);
   const importOpen = useEmployeesFiltersStore((state) => state.importOpen);
   const setImportOpen = useEmployeesFiltersStore((state) => state.setImportOpen);
+
+  const orgUnitToOrganization = useMemo(() => {
+    const map = new Map<number, number>();
+
+    (orgUnits.data ?? []).forEach((unit) => {
+      if (unit.id != null && unit.organizationId != null) {
+        map.set(unit.id, unit.organizationId);
+      }
+    });
+
+    return map;
+  }, [orgUnits.data]);
 
   const departments = useMemo(() => {
     const values = employees
@@ -60,16 +76,24 @@ export function EmployeesPage() {
         employee.displayName?.toLowerCase().includes(query) ||
         employee.employeeNumber?.toLowerCase().includes(query) ||
         employee.businessEmail?.toLowerCase().includes(query) ||
-        employee.personalEmail?.toLowerCase().includes(query);
+        employee.personalEmail?.toLowerCase().includes(query) ||
+        employee.currentOrgUnitName?.toLowerCase().includes(query);
 
       const matchesDepartment =
         !department || employee.currentOrgUnitName === department;
 
       const matchesStatus = !status || employee.statusCode === status;
 
-      return Boolean(matchesSearch && matchesDepartment && matchesStatus);
+      const matchesOrganization =
+        organizationId == null ||
+        (employee.currentOrgUnitId != null &&
+          orgUnitToOrganization.get(employee.currentOrgUnitId) === organizationId);
+
+      return Boolean(
+        matchesSearch && matchesDepartment && matchesStatus && matchesOrganization,
+      );
     });
-  }, [department, employees, search, status]);
+  }, [department, employees, organizationId, orgUnitToOrganization, search, status]);
 
   function handleSelect(employee: EmployeeSummary) {
     navigate(`/hr/employees/${employee.employeeId}`);
@@ -116,6 +140,20 @@ export function EmployeesPage() {
             </Button>
           </div>
         </div>
+
+        {organizationId != null && (
+          <div className="flex w-fit items-center gap-2 rounded-lg bg-[#f5841f]/10 px-3 py-2 text-sm text-[#f5841f]">
+            <span>{t("employees.filteredByOrganization", { name: organizationName })}</span>
+
+            <button
+              type="button"
+              onClick={() => setOrganizationFilter(null, "")}
+              className="rounded-full p-0.5 hover:bg-[#f5841f]/20"
+            >
+              <X className="size-3.5" />
+            </button>
+          </div>
+        )}
 
         <EmployeesFiltersBar
           departments={departments}

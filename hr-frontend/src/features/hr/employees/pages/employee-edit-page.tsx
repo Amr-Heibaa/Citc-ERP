@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router";
 
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,7 @@ import { useEmployeeDetail } from "@/features/hr/employees/api/use-employees";
 import { EmployeeEditForm } from "@/features/hr/employees/components/employee-edit-form";
 
 export function EmployeeEditPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { employeeId } = useParams();
   const id = Number(employeeId);
@@ -35,24 +37,24 @@ export function EmployeeEditPage() {
       >
         <DialogHeader className="shrink-0 border-b border-gray-100 px-6 py-5 text-left">
           <DialogTitle className="font-['Inter',sans-serif] text-2xl text-[#1a2535]">
-            Edit Employee
+            {t("employees.editEmployee")}
           </DialogTitle>
 
           <DialogDescription>
-            Update the employee personal and employment information.
+            {t("employees.editForm.editPageDescription")}
           </DialogDescription>
         </DialogHeader>
 
         {employee.isLoading ? (
           <div className="flex h-64 items-center justify-center text-sm text-gray-400">
-            Loading employee…
+            {t("employees.loadingEmployee")}
           </div>
         ) : employee.isError || !employee.data ? (
           <div className="flex h-64 flex-col items-center justify-center gap-3">
-            <p className="text-sm text-red-600">Employee not found.</p>
+            <p className="text-sm text-red-600">{t("employees.employeeNotFound")}</p>
 
             <Button variant="outline" onClick={() => navigate("/hr/employees")}>
-              Back to employees
+              {t("employees.editForm.backToEmployeesButton")}
             </Button>
           </div>
         ) : (

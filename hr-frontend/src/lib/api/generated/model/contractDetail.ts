@@ -4,6 +4,7 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
+import type { ContractDetailSalaryBasis } from './contractDetailSalaryBasis';
 
 export interface ContractDetail {
   contractId?: number;
@@ -11,15 +12,36 @@ export interface ContractDetail {
   contractTypeId?: number;
   contractTypeCode?: string;
   contractTypeName?: string;
+  contractTemplateId?: number;
+  templateCode?: string;
+  templateVersion?: number;
+  templateNameEn?: string;
+  templateNameAr?: string;
   contractNumber?: string;
+  contractDate?: string;
   startDate?: string;
   endDate?: string;
   salary?: number;
+  salaryBasis?: ContractDetailSalaryBasis;
   salaryCurrency?: string;
+  hourlyRate?: number;
+  maxMonthlyHours?: number;
   workingHoursPerWeek?: number;
   workingHoursPerMonth?: number;
   probationPeriodDays?: number;
   fulltime?: boolean;
+  projectName?: string;
+  jobTitleSnapshot?: string;
+  orgUnitNameSnapshot?: string;
+  workLocationSnapshot?: string;
+  externalEmployerName?: string;
+  externalLeaveStartDate?: string;
+  externalLeaveEndDate?: string;
+  noticePeriodDays?: number;
   notes?: string;
   active?: boolean;
+  createdByUserId?: number;
+  createdAt?: string;
+  updatedByUserId?: number;
+  updatedAt?: string;
 }

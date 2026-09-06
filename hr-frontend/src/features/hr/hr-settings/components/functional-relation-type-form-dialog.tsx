@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -37,6 +38,7 @@ export function FunctionalRelationTypeFormDialog({
   onOpenChange: (open: boolean) => void;
   relationType?: FunctionalRelationTypeSetting;
 }) {
+  const { t } = useTranslation();
   const editMode = relationType != null;
   const functionalRelationTypeId = relationType?.functionalRelationTypeId ?? 0;
   const cannotDeactivate = editMode && (relationType?.usageCount ?? 0) > 0;
@@ -74,10 +76,10 @@ export function FunctionalRelationTypeFormDialog({
     try {
       if (editMode) {
         await updateType.mutateAsync(toFunctionalRelationTypeRequest(values));
-        toast.success("Functional relation type updated successfully");
+        toast.success(t("hrSettings.forms.functionalRelationType.editSuccess"));
       } else {
         await createType.mutateAsync(toFunctionalRelationTypeRequest(values));
-        toast.success("Functional relation type added successfully");
+        toast.success(t("hrSettings.forms.functionalRelationType.addSuccess"));
       }
 
       onOpenChange(false);
@@ -85,7 +87,7 @@ export function FunctionalRelationTypeFormDialog({
       toast.error(
         error instanceof Error
           ? error.message
-          : "Unable to save functional relation type",
+          : t("hrSettings.forms.functionalRelationType.saveError"),
       );
     }
   });
@@ -96,52 +98,54 @@ export function FunctionalRelationTypeFormDialog({
         <DialogHeader className="border-b border-gray-100 px-6 py-5">
           <DialogTitle className="text-xl text-[#1a2535]">
             {editMode
-              ? "Edit Functional Relation Type"
-              : "Add Functional Relation Type"}
+              ? t("hrSettings.forms.functionalRelationType.editTitle")
+              : t("hrSettings.forms.functionalRelationType.addTitle")}
           </DialogTitle>
 
           <DialogDescription>
             {editMode
-              ? `Update the details for ${relationType.code}.`
-              : "Create a new functional relation type."}
+              ? t("hrSettings.forms.functionalRelationType.editDescription", {
+                  code: relationType.code,
+                })
+              : t("hrSettings.forms.functionalRelationType.addDescription")}
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={submit}>
           <div className="grid grid-cols-1 gap-4 px-6 py-5 sm:grid-cols-2">
-            <LabeledField label="Code" error={errors.code?.message}>
+            <LabeledField label={t("hrSettings.forms.common.code")} error={errors.code?.message}>
               <Input
                 {...register("code")}
-                placeholder="TEAM_LEADER"
+                placeholder={t("hrSettings.forms.functionalRelationType.codePlaceholder")}
                 maxLength={50}
                 disabled={editMode}
               />
 
               {editMode && (
                 <p className="mt-1 text-xs text-gray-400">
-                  Code cannot be changed after creation.
+                  {t("hrSettings.forms.common.codeImmutable")}
                 </p>
               )}
             </LabeledField>
 
-            <LabeledField label="Name (English)" error={errors.nameEn?.message}>
+            <LabeledField label={t("hrSettings.forms.common.nameEn")} error={errors.nameEn?.message}>
               <Input {...register("nameEn")} maxLength={100} />
             </LabeledField>
 
-            <LabeledField label="Name (Arabic)" error={errors.nameAr?.message}>
+            <LabeledField label={t("hrSettings.forms.common.nameAr")} error={errors.nameAr?.message}>
               <Input {...register("nameAr")} maxLength={100} dir="rtl" />
             </LabeledField>
 
-            <LabeledField label="Approval Relation">
+            <LabeledField label={t("hrSettings.forms.functionalRelationType.approvalRelation")}>
               <BooleanSelectField
                 value={approvalRelation}
                 onChange={(checked) => setValue("approvalRelation", checked)}
-                trueLabel="Yes"
-                falseLabel="No"
+                trueLabel={t("common.yes")}
+                falseLabel={t("common.no")}
               />
             </LabeledField>
 
-            <LabeledField label="Status">
+            <LabeledField label={t("hrSettings.forms.common.status")}>
               <div>
                 <StatusSelectField
                   active={active}
@@ -156,9 +160,9 @@ export function FunctionalRelationTypeFormDialog({
 
                 {cannotDeactivate && (
                   <p className="mt-1 text-xs leading-5 text-amber-600">
-                    This relation type is used by{" "}
-                    {relationType?.usageCount ?? 0}
-                    active assignment(s) and cannot be deactivated.
+                    {t("hrSettings.forms.functionalRelationType.cannotDeactivateHint", {
+                      count: relationType?.usageCount ?? 0,
+                    })}
                   </p>
                 )}
               </div>
@@ -166,7 +170,7 @@ export function FunctionalRelationTypeFormDialog({
 
             <div className="sm:col-span-2">
               <LabeledField
-                label="Description (Optional)"
+                label={t("hrSettings.forms.common.descriptionOptional")}
                 error={errors.description?.message}
               >
                 <Input {...register("description")} maxLength={1000} />
@@ -180,11 +184,15 @@ export function FunctionalRelationTypeFormDialog({
               variant="outline"
               onClick={() => onOpenChange(false)}
             >
-              Cancel
+              {t("hrSettings.forms.common.cancel")}
             </Button>
 
             <Button type="submit" disabled={pending}>
-              {pending ? "Saving…" : editMode ? "Save Changes" : "Add Type"}
+              {pending
+                ? t("hrSettings.forms.common.saving")
+                : editMode
+                  ? t("hrSettings.forms.functionalRelationType.saveChanges")
+                  : t("hrSettings.forms.functionalRelationType.addSubmit")}
             </Button>
           </DialogFooter>
         </form>

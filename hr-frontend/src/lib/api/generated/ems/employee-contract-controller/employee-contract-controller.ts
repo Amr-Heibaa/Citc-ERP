@@ -24,8 +24,12 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  ConfirmDocxImportBody,
   ConfirmImportBody,
   ContractDetail,
+  ContractDocumentDetail,
+  ContractDocumentSummary,
+  ContractDocxImportPreview,
   ContractImportPreview,
   ContractImportResult,
   ContractPage,
@@ -34,8 +38,10 @@ import type {
   ExportContractParams,
   ExportContractsParams,
   ListContractsParams,
+  PreviewDocxImportBody,
   PreviewImportBody,
-  UpdateContractRequest
+  UpdateContractRequest,
+  UploadSignedContractDocumentBody
 } from '../../model';
 
 import { customInstance } from '../../../axios';
@@ -426,6 +432,127 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       > => {
       return useMutation(getRenewContractMutationOptions(options), queryClient);
     }
+    export const uploadSignedContractDocument = (
+    employeeId: number,
+    contractId: number,
+    uploadSignedContractDocumentBody?: UploadSignedContractDocumentBody,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+
+      const formData = new FormData();
+if(uploadSignedContractDocumentBody?.file !== undefined) {
+ formData.append(`file`, uploadSignedContractDocumentBody.file);
+ }
+
+      return customInstance<ContractDocumentDetail>(
+      {url: `/api/hr/employees/${employeeId}/contracts/${contractId}/documents/signed`, method: 'POST',
+      headers: {'Content-Type': 'multipart/form-data', },
+       data: formData, signal
+    },
+      options);
+    }
+
+
+
+
+export const getUploadSignedContractDocumentMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof uploadSignedContractDocument>>, TError,{employeeId: number;contractId: number;data?: UploadSignedContractDocumentBody}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof uploadSignedContractDocument>>, TError,{employeeId: number;contractId: number;data?: UploadSignedContractDocumentBody}, TContext> => {
+
+const mutationKey = ['uploadSignedContractDocument'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof uploadSignedContractDocument>>, {employeeId: number;contractId: number;data?: UploadSignedContractDocumentBody}> = (props) => {
+          const {employeeId,contractId,data} = props ?? {};
+
+          return  uploadSignedContractDocument(employeeId,contractId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UploadSignedContractDocumentMutationResult = NonNullable<Awaited<ReturnType<typeof uploadSignedContractDocument>>>
+    export type UploadSignedContractDocumentMutationBody = UploadSignedContractDocumentBody | undefined
+    export type UploadSignedContractDocumentMutationError = unknown
+
+    export const useUploadSignedContractDocument = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof uploadSignedContractDocument>>, TError,{employeeId: number;contractId: number;data?: UploadSignedContractDocumentBody}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof uploadSignedContractDocument>>,
+        TError,
+        {employeeId: number;contractId: number;data?: UploadSignedContractDocumentBody},
+        TContext
+      > => {
+      return useMutation(getUploadSignedContractDocumentMutationOptions(options), queryClient);
+    }
+    export const generateContractDocument = (
+    employeeId: number,
+    contractId: number,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+
+
+      return customInstance<ContractDocumentDetail>(
+      {url: `/api/hr/employees/${employeeId}/contracts/${contractId}/documents/generate`, method: 'POST', signal
+    },
+      options);
+    }
+
+
+
+
+export const getGenerateContractDocumentMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof generateContractDocument>>, TError,{employeeId: number;contractId: number}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof generateContractDocument>>, TError,{employeeId: number;contractId: number}, TContext> => {
+
+const mutationKey = ['generateContractDocument'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof generateContractDocument>>, {employeeId: number;contractId: number}> = (props) => {
+          const {employeeId,contractId} = props ?? {};
+
+          return  generateContractDocument(employeeId,contractId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type GenerateContractDocumentMutationResult = NonNullable<Awaited<ReturnType<typeof generateContractDocument>>>
+
+    export type GenerateContractDocumentMutationError = unknown
+
+    export const useGenerateContractDocument = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof generateContractDocument>>, TError,{employeeId: number;contractId: number}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof generateContractDocument>>,
+        TError,
+        {employeeId: number;contractId: number},
+        TContext
+      > => {
+      return useMutation(getGenerateContractDocumentMutationOptions(options), queryClient);
+    }
     export const previewImport = (
     employeeId: number,
     previewImportBody?: PreviewImportBody,
@@ -488,6 +615,135 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
         TContext
       > => {
       return useMutation(getPreviewImportMutationOptions(options), queryClient);
+    }
+    export const previewDocxImport = (
+    employeeId: number,
+    previewDocxImportBody?: PreviewDocxImportBody,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+
+      const formData = new FormData();
+if(previewDocxImportBody?.file !== undefined) {
+ formData.append(`file`, previewDocxImportBody.file);
+ }
+
+      return customInstance<ContractDocxImportPreview>(
+      {url: `/api/hr/employees/${employeeId}/contracts/import/docx/preview`, method: 'POST',
+      headers: {'Content-Type': 'multipart/form-data', },
+       data: formData, signal
+    },
+      options);
+    }
+
+
+
+
+export const getPreviewDocxImportMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof previewDocxImport>>, TError,{employeeId: number;data?: PreviewDocxImportBody}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof previewDocxImport>>, TError,{employeeId: number;data?: PreviewDocxImportBody}, TContext> => {
+
+const mutationKey = ['previewDocxImport'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof previewDocxImport>>, {employeeId: number;data?: PreviewDocxImportBody}> = (props) => {
+          const {employeeId,data} = props ?? {};
+
+          return  previewDocxImport(employeeId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PreviewDocxImportMutationResult = NonNullable<Awaited<ReturnType<typeof previewDocxImport>>>
+    export type PreviewDocxImportMutationBody = PreviewDocxImportBody | undefined
+    export type PreviewDocxImportMutationError = unknown
+
+    export const usePreviewDocxImport = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof previewDocxImport>>, TError,{employeeId: number;data?: PreviewDocxImportBody}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof previewDocxImport>>,
+        TError,
+        {employeeId: number;data?: PreviewDocxImportBody},
+        TContext
+      > => {
+      return useMutation(getPreviewDocxImportMutationOptions(options), queryClient);
+    }
+    export const confirmDocxImport = (
+    employeeId: number,
+    confirmDocxImportBody?: ConfirmDocxImportBody,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+
+      const formData = new FormData();
+if(confirmDocxImportBody?.file !== undefined) {
+ formData.append(`file`, confirmDocxImportBody.file);
+ }
+if(confirmDocxImportBody?.contract !== undefined) {
+ formData.append(`contract`, JSON.stringify(confirmDocxImportBody.contract));
+ }
+
+      return customInstance<ContractDetail>(
+      {url: `/api/hr/employees/${employeeId}/contracts/import/docx/confirm`, method: 'POST',
+      headers: {'Content-Type': 'multipart/form-data', },
+       data: formData, signal
+    },
+      options);
+    }
+
+
+
+
+export const getConfirmDocxImportMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof confirmDocxImport>>, TError,{employeeId: number;data?: ConfirmDocxImportBody}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof confirmDocxImport>>, TError,{employeeId: number;data?: ConfirmDocxImportBody}, TContext> => {
+
+const mutationKey = ['confirmDocxImport'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof confirmDocxImport>>, {employeeId: number;data?: ConfirmDocxImportBody}> = (props) => {
+          const {employeeId,data} = props ?? {};
+
+          return  confirmDocxImport(employeeId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ConfirmDocxImportMutationResult = NonNullable<Awaited<ReturnType<typeof confirmDocxImport>>>
+    export type ConfirmDocxImportMutationBody = ConfirmDocxImportBody | undefined
+    export type ConfirmDocxImportMutationError = unknown
+
+    export const useConfirmDocxImport = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof confirmDocxImport>>, TError,{employeeId: number;data?: ConfirmDocxImportBody}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof confirmDocxImport>>,
+        TError,
+        {employeeId: number;data?: ConfirmDocxImportBody},
+        TContext
+      > => {
+      return useMutation(getConfirmDocxImportMutationOptions(options), queryClient);
     }
     export const confirmImport = (
     employeeId: number,
@@ -702,6 +958,299 @@ export function useExportContract<TData = Awaited<ReturnType<typeof exportContra
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getExportContractQueryOptions(employeeId,contractId,params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const listContractDocuments = (
+    employeeId: number,
+    contractId: number,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+
+
+      return customInstance<ContractDocumentSummary[]>(
+      {url: `/api/hr/employees/${employeeId}/contracts/${contractId}/documents`, method: 'GET', signal
+    },
+      options);
+    }
+
+
+
+
+export const getListContractDocumentsQueryKey = (employeeId: number,
+    contractId: number,) => {
+    return [
+    `/api/hr/employees/${employeeId}/contracts/${contractId}/documents`
+    ] as const;
+    }
+
+
+export const getListContractDocumentsQueryOptions = <TData = Awaited<ReturnType<typeof listContractDocuments>>, TError = unknown>(employeeId: number,
+    contractId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listContractDocuments>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListContractDocumentsQueryKey(employeeId,contractId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listContractDocuments>>> = ({ signal }) => listContractDocuments(employeeId,contractId, requestOptions, signal);
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: employeeId !== null && employeeId !== undefined && contractId !== null && contractId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listContractDocuments>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ListContractDocumentsQueryResult = NonNullable<Awaited<ReturnType<typeof listContractDocuments>>>
+export type ListContractDocumentsQueryError = unknown
+
+
+export function useListContractDocuments<TData = Awaited<ReturnType<typeof listContractDocuments>>, TError = unknown>(
+ employeeId: number,
+    contractId: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listContractDocuments>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listContractDocuments>>,
+          TError,
+          Awaited<ReturnType<typeof listContractDocuments>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListContractDocuments<TData = Awaited<ReturnType<typeof listContractDocuments>>, TError = unknown>(
+ employeeId: number,
+    contractId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listContractDocuments>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listContractDocuments>>,
+          TError,
+          Awaited<ReturnType<typeof listContractDocuments>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListContractDocuments<TData = Awaited<ReturnType<typeof listContractDocuments>>, TError = unknown>(
+ employeeId: number,
+    contractId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listContractDocuments>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useListContractDocuments<TData = Awaited<ReturnType<typeof listContractDocuments>>, TError = unknown>(
+ employeeId: number,
+    contractId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listContractDocuments>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getListContractDocumentsQueryOptions(employeeId,contractId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getContractDocument = (
+    employeeId: number,
+    contractId: number,
+    documentId: number,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+
+
+      return customInstance<ContractDocumentDetail>(
+      {url: `/api/hr/employees/${employeeId}/contracts/${contractId}/documents/${documentId}`, method: 'GET', signal
+    },
+      options);
+    }
+
+
+
+
+export const getGetContractDocumentQueryKey = (employeeId: number,
+    contractId: number,
+    documentId: number,) => {
+    return [
+    `/api/hr/employees/${employeeId}/contracts/${contractId}/documents/${documentId}`
+    ] as const;
+    }
+
+
+export const getGetContractDocumentQueryOptions = <TData = Awaited<ReturnType<typeof getContractDocument>>, TError = unknown>(employeeId: number,
+    contractId: number,
+    documentId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getContractDocument>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetContractDocumentQueryKey(employeeId,contractId,documentId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getContractDocument>>> = ({ signal }) => getContractDocument(employeeId,contractId,documentId, requestOptions, signal);
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: employeeId !== null && employeeId !== undefined && contractId !== null && contractId !== undefined && documentId !== null && documentId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getContractDocument>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetContractDocumentQueryResult = NonNullable<Awaited<ReturnType<typeof getContractDocument>>>
+export type GetContractDocumentQueryError = unknown
+
+
+export function useGetContractDocument<TData = Awaited<ReturnType<typeof getContractDocument>>, TError = unknown>(
+ employeeId: number,
+    contractId: number,
+    documentId: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getContractDocument>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getContractDocument>>,
+          TError,
+          Awaited<ReturnType<typeof getContractDocument>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetContractDocument<TData = Awaited<ReturnType<typeof getContractDocument>>, TError = unknown>(
+ employeeId: number,
+    contractId: number,
+    documentId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getContractDocument>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getContractDocument>>,
+          TError,
+          Awaited<ReturnType<typeof getContractDocument>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetContractDocument<TData = Awaited<ReturnType<typeof getContractDocument>>, TError = unknown>(
+ employeeId: number,
+    contractId: number,
+    documentId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getContractDocument>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetContractDocument<TData = Awaited<ReturnType<typeof getContractDocument>>, TError = unknown>(
+ employeeId: number,
+    contractId: number,
+    documentId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getContractDocument>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetContractDocumentQueryOptions(employeeId,contractId,documentId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const downloadContractDocument = (
+    employeeId: number,
+    contractId: number,
+    documentId: number,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+
+
+      return customInstance<string>(
+      {url: `/api/hr/employees/${employeeId}/contracts/${contractId}/documents/${documentId}/file`, method: 'GET', signal
+    },
+      options);
+    }
+
+
+
+
+export const getDownloadContractDocumentQueryKey = (employeeId: number,
+    contractId: number,
+    documentId: number,) => {
+    return [
+    `/api/hr/employees/${employeeId}/contracts/${contractId}/documents/${documentId}/file`
+    ] as const;
+    }
+
+
+export const getDownloadContractDocumentQueryOptions = <TData = Awaited<ReturnType<typeof downloadContractDocument>>, TError = unknown>(employeeId: number,
+    contractId: number,
+    documentId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof downloadContractDocument>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getDownloadContractDocumentQueryKey(employeeId,contractId,documentId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof downloadContractDocument>>> = ({ signal }) => downloadContractDocument(employeeId,contractId,documentId, requestOptions, signal);
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: employeeId !== null && employeeId !== undefined && contractId !== null && contractId !== undefined && documentId !== null && documentId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof downloadContractDocument>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type DownloadContractDocumentQueryResult = NonNullable<Awaited<ReturnType<typeof downloadContractDocument>>>
+export type DownloadContractDocumentQueryError = unknown
+
+
+export function useDownloadContractDocument<TData = Awaited<ReturnType<typeof downloadContractDocument>>, TError = unknown>(
+ employeeId: number,
+    contractId: number,
+    documentId: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof downloadContractDocument>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof downloadContractDocument>>,
+          TError,
+          Awaited<ReturnType<typeof downloadContractDocument>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useDownloadContractDocument<TData = Awaited<ReturnType<typeof downloadContractDocument>>, TError = unknown>(
+ employeeId: number,
+    contractId: number,
+    documentId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof downloadContractDocument>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof downloadContractDocument>>,
+          TError,
+          Awaited<ReturnType<typeof downloadContractDocument>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useDownloadContractDocument<TData = Awaited<ReturnType<typeof downloadContractDocument>>, TError = unknown>(
+ employeeId: number,
+    contractId: number,
+    documentId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof downloadContractDocument>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useDownloadContractDocument<TData = Awaited<ReturnType<typeof downloadContractDocument>>, TError = unknown>(
+ employeeId: number,
+    contractId: number,
+    documentId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof downloadContractDocument>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getDownloadContractDocumentQueryOptions(employeeId,contractId,documentId,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

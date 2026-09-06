@@ -1,5 +1,6 @@
 import { Search } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { useNavigate } from "react-router";
 
@@ -22,6 +23,7 @@ export function OrganizationUnitTab({
 }: {
   organizationId: number;
 }) {
+  const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [selectedUnitId, setSelectedUnitId] = useState<number>();
 
@@ -56,7 +58,7 @@ export function OrganizationUnitTab({
   if (treeQuery.isLoading || unitsQuery.isLoading) {
     return (
       <div className="flex h-72 items-center justify-center text-sm text-gray-400">
-        Loading organization units…
+        {t("organizations.unitTab.loading")}
       </div>
     );
   }
@@ -64,23 +66,25 @@ export function OrganizationUnitTab({
   if (treeQuery.isError || unitsQuery.isError || !treeQuery.data) {
     return (
       <div className="flex h-72 items-center justify-center text-sm text-red-600">
-        Unable to load organization units.
+        {t("organizations.unitTab.unableToLoad")}
       </div>
     );
   }
 
   const organizationName =
-    treeQuery.data.nameEn ?? treeQuery.data.code ?? "Organization";
+    treeQuery.data.nameEn ??
+    treeQuery.data.code ??
+    t("organizations.unitTab.organizationFallback");
 
   return (
     <div className="py-4">
       <div className="mb-4">
         <h2 className="font-['Inter',sans-serif] text-base font-semibold text-[#1a2535]">
-          Organization Units
+          {t("organizations.unitTab.title")}
         </h2>
 
         <p className="font-['Inter',sans-serif] text-xs text-gray-400">
-          Select a unit to view its information
+          {t("organizations.unitTab.subtitle")}
         </p>
       </div>
 
@@ -92,7 +96,7 @@ export function OrganizationUnitTab({
             <Input
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              placeholder="Search units"
+              placeholder={t("organizations.unitTab.searchPlaceholder")}
               className="border-0 bg-transparent px-0 shadow-none focus-visible:ring-0"
             />
           </div>
@@ -113,7 +117,7 @@ export function OrganizationUnitTab({
                   <h3 className="font-['Inter',sans-serif] text-lg font-semibold text-[#1a2535]">
                     {selectedUnit.name ??
                       selectedUnit.code ??
-                      "Organization Unit"}
+                      t("organizations.unitTab.unitFallback")}
                   </h3>
 
                   {selectedUnit.nameAr && (
@@ -130,31 +134,49 @@ export function OrganizationUnitTab({
               </div>
 
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <InfoRow label="Unit Code" value={selectedUnit.code} />
-
-                <InfoRow label="Unit Type" value={selectedUnit.type} />
-
-                <InfoRow label="Parent Unit" value={selectedUnit.parentUnit} />
-
-                <InfoRow label="Manager" value={selectedUnit.manager} />
-
-                <InfoRow label="Employees" value={selectedUnit.employees} />
+                <InfoRow
+                  label={t("organizations.unitOverview.unitCode")}
+                  value={selectedUnit.code}
+                />
 
                 <InfoRow
-                  label="Active Positions"
+                  label={t("organizations.unitOverview.unitType")}
+                  value={selectedUnit.type}
+                />
+
+                <InfoRow
+                  label={t("organizations.unitOverview.parentUnit")}
+                  value={selectedUnit.parentUnit}
+                />
+
+                <InfoRow
+                  label={t("organizations.unitOverview.manager")}
+                  value={selectedUnit.manager}
+                />
+
+                <InfoRow
+                  label={t("organizations.unitOverview.employees")}
+                  value={selectedUnit.employees}
+                />
+
+                <InfoRow
+                  label={t("organizations.unitOverview.activePositions")}
                   value={selectedUnit.activePositions}
                 />
 
                 <InfoRow
-                  label="Open Positions"
+                  label={t("organizations.unitOverview.openPositions")}
                   value={selectedUnit.openPositions}
                 />
 
-                <InfoRow label="Child Units" value={selectedUnit.childUnits} />
+                <InfoRow
+                  label={t("organizations.unitOverview.childUnits")}
+                  value={selectedUnit.childUnits}
+                />
 
                 <div className="sm:col-span-2">
                   <InfoRow
-                    label="Description"
+                    label={t("common.description")}
                     value={selectedUnit.description}
                   />
                 </div>
@@ -168,13 +190,13 @@ export function OrganizationUnitTab({
                     )
                   }
                 >
-                  Unit Details
+                  {t("organizations.unitTab.viewUnitDetails")}
                 </Button>
               </div>
             </>
           ) : (
             <div className="flex h-64 items-center justify-center text-sm text-gray-400">
-              Select a unit to view its details.
+              {t("organizations.unitTab.selectUnitPrompt")}
             </div>
           )}
         </div>

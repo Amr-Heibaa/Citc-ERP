@@ -1,5 +1,6 @@
 import { Pencil } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -17,6 +18,7 @@ import { SettingsListShell } from "@/features/hr/hr-settings/components/settings
 import type { EmployeeStatusSetting } from "@/lib/api/generated/model";
 
 export function EmployeeStatusesPage() {
+  const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [active, setActive] = useState<boolean | undefined>(undefined);
   const [page, setPage] = useState(0);
@@ -40,9 +42,9 @@ export function EmployeeStatusesPage() {
   return (
     <>
       <SettingsListShell
-        title="Employee Statuses"
-        subtitle="Manage the employment status values used across HR."
-        backLabel="HR Settings"
+        title={t("hrSettings.employeeStatuses.title")}
+        subtitle={t("hrSettings.employeeStatuses.subtitle")}
+        backLabel={t("hrSettings.employeeStatuses.backLabel")}
         backTo="/hr/settings"
         search={search}
         onSearchChange={(value) => {
@@ -54,7 +56,7 @@ export function EmployeeStatusesPage() {
           setActive(value);
           setPage(0);
         }}
-        addLabel="Add Status"
+        addLabel={t("hrSettings.employeeStatuses.addLabel")}
         onAdd={openCreate}
         page={page}
         totalPages={statuses.data?.totalPages ?? 0}
@@ -63,26 +65,28 @@ export function EmployeeStatusesPage() {
       >
         {statuses.isLoading ? (
           <div className="flex h-48 items-center justify-center font-['Inter',sans-serif] text-sm text-gray-400">
-            Loading employee statuses…
+            {t("hrSettings.employeeStatuses.loading")}
           </div>
         ) : statuses.isError ? (
           <div className="flex h-48 items-center justify-center font-['Inter',sans-serif] text-sm text-red-600">
-            Unable to load employee statuses.
+            {t("hrSettings.employeeStatuses.unableToLoad")}
           </div>
         ) : rows.length === 0 ? (
           <div className="flex h-48 items-center justify-center font-['Inter',sans-serif] text-sm text-gray-400">
-            No employee statuses match the current filters.
+            {t("hrSettings.employeeStatuses.noResults")}
           </div>
         ) : (
           <Table>
             <TableHeader className="bg-[#f4f6f9]">
               <TableRow>
-                <TableHead>Code</TableHead>
-                <TableHead>Name (EN)</TableHead>
-                <TableHead>Name (AR)</TableHead>
-                <TableHead>Usage</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead>{t("hrSettings.employeeStatuses.columns.code")}</TableHead>
+                <TableHead>{t("hrSettings.employeeStatuses.columns.nameEn")}</TableHead>
+                <TableHead>{t("hrSettings.employeeStatuses.columns.nameAr")}</TableHead>
+                <TableHead>{t("hrSettings.employeeStatuses.columns.usage")}</TableHead>
+                <TableHead>{t("hrSettings.employeeStatuses.columns.status")}</TableHead>
+                <TableHead className="text-right">
+                  {t("hrSettings.employeeStatuses.columns.actions")}
+                </TableHead>
               </TableRow>
             </TableHeader>
 
@@ -113,7 +117,7 @@ export function EmployeeStatusesPage() {
                     <Button
                       variant="ghost"
                       size="icon"
-                      title="Edit status"
+                      title={t("hrSettings.employeeStatuses.editTooltip")}
                       onClick={() => openEdit(status)}
                     >
                       <Pencil className="size-4" />

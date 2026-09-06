@@ -1,4 +1,5 @@
 import { Plus, Search } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 
 import { Button } from "@/components/ui/button";
@@ -48,6 +49,7 @@ export function SettingsListShell({
   onPageChange: (page: number) => void;
   children: React.ReactNode;
 }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const filterValue =
@@ -91,7 +93,7 @@ export function SettingsListShell({
           <Input
             value={search}
             onChange={(event) => onSearchChange(event.target.value)}
-            placeholder="Search..."
+            placeholder={t("hrSettings.list.searchPlaceholder")}
             className="h-auto min-w-0 flex-1 border-0 bg-transparent p-0 font-['Inter',sans-serif] text-sm text-gray-600 shadow-none outline-none placeholder:text-gray-400 focus-visible:ring-0"
           />
         </div>
@@ -109,13 +111,13 @@ export function SettingsListShell({
           }}
         >
           <SelectTrigger className="h-10 w-full font-['Inter',sans-serif] text-sm text-gray-600 lg:w-40">
-            <SelectValue placeholder="All Status" />
+            <SelectValue placeholder={t("hrSettings.list.allStatus")} />
           </SelectTrigger>
 
           <SelectContent>
-            <SelectItem value={ALL_STATUSES}>All Status</SelectItem>
-            <SelectItem value={ACTIVE_ONLY}>Active</SelectItem>
-            <SelectItem value={INACTIVE_ONLY}>Inactive</SelectItem>
+            <SelectItem value={ALL_STATUSES}>{t("hrSettings.list.allStatus")}</SelectItem>
+            <SelectItem value={ACTIVE_ONLY}>{t("hrSettings.list.active")}</SelectItem>
+            <SelectItem value={INACTIVE_ONLY}>{t("hrSettings.list.inactive")}</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -127,7 +129,11 @@ export function SettingsListShell({
       {totalElements > 0 && (
         <div className="flex items-center justify-between font-['Inter',sans-serif] text-xs text-gray-400">
           <span>
-            Page {page + 1} of {Math.max(totalPages, 1)} · {totalElements} total
+            {t("hrSettings.list.pageOf", {
+              page: page + 1,
+              totalPages: Math.max(totalPages, 1),
+              total: totalElements,
+            })}
           </span>
 
           <div className="flex gap-2">
@@ -137,7 +143,7 @@ export function SettingsListShell({
               disabled={page <= 0}
               onClick={() => onPageChange(page - 1)}
             >
-              Previous
+              {t("hrSettings.list.previous")}
             </Button>
 
             <Button
@@ -146,7 +152,7 @@ export function SettingsListShell({
               disabled={page + 1 >= totalPages}
               onClick={() => onPageChange(page + 1)}
             >
-              Next
+              {t("hrSettings.list.next")}
             </Button>
           </div>
         </div>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -24,6 +25,7 @@ export function EndAssignmentDialog({
   onOpenChange: (open: boolean) => void;
   position: JobPositionDetail;
 }) {
+  const { t } = useTranslation();
   const positionId = position.positionId ?? 0;
   const assignmentId = position.currentAssignment?.assignmentId ?? 0;
 
@@ -36,11 +38,11 @@ export function EndAssignmentDialog({
   async function handleConfirm() {
     try {
       await endAssignment.mutateAsync({ endDate });
-      toast.success("Assignment ended successfully");
+      toast.success(t("jobs.endAssignmentDialog.success"));
       onOpenChange(false);
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Unable to end assignment",
+        error instanceof Error ? error.message : t("jobs.endAssignmentDialog.error"),
       );
     }
   }
@@ -50,16 +52,19 @@ export function EndAssignmentDialog({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-xl text-[#1a2535]">
-            End Assignment
+            {t("jobs.endAssignmentDialog.title")}
           </DialogTitle>
 
           <DialogDescription>
-            End {position.currentAssignment?.employeeName ?? "the current employee"}
-            's assignment. The position will become open.
+            {t("jobs.endAssignmentDialog.description", {
+              employee:
+                position.currentAssignment?.employeeName ??
+                t("jobs.endAssignmentDialog.employeeFallback"),
+            })}
           </DialogDescription>
         </DialogHeader>
 
-        <LabeledField label="End Date">
+        <LabeledField label={t("jobs.endAssignmentDialog.endDate")}>
           <Input
             type="date"
             value={endDate}
@@ -69,7 +74,7 @@ export function EndAssignmentDialog({
 
         <DialogFooter>
           <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
+            {t("jobs.endAssignmentDialog.cancel")}
           </Button>
 
           <Button
@@ -78,7 +83,9 @@ export function EndAssignmentDialog({
             disabled={endAssignment.isPending}
             onClick={handleConfirm}
           >
-            {endAssignment.isPending ? "Saving…" : "End Assignment"}
+            {endAssignment.isPending
+              ? t("jobs.endAssignmentDialog.saving")
+              : t("jobs.endAssignmentDialog.confirm")}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -1,5 +1,6 @@
 import { Download, FileSpreadsheet, FileText } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -19,6 +20,7 @@ import {
 } from "@/features/hr/reports/utils/contract-types-report-export";
 
 export function ContractTypesReportPage() {
+  const { t } = useTranslation();
   const [exporting, setExporting] = useState(false);
 
   const query = useContractTypesForReport();
@@ -45,28 +47,28 @@ export function ContractTypesReportPage() {
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="font-['Inter',sans-serif] text-2xl font-bold text-[#1a2535]">
-            Contract Types Report
+            {t("reports.contractTypesReport.title")}
           </h1>
 
           <p className="font-['Inter',sans-serif] text-sm text-gray-400">
-            {rows.length} contract types · {totalContracts} contracts in total
+            {t("reports.contractTypesReport.summary", { count: rows.length, total: totalContracts })}
           </p>
         </div>
 
         <div className="flex gap-2">
           <Button variant="outline" onClick={() => downloadContractTypesCsv(sortedRows)} disabled={rows.length === 0}>
             <Download className="size-4" />
-            CSV
+            {t("reports.contractTypesReport.csv")}
           </Button>
 
           <Button variant="outline" onClick={handleExcel} disabled={rows.length === 0 || exporting}>
             <FileSpreadsheet className="size-4" />
-            Excel
+            {t("reports.contractTypesReport.excel")}
           </Button>
 
           <Button onClick={() => printContractTypesReport(sortedRows)} disabled={rows.length === 0} className="bg-[#1a2535] text-white hover:bg-[#243347]">
             <FileText className="size-4" />
-            PDF
+            {t("reports.contractTypesReport.pdf")}
           </Button>
         </div>
       </div>
@@ -74,25 +76,27 @@ export function ContractTypesReportPage() {
       <div className="overflow-hidden rounded-xl border border-gray-100 bg-white">
         {query.isLoading ? (
           <div className="flex h-48 items-center justify-center font-['Inter',sans-serif] text-sm text-gray-400">
-            Loading contract types…
+            {t("reports.contractTypesReport.loading")}
           </div>
         ) : query.isError ? (
           <div className="flex h-48 items-center justify-center font-['Inter',sans-serif] text-sm text-red-600">
-            Unable to load contract types.
+            {t("reports.contractTypesReport.unableToLoad")}
           </div>
         ) : sortedRows.length === 0 ? (
           <div className="flex h-48 items-center justify-center font-['Inter',sans-serif] text-sm text-gray-400">
-            No contract types found.
+            {t("reports.contractTypesReport.noResults")}
           </div>
         ) : (
           <Table>
             <TableHeader className="bg-[#f4f6f9]">
               <TableRow>
-                <TableHead>Code</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Usage</TableHead>
-                <TableHead className="w-1/3">Distribution</TableHead>
+                <TableHead>{t("reports.contractTypesReport.columns.code")}</TableHead>
+                <TableHead>{t("reports.contractTypesReport.columns.name")}</TableHead>
+                <TableHead>{t("reports.contractTypesReport.columns.status")}</TableHead>
+                <TableHead>{t("reports.contractTypesReport.columns.usage")}</TableHead>
+                <TableHead className="w-1/3">
+                  {t("reports.contractTypesReport.columns.distribution")}
+                </TableHead>
               </TableRow>
             </TableHeader>
 

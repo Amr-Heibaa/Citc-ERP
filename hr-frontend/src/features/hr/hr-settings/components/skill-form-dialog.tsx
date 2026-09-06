@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -33,6 +34,7 @@ export function SkillFormDialog({
   onOpenChange: (open: boolean) => void;
   skill?: SkillSetting;
 }) {
+  const { t } = useTranslation();
   const editMode = skill != null;
   const skillId = skill?.skillId ?? 0;
 
@@ -68,15 +70,15 @@ export function SkillFormDialog({
     try {
       if (editMode) {
         await updateSkill.mutateAsync(toSkillRequest(values));
-        toast.success("Skill updated successfully");
+        toast.success(t("hrSettings.forms.skill.editSuccess"));
       } else {
         await createSkill.mutateAsync(toSkillRequest(values));
-        toast.success("Skill added successfully");
+        toast.success(t("hrSettings.forms.skill.addSuccess"));
       }
 
       onOpenChange(false);
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Unable to save skill");
+      toast.error(error instanceof Error ? error.message : t("hrSettings.forms.skill.saveError"));
     }
   });
 
@@ -85,25 +87,27 @@ export function SkillFormDialog({
       <DialogContent className="sm:max-w-lg gap-0 overflow-hidden p-0">
         <DialogHeader className="border-b border-gray-100 px-6 py-5">
           <DialogTitle className="text-xl text-[#1a2535]">
-            {editMode ? "Edit Skill" : "Add Skill"}
+            {editMode ? t("hrSettings.forms.skill.editTitle") : t("hrSettings.forms.skill.addTitle")}
           </DialogTitle>
 
           <DialogDescription>
-            {editMode ? `Update the details for ${skill.nameEn}.` : "Create a new skill."}
+            {editMode
+              ? t("hrSettings.forms.skill.editDescription", { name: skill.nameEn })
+              : t("hrSettings.forms.skill.addDescription")}
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={submit}>
           <div className="grid grid-cols-1 gap-4 px-6 py-5 sm:grid-cols-2">
-            <LabeledField label="Name (English)" error={errors.nameEn?.message}>
+            <LabeledField label={t("hrSettings.forms.common.nameEn")} error={errors.nameEn?.message}>
               <Input {...register("nameEn")} maxLength={100} />
             </LabeledField>
 
-            <LabeledField label="Name (Arabic)" error={errors.nameAr?.message}>
+            <LabeledField label={t("hrSettings.forms.common.nameAr")} error={errors.nameAr?.message}>
               <Input {...register("nameAr")} maxLength={100} dir="rtl" />
             </LabeledField>
 
-            <LabeledField label="Status">
+            <LabeledField label={t("hrSettings.forms.common.status")}>
               <StatusSelectField
                 active={active}
                 onChange={(checked) => setValue("active", checked)}
@@ -113,11 +117,15 @@ export function SkillFormDialog({
 
           <DialogFooter className="border-t border-gray-100 px-6 py-4">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
+              {t("hrSettings.forms.common.cancel")}
             </Button>
 
             <Button type="submit" disabled={pending}>
-              {pending ? "Saving…" : editMode ? "Save Changes" : "Add Skill"}
+              {pending
+                ? t("hrSettings.forms.common.saving")
+                : editMode
+                  ? t("hrSettings.forms.skill.saveChanges")
+                  : t("hrSettings.forms.skill.addSubmit")}
             </Button>
           </DialogFooter>
         </form>

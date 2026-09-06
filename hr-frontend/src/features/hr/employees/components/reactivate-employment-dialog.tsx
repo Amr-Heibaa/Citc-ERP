@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -48,6 +49,7 @@ export function ReactivateEmploymentDialog({
   onOpenChange: (open: boolean) => void;
   overview: EmploymentOverview;
 }) {
+  const { t } = useTranslation();
   const employeeId = overview.employeeId ?? 0;
   const statuses = useStatuses();
   const organizations = useOrganizations();
@@ -96,11 +98,11 @@ export function ReactivateEmploymentDialog({
   const submit = handleSubmit(async (values) => {
     try {
       await reactivateEmployment.mutateAsync(toReactivateRequest(values));
-      toast.success("Employment reactivated");
+      toast.success(t("employees.employmentActions.reactivate.success"));
       onOpenChange(false);
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Unable to reactivate employment",
+        error instanceof Error ? error.message : t("employees.employmentActions.reactivate.error"),
       );
     }
   });
@@ -110,22 +112,22 @@ export function ReactivateEmploymentDialog({
       <DialogContent className="sm:max-w-lg gap-0 overflow-hidden p-0">
         <DialogHeader className="border-b border-gray-100 px-6 py-5">
           <DialogTitle className="text-xl text-[#1a2535]">
-            Reactivate Employment
+            {t("employees.employmentActions.reactivate.title")}
           </DialogTitle>
 
           <DialogDescription>
-            Rehire this employee into a position with a new assignment.
+            {t("employees.employmentActions.reactivate.description")}
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={submit}>
           <div className="grid grid-cols-1 gap-4 px-6 py-5 sm:grid-cols-2">
             <div className="sm:col-span-2">
-              <LabeledField label="Organization">
+              <LabeledField label={t("employees.employmentActions.common.organization")}>
                 <SelectField
                   control={control}
                   name="organizationId"
-                  placeholder="Select organization"
+                  placeholder={t("employees.employmentActions.common.selectOrganization")}
                   options={
                     organizations.data?.flatMap((organization) =>
                       organization.id == null
@@ -138,11 +140,15 @@ export function ReactivateEmploymentDialog({
             </div>
 
             <div className="sm:col-span-2">
-              <LabeledField label="Position" error={errors.positionId?.message}>
+              <LabeledField label={t("employees.employmentActions.common.position")} error={errors.positionId?.message}>
                 <SelectField
                   control={control}
                   name="positionId"
-                  placeholder={selectedOrgId ? "Select position" : "Select an organization first"}
+                  placeholder={
+                    selectedOrgId
+                      ? t("employees.employmentActions.common.selectPosition")
+                      : t("employees.employmentActions.common.selectOrganizationFirst")
+                  }
                   disabled={!selectedOrgId}
                   options={
                     positions.data?.content?.flatMap((position) =>
@@ -160,11 +166,11 @@ export function ReactivateEmploymentDialog({
               </LabeledField>
             </div>
 
-            <LabeledField label="Status" error={errors.employeeStatusId?.message}>
+            <LabeledField label={t("employees.employmentActions.common.status")} error={errors.employeeStatusId?.message}>
               <SelectField
                 control={control}
                 name="employeeStatusId"
-                placeholder="Select status"
+                placeholder={t("employees.employmentActions.common.selectStatus")}
                 options={reactivationStatuses.map((status) => ({
                   value: String(status.id),
                   label: status.name,
@@ -173,39 +179,47 @@ export function ReactivateEmploymentDialog({
             </LabeledField>
 
             <LabeledField
-              label="Assignment Type"
+              label={t("employees.employmentActions.common.assignmentType")}
               error={errors.assignmentType?.message}
             >
               <SelectField
                 control={control}
                 name="assignmentType"
-                placeholder="Select type"
-                options={ASSIGNMENT_TYPE_OPTIONS}
+                placeholder={t("employees.employmentActions.common.selectType")}
+                options={ASSIGNMENT_TYPE_OPTIONS.map((option) => ({
+                  value: option.value,
+                  label: t(option.label),
+                }))}
               />
             </LabeledField>
 
-            <LabeledField label="Start Date" error={errors.startDate?.message}>
+            <LabeledField label={t("employees.employmentActions.common.startDate")} error={errors.startDate?.message}>
               <Input type="date" {...register("startDate")} />
             </LabeledField>
 
-            <LabeledField label="End Date (Optional)" error={errors.endDate?.message}>
+            <LabeledField label={t("employees.employmentActions.common.endDateOptional")} error={errors.endDate?.message}>
               <Input type="date" {...register("endDate")} />
             </LabeledField>
 
             <div className="sm:col-span-2">
-              <LabeledField label="Reason (Optional)">
-                <Input {...register("reason")} placeholder="Reason for reactivation" />
+              <LabeledField label={t("employees.employmentActions.common.reasonOptional")}>
+                <Input
+                  {...register("reason")}
+                  placeholder={t("employees.employmentActions.reactivate.reasonPlaceholder")}
+                />
               </LabeledField>
             </div>
           </div>
 
           <DialogFooter className="border-t border-gray-100 px-6 py-4">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
+              {t("employees.employmentActions.common.cancel")}
             </Button>
 
             <Button type="submit" disabled={reactivateEmployment.isPending}>
-              {reactivateEmployment.isPending ? "Saving…" : "Reactivate"}
+              {reactivateEmployment.isPending
+                ? t("employees.employmentActions.common.saving")
+                : t("employees.employmentActions.reactivate.confirm")}
             </Button>
           </DialogFooter>
         </form>

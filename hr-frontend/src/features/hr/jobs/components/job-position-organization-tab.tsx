@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 
 import { Button } from "@/components/ui/button";
@@ -14,6 +15,7 @@ export function JobPositionOrganizationTab({
 }: {
   position: JobPositionDetail;
 }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const unit = useOrgUnitDetailForJobs(position.orgUnitId);
   const orgUnits = useOrgUnitsForJobs(position.organizationId);
@@ -25,16 +27,16 @@ export function JobPositionOrganizationTab({
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       <section>
-        <SectionTitle>Organization Unit</SectionTitle>
+        <SectionTitle>{t("jobs.positionDetail.organization.organizationUnit")}</SectionTitle>
 
         <div className="flex flex-col gap-2">
-          <InfoRow label="Unit" value={position.orgUnitName} />
-          <InfoRow label="Unit Code" value={position.orgUnitCode} />
-          <InfoRow label="Unit Type" value={unit.data?.type} />
-          <InfoRow label="Parent Unit" value={unit.data?.parentUnit} />
-          <InfoRow label="Organization" value={position.organizationName} />
-          <InfoRow label="Manager" value={unit.data?.manager} />
-          <InfoRow label="Status" value={unit.data?.status} />
+          <InfoRow label={t("jobs.positionDetail.organization.unit")} value={position.orgUnitName} />
+          <InfoRow label={t("jobs.positionDetail.organization.unitCode")} value={position.orgUnitCode} />
+          <InfoRow label={t("jobs.positionDetail.organization.unitType")} value={unit.data?.type} />
+          <InfoRow label={t("jobs.positionDetail.organization.parentUnit")} value={unit.data?.parentUnit} />
+          <InfoRow label={t("jobs.positionDetail.organization.organization")} value={position.organizationName} />
+          <InfoRow label={t("jobs.positionDetail.organization.manager")} value={unit.data?.manager} />
+          <InfoRow label={t("jobs.positionDetail.organization.status")} value={unit.data?.status} />
         </div>
 
         {position.organizationId != null && position.orgUnitId != null && (
@@ -48,20 +50,26 @@ export function JobPositionOrganizationTab({
               )
             }
           >
-            View Unit Details →
+            {t("jobs.positionDetail.organization.viewUnitDetails")}
           </Button>
         )}
       </section>
 
       <section>
-        <SectionTitle>Unit Hierarchy</SectionTitle>
+        <SectionTitle>{t("jobs.positionDetail.organization.unitHierarchy")}</SectionTitle>
 
-        <OrgNode title={position.organizationName ?? ""} subtitle="Organization" />
+        <OrgNode
+          title={position.organizationName ?? ""}
+          subtitle={t("jobs.positionDetail.organization.organizationSubtitle")}
+        />
 
         {unit.data?.parentUnit && (
           <>
             <OrgConnector />
-            <OrgNode title={unit.data.parentUnit} subtitle="Parent Unit" />
+            <OrgNode
+              title={unit.data.parentUnit}
+              subtitle={t("jobs.positionDetail.organization.parentUnitSubtitle")}
+            />
           </>
         )}
 

@@ -7,6 +7,7 @@ import {
   Upload,
   XCircle,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
@@ -36,6 +37,7 @@ export function EmployeeImportDialog({
   open,
   onOpenChange,
 }: EmployeeImportDialogProps) {
+  const { t } = useTranslation();
   const [file, setFile] = useState<File | null>(null);
   const [filter, setFilter] = useState<RowFilter>("ALL");
 
@@ -82,16 +84,16 @@ export function EmployeeImportDialog({
 
   async function handlePreview() {
     if (!file) {
-      toast.error("Select an Excel file first");
+      toast.error(t("employees.importDialog.selectFileFirst"));
       return;
     }
 
     try {
       await previewMutation.mutateAsync(file);
-      toast.success("Excel file validated successfully");
+      toast.success(t("employees.importDialog.validatedSuccess"));
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Unable to preview the Excel file",
+        error instanceof Error ? error.message : t("employees.importDialog.unableToPreview"),
       );
     }
   }
@@ -106,16 +108,19 @@ export function EmployeeImportDialog({
 
       if (importResult.failedRows > 0) {
         toast.warning(
-          `${importResult.importedRows} imported, ${importResult.failedRows} failed`,
+          t("employees.importDialog.importedWithFailures", {
+            imported: importResult.importedRows,
+            failed: importResult.failedRows,
+          }),
         );
       } else {
         toast.success(
-          `${importResult.importedRows} employees imported successfully`,
+          t("employees.importDialog.importedSuccess", { count: importResult.importedRows }),
         );
       }
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Unable to import employees",
+        error instanceof Error ? error.message : t("employees.importDialog.unableToImport"),
       );
     }
   }
@@ -136,12 +141,11 @@ export function EmployeeImportDialog({
         <DialogHeader className="shrink-0 border-b border-gray-100 px-6 py-5 text-left">
           <DialogTitle className="flex items-center gap-2 text-xl text-[#1a2535]">
             <FileSpreadsheet className="size-5 text-[#f5841f]" />
-            Import Employees
+            {t("employees.importDialog.title")}
           </DialogTitle>
 
           <DialogDescription>
-            Upload the employee Excel file, review validation results, then
-            confirm the import.
+            {t("employees.importDialog.description")}
           </DialogDescription>
         </DialogHeader>
 
@@ -154,13 +158,13 @@ export function EmployeeImportDialog({
 
               <div className="min-w-0 flex-1">
                 <p className="font-['Inter',sans-serif] text-sm font-semibold text-[#1a2535]">
-                  Employee Excel file
+                  {t("employees.importDialog.fileLabel")}
                 </p>
 
                 <p className="truncate font-['Inter',sans-serif] text-xs text-gray-400">
                   {file
                     ? `${file.name} · ${(file.size / 1024 / 1024).toFixed(2)} MB`
-                    : "Select an .xlsx or .xls file, maximum 10 MB"}
+                    : t("employees.importDialog.selectFilePrompt")}
                 </p>
               </div>
 
@@ -185,25 +189,25 @@ export function EmployeeImportDialog({
             <>
               <div className="grid shrink-0 grid-cols-2 gap-3 lg:grid-cols-4">
                 <SummaryCard
-                  label="Total Rows"
+                  label={t("employees.importDialog.summary.totalRows")}
                   value={preview.totalRows}
                   color="text-[#1a2535]"
                 />
 
                 <SummaryCard
-                  label="Valid"
+                  label={t("employees.importDialog.summary.valid")}
                   value={preview.validRows}
                   color="text-emerald-600"
                 />
 
                 <SummaryCard
-                  label="Invalid"
+                  label={t("employees.importDialog.summary.invalid")}
                   value={preview.invalidRows}
                   color="text-red-600"
                 />
 
                 <SummaryCard
-                  label="With Warnings"
+                  label={t("employees.importDialog.summary.withWarnings")}
                   value={preview.rowsWithWarnings}
                   color="text-amber-600"
                 />
@@ -214,21 +218,23 @@ export function EmployeeImportDialog({
                   active={filter === "ALL"}
                   onClick={() => setFilter("ALL")}
                 >
-                  All ({preview.totalRows})
+                  {t("employees.importDialog.filters.all", { count: preview.totalRows })}
                 </FilterButton>
 
                 <FilterButton
                   active={filter === "ERRORS"}
                   onClick={() => setFilter("ERRORS")}
                 >
-                  Errors ({preview.invalidRows})
+                  {t("employees.importDialog.filters.errors", { count: preview.invalidRows })}
                 </FilterButton>
 
                 <FilterButton
                   active={filter === "WARNINGS"}
                   onClick={() => setFilter("WARNINGS")}
                 >
-                  Warnings ({preview.rowsWithWarnings})
+                  {t("employees.importDialog.filters.warnings", {
+                    count: preview.rowsWithWarnings,
+                  })}
                 </FilterButton>
               </div>
 
@@ -237,14 +243,14 @@ export function EmployeeImportDialog({
                   <thead className="sticky top-0 z-10 bg-[#f4f6f9]">
                     <tr>
                       {[
-                        "Row",
-                        "Employee",
-                        "National ID",
-                        "Department",
-                        "Position",
-                        "Contract",
-                        "Status",
-                        "Messages",
+                        t("employees.importDialog.previewTable.row"),
+                        t("employees.importDialog.previewTable.employee"),
+                        t("employees.importDialog.previewTable.nationalId"),
+                        t("employees.importDialog.previewTable.department"),
+                        t("employees.importDialog.previewTable.position"),
+                        t("employees.importDialog.previewTable.contract"),
+                        t("employees.importDialog.previewTable.status"),
+                        t("employees.importDialog.previewTable.messages"),
                       ].map((heading) => (
                         <th
                           key={heading}
@@ -289,7 +295,7 @@ export function EmployeeImportDialog({
 
                           {!row.orgUnitId && row.department && (
                             <p className="mt-1 text-[11px] text-amber-600">
-                              Not matched
+                              {t("employees.importDialog.previewTable.notMatched")}
                             </p>
                           )}
                         </td>
@@ -299,7 +305,7 @@ export function EmployeeImportDialog({
 
                           {!row.positionId && row.positionTitle && (
                             <p className="mt-1 text-[11px] text-amber-600">
-                              Not matched
+                              {t("employees.importDialog.previewTable.notMatched")}
                             </p>
                           )}
                         </td>
@@ -309,7 +315,7 @@ export function EmployeeImportDialog({
 
                           {!row.contractTypeId && row.contractType && (
                             <p className="mt-1 text-[11px] text-amber-600">
-                              Not matched
+                              {t("employees.importDialog.previewTable.notMatched")}
                             </p>
                           )}
                         </td>
@@ -318,12 +324,12 @@ export function EmployeeImportDialog({
                           {row.valid ? (
                             <Badge className="border-0 bg-emerald-100 text-emerald-700">
                               <CheckCircle2 />
-                              Valid
+                              {t("employees.importDialog.previewTable.valid")}
                             </Badge>
                           ) : (
                             <Badge className="border-0 bg-red-100 text-red-700">
                               <XCircle />
-                              Invalid
+                              {t("employees.importDialog.previewTable.invalid")}
                             </Badge>
                           )}
                         </td>
@@ -343,7 +349,7 @@ export function EmployeeImportDialog({
 
                           {row.errors.length === 0 && row.warnings.length === 0 && (
                             <span className="text-xs text-gray-400">
-                              Ready to import
+                              {t("employees.importDialog.previewTable.readyToImport")}
                             </span>
                           )}
                         </td>
@@ -365,12 +371,11 @@ export function EmployeeImportDialog({
 
               <div>
                 <p className="font-semibold text-[#1a2535]">
-                  Select the employee workbook
+                  {t("employees.importDialog.selectWorkbookTitle")}
                 </p>
 
                 <p className="mt-1 max-w-md text-sm text-gray-400">
-                  The file will be validated first. No database changes occur
-                  until you confirm the import.
+                  {t("employees.importDialog.selectWorkbookDescription")}
                 </p>
               </div>
             </div>
@@ -383,7 +388,7 @@ export function EmployeeImportDialog({
             disabled={pending}
             onClick={() => handleOpenChange(false)}
           >
-            {result ? "Done" : "Cancel"}
+            {result ? t("employees.importDialog.done") : t("employees.importDialog.cancel")}
           </Button>
 
           {!preview && !result && (
@@ -398,7 +403,7 @@ export function EmployeeImportDialog({
                 <FileSpreadsheet className="size-4" />
               )}
 
-              Preview File
+              {t("employees.importDialog.previewFile")}
             </Button>
           )}
 
@@ -414,7 +419,7 @@ export function EmployeeImportDialog({
                 <Upload className="size-4" />
               )}
 
-              Import {preview.validRows} Employees
+              {t("employees.importDialog.importNEmployees", { count: preview.validRows })}
             </Button>
           )}
         </DialogFooter>
@@ -464,46 +469,59 @@ function FilterButton({
 }
 
 function ImportResultView({ result }: { result: EmployeeImportResult }) {
+  const { t } = useTranslation();
+
   return (
     <>
       <div className="grid shrink-0 grid-cols-2 gap-3 lg:grid-cols-4">
-        <SummaryCard label="Total" value={result.totalRows} color="text-[#1a2535]" />
+        <SummaryCard
+          label={t("employees.importDialog.summary.total")}
+          value={result.totalRows}
+          color="text-[#1a2535]"
+        />
 
         <SummaryCard
-          label="Imported"
+          label={t("employees.importDialog.summary.imported")}
           value={result.importedRows}
           color="text-emerald-600"
         />
 
         <SummaryCard
-          label="Skipped"
+          label={t("employees.importDialog.summary.skipped")}
           value={result.skippedRows}
           color="text-amber-600"
         />
 
-        <SummaryCard label="Failed" value={result.failedRows} color="text-red-600" />
+        <SummaryCard
+          label={t("employees.importDialog.summary.failed")}
+          value={result.failedRows}
+          color="text-red-600"
+        />
       </div>
 
       <div className="flex items-center gap-2 rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
         <CheckCircle2 className="size-5 shrink-0" />
-        The import finished. Imported employees are now available in the
-        employee list.
+        {t("employees.importDialog.importFinishedNotice")}
       </div>
 
       <div className="min-h-0 flex-1 overflow-auto rounded-xl border border-gray-100">
         <table className="w-full min-w-[800px]">
           <thead className="sticky top-0 bg-[#f4f6f9]">
             <tr>
-              {["Row", "Employee Number", "Employee", "Status", "Message"].map(
-                (heading) => (
-                  <th
-                    key={heading}
-                    className="border-b border-gray-200 px-4 py-3 text-left text-xs font-semibold text-gray-500"
-                  >
-                    {heading}
-                  </th>
-                ),
-              )}
+              {[
+                t("employees.importDialog.resultTable.row"),
+                t("employees.importDialog.resultTable.employeeNumber"),
+                t("employees.importDialog.resultTable.employee"),
+                t("employees.importDialog.resultTable.status"),
+                t("employees.importDialog.resultTable.message"),
+              ].map((heading) => (
+                <th
+                  key={heading}
+                  className="border-b border-gray-200 px-4 py-3 text-left text-xs font-semibold text-gray-500"
+                >
+                  {heading}
+                </th>
+              ))}
             </tr>
           </thead>
 

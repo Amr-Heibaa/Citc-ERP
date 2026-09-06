@@ -1,5 +1,6 @@
 import type { ContractTypeSetting } from "@/lib/api/generated/model";
 
+import i18n from "@/i18n";
 import {
   downloadCsv,
   downloadExcel,
@@ -37,8 +38,11 @@ export function printContractTypesReport(contractTypes: ContractTypeSetting[]) {
   );
 
   printTableReport({
-    title: "Contract Types Report",
-    subtitle: `${contractTypes.length} contract types — ${totalUsage} contracts in total`,
+    title: i18n.t("reports.contractTypesReport.title"),
+    subtitle: i18n.t("reports.contractTypesReport.summary", {
+      count: contractTypes.length,
+      total: totalUsage,
+    }),
     rows: exportRows(contractTypes),
   });
 }

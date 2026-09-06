@@ -1,5 +1,6 @@
 import { Pencil } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 
 import { Button } from "@/components/ui/button";
@@ -20,6 +21,7 @@ export function JobPositionDetailTabs({
 }: {
   position: JobPositionDetail;
 }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("overview");
 
@@ -29,22 +31,22 @@ export function JobPositionDetailTabs({
         <div className="flex min-h-10 flex-col border-b border-gray-100 sm:flex-row sm:items-center sm:justify-between">
           <TabsList className="h-10 w-auto justify-start overflow-x-auto rounded-none bg-transparent p-0">
             <TabsTrigger value="overview" className={TRIGGER_CLASS}>
-              Overview
+              {t("jobs.positionDetail.tabs.overview")}
             </TabsTrigger>
             <TabsTrigger value="employee" className={TRIGGER_CLASS}>
-              Employee
+              {t("jobs.positionDetail.tabs.employee")}
             </TabsTrigger>
             <TabsTrigger value="organization" className={TRIGGER_CLASS}>
-              Organization
+              {t("jobs.positionDetail.tabs.organization")}
             </TabsTrigger>
             <TabsTrigger value="reporting" className={TRIGGER_CLASS}>
-              Reporting
+              {t("jobs.positionDetail.tabs.reporting")}
             </TabsTrigger>
             <TabsTrigger value="assignments" className={TRIGGER_CLASS}>
-              Assignments
+              {t("jobs.positionDetail.tabs.assignments")}
             </TabsTrigger>
             <TabsTrigger value="history" className={TRIGGER_CLASS}>
-              History
+              {t("jobs.positionDetail.tabs.history")}
             </TabsTrigger>
           </TabsList>
 
@@ -54,7 +56,7 @@ export function JobPositionDetailTabs({
               onClick={() => navigate(`/hr/jobs/positions/${position.positionId}/edit`)}
             >
               <Pencil className="size-4" />
-              Edit Position
+              {t("jobs.positionDetail.editPosition")}
             </Button>
           </div>
         </div>

@@ -1,4 +1,5 @@
 import { Search } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { Input } from "@/components/ui/input";
 import {
@@ -20,6 +21,7 @@ export function EmploymentFiltersBar({
   orgUnits: string[];
   statuses: [code: string, name: string][];
 }) {
+  const { t } = useTranslation();
   const search = useEmploymentFiltersStore((state) => state.search);
   const orgUnit = useEmploymentFiltersStore((state) => state.orgUnit);
   const status = useEmploymentFiltersStore((state) => state.status);
@@ -35,7 +37,7 @@ export function EmploymentFiltersBar({
         <Input
           value={search}
           onChange={(event) => setSearch(event.target.value)}
-          placeholder="Search for name, ID or email..."
+          placeholder={t("employment.filters.searchPlaceholder")}
           className="h-auto min-w-0 flex-1 border-0 bg-transparent p-0 font-['Inter',sans-serif] text-sm text-gray-600 shadow-none outline-none placeholder:text-gray-400 focus-visible:ring-0"
         />
       </div>
@@ -45,11 +47,13 @@ export function EmploymentFiltersBar({
         onValueChange={(value) => setOrgUnit(value === ALL_ORG_UNITS ? "" : value)}
       >
         <SelectTrigger className="h-10 w-full font-['Inter',sans-serif] text-sm text-gray-600 lg:w-48">
-          <SelectValue placeholder="All Organization Units" />
+          <SelectValue placeholder={t("employment.filters.allOrganizationUnits")} />
         </SelectTrigger>
 
         <SelectContent>
-          <SelectItem value={ALL_ORG_UNITS}>All Organization Units</SelectItem>
+          <SelectItem value={ALL_ORG_UNITS}>
+            {t("employment.filters.allOrganizationUnits")}
+          </SelectItem>
 
           {orgUnits.map((item) => (
             <SelectItem key={item} value={item}>
@@ -64,11 +68,11 @@ export function EmploymentFiltersBar({
         onValueChange={(value) => setStatus(value === ALL_STATUSES ? "" : value)}
       >
         <SelectTrigger className="h-10 w-full font-['Inter',sans-serif] text-sm text-gray-600 lg:w-40">
-          <SelectValue placeholder="All Status" />
+          <SelectValue placeholder={t("employment.filters.allStatus")} />
         </SelectTrigger>
 
         <SelectContent>
-          <SelectItem value={ALL_STATUSES}>All Status</SelectItem>
+          <SelectItem value={ALL_STATUSES}>{t("employment.filters.allStatus")}</SelectItem>
 
           {statuses.map(([code, name]) => (
             <SelectItem key={code} value={code}>

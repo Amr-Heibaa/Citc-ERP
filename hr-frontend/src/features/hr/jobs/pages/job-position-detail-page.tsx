@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router";
 
 import { Button } from "@/components/ui/button";
@@ -6,6 +7,7 @@ import { JobPositionDetailHero } from "@/features/hr/jobs/components/job-positio
 import { JobPositionDetailTabs } from "@/features/hr/jobs/components/job-position-detail-tabs";
 
 export function JobPositionDetailPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { positionId } = useParams();
   const id = Number(positionId);
@@ -14,7 +16,7 @@ export function JobPositionDetailPage() {
   if (isLoading) {
     return (
       <div className="flex h-64 items-center justify-center font-['Inter',sans-serif] text-gray-400">
-        Loading position…
+        {t("jobs.positionForm.loading")}
       </div>
     );
   }
@@ -22,10 +24,10 @@ export function JobPositionDetailPage() {
   if (isError || !position) {
     return (
       <div className="flex flex-col items-start gap-3 p-6">
-        <p className="text-[#c0392b]">Position not found.</p>
+        <p className="text-[#c0392b]">{t("jobs.positionForm.notFound")}</p>
 
         <Button variant="outline" onClick={() => navigate("/hr/jobs/positions")}>
-          Back to list
+          {t("jobs.positionForm.backToList")}
         </Button>
       </div>
     );

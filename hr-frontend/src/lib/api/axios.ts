@@ -23,6 +23,17 @@ axiosInstance.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }
+
+  // The generated multipart upload callers set a boundary-less
+  // 'multipart/form-data' Content-Type explicitly. Once a header is set
+  // via setRequestHeader, the browser's XHR won't auto-append the
+  // boundary on send(FormData), producing a malformed body the backend
+  // rejects with 400. Let the browser set the correct header (with
+  // boundary) itself by removing the explicit one for FormData bodies.
+  if (config.data instanceof FormData) {
+    config.headers.delete('Content-Type')
+  }
+
   return config
 })
 

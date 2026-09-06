@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -36,6 +37,7 @@ export function ContractTypeFormDialog({
   onOpenChange: (open: boolean) => void;
   contractType?: ContractTypeSetting;
 }) {
+  const { t } = useTranslation();
   const editMode = contractType != null;
   const contractTypeId = contractType?.contractTypeId ?? 0;
 
@@ -71,16 +73,16 @@ export function ContractTypeFormDialog({
     try {
       if (editMode) {
         await updateType.mutateAsync(toContractTypeRequest(values));
-        toast.success("Contract type updated successfully");
+        toast.success(t("hrSettings.forms.contractType.editSuccess"));
       } else {
         await createType.mutateAsync(toContractTypeRequest(values));
-        toast.success("Contract type added successfully");
+        toast.success(t("hrSettings.forms.contractType.addSuccess"));
       }
 
       onOpenChange(false);
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Unable to save contract type",
+        error instanceof Error ? error.message : t("hrSettings.forms.contractType.saveError"),
       );
     }
   });
@@ -90,37 +92,39 @@ export function ContractTypeFormDialog({
       <DialogContent className="sm:max-w-lg gap-0 overflow-hidden p-0">
         <DialogHeader className="border-b border-gray-100 px-6 py-5">
           <DialogTitle className="text-xl text-[#1a2535]">
-            {editMode ? "Edit Contract Type" : "Add Contract Type"}
+            {editMode
+              ? t("hrSettings.forms.contractType.editTitle")
+              : t("hrSettings.forms.contractType.addTitle")}
           </DialogTitle>
 
           <DialogDescription>
             {editMode
-              ? `Update the details for ${contractType.code}.`
-              : "Create a new contract type."}
+              ? t("hrSettings.forms.contractType.editDescription", { code: contractType.code })
+              : t("hrSettings.forms.contractType.addDescription")}
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={submit}>
           <div className="grid grid-cols-1 gap-4 px-6 py-5 sm:grid-cols-2">
-            <LabeledField label="Code" error={errors.code?.message}>
+            <LabeledField label={t("hrSettings.forms.common.code")} error={errors.code?.message}>
               <Input
                 {...register("code")}
-                placeholder="PERM"
+                placeholder={t("hrSettings.forms.contractType.codePlaceholder")}
                 maxLength={50}
                 disabled={editMode}
               />
 
               {editMode && (
                 <p className="mt-1 text-xs text-gray-400">
-                  Code cannot be changed after creation.
+                  {t("hrSettings.forms.common.codeImmutable")}
                 </p>
               )}
             </LabeledField>
-            <LabeledField label="Name" error={errors.name?.message}>
+            <LabeledField label={t("common.name")} error={errors.name?.message}>
               <Input {...register("name")} maxLength={100} />{" "}
             </LabeledField>
 
-            <LabeledField label="Status">
+            <LabeledField label={t("hrSettings.forms.common.status")}>
               <StatusSelectField
                 active={active}
                 onChange={(checked) => setValue("active", checked)}
@@ -129,7 +133,7 @@ export function ContractTypeFormDialog({
 
             <div className="sm:col-span-2">
               <LabeledField
-                label="Description (Optional)"
+                label={t("hrSettings.forms.common.descriptionOptional")}
                 error={errors.description?.message}
               >
                 <Input {...register("description")} maxLength={1000} />{" "}
@@ -143,11 +147,15 @@ export function ContractTypeFormDialog({
               variant="outline"
               onClick={() => onOpenChange(false)}
             >
-              Cancel
+              {t("hrSettings.forms.common.cancel")}
             </Button>
 
             <Button type="submit" disabled={pending}>
-              {pending ? "Saving…" : editMode ? "Save Changes" : "Add Type"}
+              {pending
+                ? t("hrSettings.forms.common.saving")
+                : editMode
+                  ? t("hrSettings.forms.contractType.saveChanges")
+                  : t("hrSettings.forms.contractType.addSubmit")}
             </Button>
           </DialogFooter>
         </form>

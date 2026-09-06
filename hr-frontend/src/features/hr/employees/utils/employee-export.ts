@@ -1,5 +1,6 @@
 import type { EmployeeSummary } from "@/lib/api/generated/model";
 
+import i18n from "@/i18n";
 import { formatDate } from "@/features/hr/shared/utils/format";
 import {
   downloadCsv as downloadCsvRows,
@@ -30,8 +31,8 @@ export async function downloadExcel(employees: EmployeeSummary[]) {
 
 export function printEmployees(employees: EmployeeSummary[]) {
   printTableReport({
-    title: "Employees",
-    subtitle: `${employees.length} employee records`,
+    title: i18n.t("employees.title"),
+    subtitle: i18n.t("employees.export.employeeRecordsCount", { count: employees.length }),
     rows: exportRows(employees),
   });
 }

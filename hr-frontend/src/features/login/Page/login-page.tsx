@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { User, Lock, Eye, EyeOff, Building2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import { loginSchema, type LoginForm } from "@/features/login/schemas/schema";
@@ -23,6 +24,7 @@ function LogoIcon() {
 }
 
 export function LoginPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const setTokens = useTokenStore((s) => s.setTokens);
   const [showPassword, setShowPassword] = useState(false);
@@ -43,13 +45,12 @@ export function LoginPage() {
     onSuccess: (data) => {
       clearAllQueriesCache();
       setTokens(data.accessToken ?? null, data.refreshToken ?? null);
-      toast.success("Welcome back");
+      toast.success(t("login.welcomeToast"));
       navigate("/");
     },
     onError: (error: unknown) => {
       const message =
-        (error as { message?: string })?.message ??
-        "Unable to sign in. Please try again.";
+        (error as { message?: string })?.message ?? t("login.unableToSignIn");
       toast.error(message);
     },
   });
@@ -122,7 +123,7 @@ export function LoginPage() {
             className="font-bold text-[28px] mt-4"
             style={{ color: "#72cfe9" }}
           >
-            Welcome Back
+            {t("login.welcomeBack")}
           </p>
         </div>
 
@@ -144,13 +145,13 @@ export function LoginPage() {
                   className="font-extrabold text-[28px] leading-tight"
                   style={{ color: "#193764" }}
                 >
-                  Sign In
+                  {t("login.signIn")}
                 </h1>
                 <p
                   className="text-[14px] leading-relaxed"
                   style={{ color: "#6b7280" }}
                 >
-                  Access your ERP dashboard
+                  {t("login.accessDashboard")}
                 </p>
               </div>
             </div>
@@ -162,13 +163,13 @@ export function LoginPage() {
                 className="text-[13px] font-semibold"
                 style={{ color: "#374151" }}
               >
-                Username
+                {t("login.username")}
               </Label>
               <IconInput
                 id="username"
                 icon={User}
                 type="text"
-                placeholder="Enter your username"
+                placeholder={t("login.usernamePlaceholder")}
                 autoComplete="username"
                 aria-invalid={!!errors.username}
                 className="h-[52px] rounded-[8px] bg-white text-[14px]"
@@ -188,7 +189,7 @@ export function LoginPage() {
                 className="text-[13px] font-semibold"
                 style={{ color: "#374151" }}
               >
-                Password
+                {t("login.password")}
               </Label>
               <IconInput
                 id="password"
@@ -206,7 +207,7 @@ export function LoginPage() {
                     size="icon"
                     onClick={() => setShowPassword((v) => !v)}
                     aria-label={
-                      showPassword ? "Hide password" : "Show password"
+                      showPassword ? t("login.hidePassword") : t("login.showPassword")
                     }
                     className="text-muted-foreground hover:text-foreground"
                   >
@@ -230,7 +231,7 @@ export function LoginPage() {
                   className="h-auto p-0 text-[13px] font-semibold"
                   style={{ color: "#72cfe9" }}
                 >
-                  Forgot Password?
+                  {t("login.forgotPassword")}
                 </Button>
               </div>
             </div>
@@ -266,10 +267,10 @@ export function LoginPage() {
                       d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
                     />
                   </svg>
-                  Signing In…
+                  {t("login.signingIn")}
                 </span>
               ) : (
-                "Sign In"
+                t("login.signIn")
               )}
             </Button>
           </form>
