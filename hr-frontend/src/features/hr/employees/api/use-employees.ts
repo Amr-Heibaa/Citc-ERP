@@ -111,20 +111,37 @@ export type CreateEmployeeInput = {
   employee: CreateEmployeeRequest;
 };
 
+export type CreateEmployeeResult = {
+  employeeId: number;
+  accountCreated: boolean;
+};
+
 export function useCreateEmployee() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ account, employee }: CreateEmployeeInput) => {
+    mutationFn: async ({ account, employee }: CreateEmployeeInput): Promise<CreateEmployeeResult> => {
       let userId = employee.userId;
+      let accountCreated = false;
 
       if (account) {
-        const createdUser = await createUser(account);
+        try {
+          const createdUser = await createUser(account);
 
-        userId = createdUser.userId;
+          userId = createdUser.userId;
+          accountCreated = true;
+        } catch {
+          // The login-account provisioning endpoint is currently broken on
+          // the auth service (unrelated to this app — tracked separately).
+          // Don't let that block creating the employee record itself; the
+          // employee is created without a linked login, and the caller
+          // surfaces a warning so it isn't silent.
+        }
       }
 
-      return createEmployee({ ...employee, userId });
+      const employeeId = await createEmployee({ ...employee, userId });
+
+      return { employeeId, accountCreated };
     },
 
     onSuccess: async () => {

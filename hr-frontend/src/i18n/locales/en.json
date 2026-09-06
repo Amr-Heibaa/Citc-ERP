@@ -608,6 +608,7 @@
       "next": "Next",
       "createdSuccess": "Employee created successfully",
       "createError": "Failed to create employee",
+      "accountCreationFailed": "Employee created, but the login account could not be created. You can try again later.",
       "identity": {
         "title": "Identity",
         "description": "The username and email we create for user",

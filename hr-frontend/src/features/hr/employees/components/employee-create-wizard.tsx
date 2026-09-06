@@ -34,7 +34,7 @@ export function EmployeeCreateWizard() {
     const all = { ...data, ...contract };
 
     try {
-      const employeeId = await mutation.mutateAsync({
+      const result = await mutation.mutateAsync({
         account: {
           username: all.username ?? "",
           email: all.email ?? "",
@@ -44,8 +44,13 @@ export function EmployeeCreateWizard() {
       });
 
       toast.success(t("employees.wizard.createdSuccess"));
+
+      if (!result.accountCreated) {
+        toast.warning(t("employees.wizard.accountCreationFailed"));
+      }
+
       reset();
-      navigate(`/hr/employees/${employeeId}`);
+      navigate(`/hr/employees/${result.employeeId}`);
     } catch (error) {
       const message =
         typeof error === "object" && error !== null && "message" in error
