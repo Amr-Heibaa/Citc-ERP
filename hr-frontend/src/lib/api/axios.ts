@@ -9,6 +9,12 @@ import { normalizeApiError } from '@/lib/api/api-error'
 import { clearAllQueriesCache } from '@/lib/api/query-client'
 import { useTokenStore } from '@/stores/token-store'
 import { useUserStore } from '@/stores/user-store'
+import axios from "axios";
+
+export const api = axios.create({
+  baseURL: "/api",
+  withCredentials: true,
+});
 
 export const axiosInstance = Axios.create({
   baseURL: env.API_URL,
