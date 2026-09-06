@@ -97,7 +97,7 @@ const REPORT_STYLES = `
   }
 
   .report-meta {
-    text-align: right;
+    text-align: end;
     font-size: 11px;
     color: #6b7280;
   }
@@ -122,7 +122,7 @@ const REPORT_STYLES = `
   th, td {
     border: 1px solid #e5e7eb;
     padding: 8px;
-    text-align: left;
+    text-align: start;
   }
 
   th {
@@ -138,7 +138,7 @@ const REPORT_STYLES = `
     margin-top: 18px;
     font-size: 10px;
     color: #9ca3af;
-    text-align: right;
+    text-align: end;
   }
 
   @page {
@@ -152,6 +152,8 @@ const REPORT_STYLES = `
 
 function reportShell(title: string, subtitle: string | undefined, bodyHtml: string, orientation: "portrait" | "landscape") {
   const generatedAt = new Date().toLocaleString();
+  const language = i18n.language?.startsWith("ar") ? "ar" : "en";
+  const dir = language === "ar" ? "rtl" : "ltr";
 
   // The escaped "<\/script>" below is intentional: it keeps this template
   // literal from containing a literal "</script>" sequence, which could
@@ -160,8 +162,9 @@ function reportShell(title: string, subtitle: string | undefined, bodyHtml: stri
   /* eslint-disable no-useless-escape */
   return `
     <!doctype html>
-    <html>
+    <html lang="${language}" dir="${dir}">
       <head>
+        <meta charset="utf-8" />
         <title>${escapeHtml(title)}</title>
         <style>
           ${REPORT_STYLES}

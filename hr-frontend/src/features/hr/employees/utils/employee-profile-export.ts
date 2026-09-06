@@ -232,7 +232,7 @@ const PROFILE_STYLES = `
   .profile-field-value {
     font-weight: 600;
     color: #1a2535;
-    text-align: right;
+    text-align: end;
   }
 
   .profile-skills {
