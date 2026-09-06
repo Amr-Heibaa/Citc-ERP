@@ -6,39 +6,126 @@
  */
 
 export interface UpdateEmployeeRequest {
-  employeeNumber?: string;
+  /**
+     * @minLength 0
+     * @maxLength 50
+     */
+  employeeNumber: string;
   currentOrgUnitId?: number;
   employeeStatusId?: number;
   hireDate?: string;
   startDate?: string;
   terminationDate?: string;
-  firstName?: string;
+  /**
+     * @minLength 0
+     * @maxLength 100
+     */
+  firstName: string;
+  /**
+     * @minLength 0
+     * @maxLength 200
+     */
   otherName?: string;
+  /**
+     * @minLength 0
+     * @maxLength 300
+     */
   displayName?: string;
+  /**
+     * @minimum 1
+     * @maximum 2
+     */
   gender?: number;
   birthDate?: string;
+  /** @pattern ^\s*$|[23]\d{13} */
   nationalId?: string;
   nationalIdExpiryDate?: string;
   militaryExemptionExpiryDate?: string;
+  /**
+     * @minLength 0
+     * @maxLength 500
+     */
   qualification?: string;
+  /**
+     * @minLength 0
+     * @maxLength 30
+     */
   socialInsuranceNumber?: string;
+  /**
+     * @minLength 0
+     * @maxLength 50
+     */
   maritalStatus?: string;
   graduationDate?: string;
+  /**
+     * @minLength 0
+     * @maxLength 200
+     */
   specialization?: string;
+  /**
+     * @minLength 0
+     * @maxLength 200
+     */
   workLocation?: string;
+  /**
+     * @minLength 0
+     * @maxLength 50
+     */
   healthInsuranceCardNumber?: string;
   totalExperienceYears?: number;
+  /**
+     * @minLength 0
+     * @maxLength 2000
+     */
   leaveNotes?: string;
+  /**
+     * @minLength 0
+     * @maxLength 255
+     */
   personalEmail?: string;
+  /**
+     * @minLength 0
+     * @maxLength 255
+     */
   businessEmail?: string;
+  /**
+     * @minLength 0
+     * @maxLength 20
+     */
   phoneNumber?: string;
+  /**
+     * @minLength 0
+     * @maxLength 20
+     */
   mobileNumber?: string;
   countryId?: number;
   stateId?: number;
   cityId?: number;
+  /**
+     * @minLength 0
+     * @maxLength 500
+     */
   addressLine1?: string;
+  /**
+     * @minLength 0
+     * @maxLength 500
+     */
   addressLine2?: string;
+  /**
+     * @minLength 0
+     * @maxLength 20
+     */
   postalCode?: string;
+  /**
+     * @minLength 0
+     * @maxLength 2800000
+     */
   profilePhotoBase64?: string;
+  /**
+     * @minItems 0
+     * @maxItems 100
+     * @items.minLength 0
+     * @items.maxLength 200
+     */
   skills?: string[];
 }

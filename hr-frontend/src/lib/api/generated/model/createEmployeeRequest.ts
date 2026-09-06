@@ -41,6 +41,7 @@ export interface CreateEmployeeRequest {
   employeeStatusId?: number;
   hireDate?: string;
   startDate?: string;
+  terminationDate?: string;
   positionId?: number;
   assignmentType?: number;
   positionStartDate?: string;
