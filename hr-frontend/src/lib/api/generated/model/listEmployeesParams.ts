@@ -4,11 +4,8 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
+import type { Pageable } from './pageable';
 
-export interface DeleteEmployeeRequest {
-  /**
-     * @minLength 5
-     * @maxLength 500
-     */
-  reason?: string;
-}
+export type ListEmployeesParams = {
+pageable: Pageable;
+};

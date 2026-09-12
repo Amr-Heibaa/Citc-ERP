@@ -13,8 +13,10 @@ import type {
 } from "@/lib/api/generated/model";
 
 import { isHrAccessQueryKey } from "@/features/hr/access-delegation/api/query-keys";
+import { pageableParamsSerializer } from "@/lib/api/pageable";
 
 const ACCESS_STALE_TIME = 5 * 60 * 1000;
+const ALL_EMPLOYEES_PAGE_SIZE = 1000;
 
 export function useMyHrAccess() {
   return useGetMyAccess({
@@ -27,7 +29,13 @@ export function useAccessGrants() {
 }
 
 export function useEmployeesForGrant() {
-  return useListEmployees();
+  return useListEmployees(
+    { pageable: { size: ALL_EMPLOYEES_PAGE_SIZE } },
+    {
+      query: { select: (page) => page.content ?? [] },
+      request: { paramsSerializer: pageableParamsSerializer },
+    },
+  );
 }
 
 export function useGrantHrAccess() {

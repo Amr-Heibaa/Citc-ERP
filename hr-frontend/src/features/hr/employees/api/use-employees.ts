@@ -24,11 +24,12 @@ import {
   preview1 as previewEmployeeImport,
 } from "@/lib/api/generated/ems/employee-import-controller/employee-import-controller";
 
+import { useListPositions } from "@/lib/api/generated/ems/job-position-controller/job-position-controller";
+
 import {
   useContractTypes as useContractTypesQuery,
   useOrgUnits as useOrgUnitsQuery,
   useOrganizations as useOrganizationsQuery,
-  usePositions1 as usePositionsQuery,
   useStatuses as useStatusesQuery,
 } from "@/lib/api/generated/ems/reference-controller/reference-controller";
 
@@ -38,6 +39,8 @@ import type {
   RestoreEmployeeRequest,
   UpdateEmployeeRequest,
 } from "@/lib/api/generated/model";
+
+import { pageableParamsSerializer } from "@/lib/api/pageable";
 
 import {
   employeeDetailQueryKey,
@@ -56,8 +59,21 @@ import type {
 
 const REFERENCE_STALE_TIME = 5 * 60 * 1000;
 
+// /api/hr/employees is now paginated server-side. Consumers throughout this
+// app still expect "all employees" as a flat array (dropdowns, client-side
+// filtering/reports), so request one large page and unwrap `.content` here
+// rather than touching every call site.
+const ALL_EMPLOYEES_PAGE_SIZE = 1000;
+const ALL_POSITIONS_PAGE_SIZE = 1000;
+
 export function useEmployees() {
-  return useListEmployees();
+  return useListEmployees(
+    { pageable: { size: ALL_EMPLOYEES_PAGE_SIZE } },
+    {
+      query: { select: (page) => page.content ?? [] },
+      request: { paramsSerializer: pageableParamsSerializer },
+    },
+  );
 }
 
 export function useMyEmployee() {
@@ -99,7 +115,12 @@ export function useOrganizations() {
 }
 
 export function usePositions() {
-  return usePositionsQuery({ query: { staleTime: REFERENCE_STALE_TIME } });
+  return useListPositions(
+    { size: ALL_POSITIONS_PAGE_SIZE },
+    {
+      query: { staleTime: REFERENCE_STALE_TIME, select: (page) => page.content ?? [] },
+    },
+  );
 }
 
 export function useContractTypes() {

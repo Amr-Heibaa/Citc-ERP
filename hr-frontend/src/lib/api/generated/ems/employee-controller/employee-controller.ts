@@ -29,6 +29,8 @@ import type {
   DeletedEmployeeSummary,
   EmployeeDetail,
   EmployeeSummary,
+  ListEmployeesParams,
+  PageEmployeeSummary,
   RestoreEmployeeRequest,
   UpdateEmployeeRequest
 } from '../../model';
@@ -260,13 +262,14 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       return useMutation(getDeleteEmployeeMutationOptions(options), queryClient);
     }
     export const listEmployees = (
-
+    params: ListEmployeesParams,
  options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
 
 
-      return customInstance<EmployeeSummary[]>(
-      {url: `/api/hr/employees`, method: 'GET', signal
+      return customInstance<PageEmployeeSummary>(
+      {url: `/api/hr/employees`, method: 'GET',
+        params, signal
     },
       options);
     }
@@ -274,23 +277,23 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-export const getListEmployeesQueryKey = () => {
+export const getListEmployeesQueryKey = (params?: ListEmployeesParams,) => {
     return [
-    `/api/hr/employees`
+    `/api/hr/employees`, ...(params ? [params] : [])
     ] as const;
     }
 
 
-export const getListEmployeesQueryOptions = <TData = Awaited<ReturnType<typeof listEmployees>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listEmployees>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getListEmployeesQueryOptions = <TData = Awaited<ReturnType<typeof listEmployees>>, TError = unknown>(params: ListEmployeesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listEmployees>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getListEmployeesQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getListEmployeesQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof listEmployees>>> = ({ signal }) => listEmployees(requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listEmployees>>> = ({ signal }) => listEmployees(params, requestOptions, signal);
 
 
 
@@ -304,7 +307,7 @@ export type ListEmployeesQueryError = unknown
 
 
 export function useListEmployees<TData = Awaited<ReturnType<typeof listEmployees>>, TError = unknown>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listEmployees>>, TError, TData>> & Pick<
+ params: ListEmployeesParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listEmployees>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof listEmployees>>,
           TError,
@@ -314,7 +317,7 @@ export function useListEmployees<TData = Awaited<ReturnType<typeof listEmployees
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useListEmployees<TData = Awaited<ReturnType<typeof listEmployees>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listEmployees>>, TError, TData>> & Pick<
+ params: ListEmployeesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listEmployees>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof listEmployees>>,
           TError,
@@ -324,16 +327,16 @@ export function useListEmployees<TData = Awaited<ReturnType<typeof listEmployees
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useListEmployees<TData = Awaited<ReturnType<typeof listEmployees>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listEmployees>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ params: ListEmployeesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listEmployees>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
 export function useListEmployees<TData = Awaited<ReturnType<typeof listEmployees>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listEmployees>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ params: ListEmployeesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listEmployees>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getListEmployeesQueryOptions(options)
+  const queryOptions = getListEmployeesQueryOptions(params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -462,7 +465,93 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       > => {
       return useMutation(getRestoreEmployeeMutationOptions(options), queryClient);
     }
-    export const getMyEmployee = (
+    export const getEmployeePhoto = (
+    employeeId: number,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+
+
+      return customInstance<string>(
+      {url: `/api/hr/employees/${employeeId}/photo`, method: 'GET', signal
+    },
+      options);
+    }
+
+
+
+
+export const getGetEmployeePhotoQueryKey = (employeeId: number,) => {
+    return [
+    `/api/hr/employees/${employeeId}/photo`
+    ] as const;
+    }
+
+
+export const getGetEmployeePhotoQueryOptions = <TData = Awaited<ReturnType<typeof getEmployeePhoto>>, TError = unknown>(employeeId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getEmployeePhoto>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetEmployeePhotoQueryKey(employeeId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getEmployeePhoto>>> = ({ signal }) => getEmployeePhoto(employeeId, requestOptions, signal);
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: employeeId !== null && employeeId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getEmployeePhoto>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetEmployeePhotoQueryResult = NonNullable<Awaited<ReturnType<typeof getEmployeePhoto>>>
+export type GetEmployeePhotoQueryError = unknown
+
+
+export function useGetEmployeePhoto<TData = Awaited<ReturnType<typeof getEmployeePhoto>>, TError = unknown>(
+ employeeId: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getEmployeePhoto>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getEmployeePhoto>>,
+          TError,
+          Awaited<ReturnType<typeof getEmployeePhoto>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetEmployeePhoto<TData = Awaited<ReturnType<typeof getEmployeePhoto>>, TError = unknown>(
+ employeeId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getEmployeePhoto>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getEmployeePhoto>>,
+          TError,
+          Awaited<ReturnType<typeof getEmployeePhoto>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetEmployeePhoto<TData = Awaited<ReturnType<typeof getEmployeePhoto>>, TError = unknown>(
+ employeeId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getEmployeePhoto>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetEmployeePhoto<TData = Awaited<ReturnType<typeof getEmployeePhoto>>, TError = unknown>(
+ employeeId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getEmployeePhoto>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetEmployeePhotoQueryOptions(employeeId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getMyEmployee = (
 
  options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {

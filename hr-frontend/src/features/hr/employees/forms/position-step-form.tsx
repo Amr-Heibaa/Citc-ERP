@@ -78,8 +78,8 @@ export function PositionStepForm({
               placeholder={t("employees.wizard.position.position")}
               options={
                 visiblePositions?.map((position) => ({
-                  value: String(position.id),
-                  label: position.title,
+                  value: String(position.positionId),
+                  label: position.titleEn ?? position.titleAr ?? position.code ?? "",
                 })) ?? []
               }
             />

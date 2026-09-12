@@ -10,7 +10,7 @@ export interface EmployeeSummary {
   employeeNumber?: string;
   userId?: number;
   displayName?: string;
-  profilePhotoDataUrl?: string;
+  hasPhoto?: boolean;
   currentOrgUnitId?: number;
   currentOrgUnitName?: string;
   employeeStatusId?: number;

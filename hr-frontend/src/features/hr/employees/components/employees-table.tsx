@@ -3,15 +3,9 @@ import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
 import { EmployeeStatusBadge } from "@/features/hr/employees/components/employee-status-badge";
-import { formatDate, initials } from "@/features/hr/shared/utils/format";
+import { EmployeeAvatar } from "@/features/hr/shared/components/employee-avatar";
+import { formatDate } from "@/features/hr/shared/utils/format";
 import type { EmployeeSummary } from "@/lib/api/generated/model";
-
-const AVATAR_COLORS = [
-  "bg-[#f5841f]",
-  "bg-[#3498db]",
-  "bg-[#9b59b6]",
-  "bg-[#2ecc71]",
-];
 
 const COLUMN_KEYS = [
   "employees.table.employee",
@@ -30,8 +24,6 @@ function EmployeeRow({
   onSelect: () => void;
 }) {
   const { t } = useTranslation();
-  const avatarColor =
-    AVATAR_COLORS[(employee.employeeId ?? 0) % AVATAR_COLORS.length];
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLTableRowElement>) {
     if (event.key === "Enter" || event.key === " ") {
@@ -49,21 +41,11 @@ function EmployeeRow({
     >
       <td className="px-6 py-4">
         <div className="flex items-center gap-3">
-          <div
-            className={`flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full ${avatarColor}`}
-          >
-            {employee.profilePhotoDataUrl ? (
-              <img
-                src={employee.profilePhotoDataUrl}
-                alt={employee.displayName ?? t("employees.table.employee")}
-                className="size-full object-cover"
-              />
-            ) : (
-              <span className="font-['Inter',sans-serif] text-sm font-bold text-white">
-                {initials(employee.displayName)}
-              </span>
-            )}
-          </div>
+          <EmployeeAvatar
+            employeeId={employee.employeeId}
+            hasPhoto={employee.hasPhoto}
+            displayName={employee.displayName}
+          />
 
           <div>
             <p className="font-['Inter',sans-serif] text-sm font-semibold text-[#1a2535]">
