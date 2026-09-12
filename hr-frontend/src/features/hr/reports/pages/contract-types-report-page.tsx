@@ -24,7 +24,7 @@ export function ContractTypesReportPage() {
   const [exporting, setExporting] = useState(false);
 
   const query = useContractTypesForReport();
-  const rows = query.data?.content ?? [];
+  const rows = query.data ?? [];
 
   const sortedRows = [...rows].sort(
     (a, b) => (b.usageCount ?? 0) - (a.usageCount ?? 0),

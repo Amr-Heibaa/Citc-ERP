@@ -17,3 +17,31 @@ export const pageableParamsSerializer = {
     return search.toString();
   },
 };
+
+// The backend rejects any page size over 100 ("Page size must not exceed
+// 100"), so "give me everything" call sites can't just ask for one huge
+// page — they need to walk every page at the max size and concatenate.
+export const MAX_PAGE_SIZE = 100;
+
+type PageLike<T> = {
+  content?: T[] | null;
+  last?: boolean;
+};
+
+export async function fetchAllPages<T>(
+  fetchPage: (page: number, size: number) => Promise<PageLike<T>>,
+  size: number = MAX_PAGE_SIZE,
+): Promise<T[]> {
+  const all: T[] = [];
+  let page = 0;
+
+  while (true) {
+    const result = await fetchPage(page, size);
+    all.push(...(result.content ?? []));
+
+    if (result.last !== false) break;
+    page += 1;
+  }
+
+  return all;
+}

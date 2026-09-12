@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { createUser, type CreateUserRequest } from "@/lib/api/auth";
 
@@ -11,12 +11,12 @@ import {
   createEmployee,
   deleteEmployee,
   getEmployeeDetail,
+  listEmployees,
   restoreEmployee,
   updateEmployee,
   useGetEmployeeDetail,
   useGetMyEmployee,
   useListDeletedEmployees,
-  useListEmployees,
 } from "@/lib/api/generated/ems/employee-controller/employee-controller";
 
 import {
@@ -24,7 +24,7 @@ import {
   preview1 as previewEmployeeImport,
 } from "@/lib/api/generated/ems/employee-import-controller/employee-import-controller";
 
-import { useListPositions } from "@/lib/api/generated/ems/job-position-controller/job-position-controller";
+import { listPositions } from "@/lib/api/generated/ems/job-position-controller/job-position-controller";
 
 import {
   useContractTypes as useContractTypesQuery,
@@ -40,7 +40,7 @@ import type {
   UpdateEmployeeRequest,
 } from "@/lib/api/generated/model";
 
-import { pageableParamsSerializer } from "@/lib/api/pageable";
+import { fetchAllPages, pageableParamsSerializer } from "@/lib/api/pageable";
 
 import {
   employeeDetailQueryKey,
@@ -59,21 +59,28 @@ import type {
 
 const REFERENCE_STALE_TIME = 5 * 60 * 1000;
 
-// /api/hr/employees is now paginated server-side. Consumers throughout this
-// app still expect "all employees" as a flat array (dropdowns, client-side
-// filtering/reports), so request one large page and unwrap `.content` here
-// rather than touching every call site.
-const ALL_EMPLOYEES_PAGE_SIZE = 1000;
-const ALL_POSITIONS_PAGE_SIZE = 1000;
+// /api/hr/employees is paginated server-side (capped at 100 per page).
+// Consumers throughout this app still expect "all employees" as a flat
+// array (dropdowns, client-side filtering/reports), so walk every page and
+// concatenate here rather than touching every call site. Exported so other
+// features (jobs, employment, reports, access-delegation) can reuse the
+// same fetch instead of duplicating the paging loop.
+export function useAllEmployees(staleTime = REFERENCE_STALE_TIME) {
+  return useQuery({
+    queryKey: ["/api/hr/employees", "all"],
+    queryFn: () =>
+      fetchAllPages((page, size) =>
+        listEmployees(
+          { pageable: { page, size } },
+          { paramsSerializer: pageableParamsSerializer },
+        ),
+      ),
+    staleTime,
+  });
+}
 
 export function useEmployees() {
-  return useListEmployees(
-    { pageable: { size: ALL_EMPLOYEES_PAGE_SIZE } },
-    {
-      query: { select: (page) => page.content ?? [] },
-      request: { paramsSerializer: pageableParamsSerializer },
-    },
-  );
+  return useAllEmployees();
 }
 
 export function useMyEmployee() {
@@ -115,12 +122,11 @@ export function useOrganizations() {
 }
 
 export function usePositions() {
-  return useListPositions(
-    { size: ALL_POSITIONS_PAGE_SIZE },
-    {
-      query: { staleTime: REFERENCE_STALE_TIME, select: (page) => page.content ?? [] },
-    },
-  );
+  return useQuery({
+    queryKey: ["/api/hr/jobs/positions", "all"],
+    queryFn: () => fetchAllPages((page, size) => listPositions({ page, size })),
+    staleTime: REFERENCE_STALE_TIME,
+  });
 }
 
 export function useContractTypes() {

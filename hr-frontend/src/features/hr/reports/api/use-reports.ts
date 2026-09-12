@@ -1,19 +1,16 @@
-import { useListEmployees } from "@/lib/api/generated/ems/employee-controller/employee-controller";
-import { useListContractTypes } from "@/lib/api/generated/ems/hr-settings-controller/hr-settings-controller";
-import { pageableParamsSerializer } from "@/lib/api/pageable";
+import { useQuery } from "@tanstack/react-query";
 
-const ALL_EMPLOYEES_PAGE_SIZE = 1000;
+import { listContractTypes } from "@/lib/api/generated/ems/hr-settings-controller/hr-settings-controller";
+import { useAllEmployees } from "@/features/hr/employees/api/use-employees";
+import { fetchAllPages } from "@/lib/api/pageable";
 
 export function useEmployeesForReport() {
-  return useListEmployees(
-    { pageable: { size: ALL_EMPLOYEES_PAGE_SIZE } },
-    {
-      query: { select: (page) => page.content ?? [] },
-      request: { paramsSerializer: pageableParamsSerializer },
-    },
-  );
+  return useAllEmployees();
 }
 
 export function useContractTypesForReport() {
-  return useListContractTypes({ size: 500 });
+  return useQuery({
+    queryKey: ["/api/hr/settings/contract-types", "all"],
+    queryFn: () => fetchAllPages((page, size) => listContractTypes({ page, size })),
+  });
 }

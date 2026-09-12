@@ -6,17 +6,15 @@ import {
   useGetMyAccess,
   useListGrants,
 } from "@/lib/api/generated/ems/hr-access-controller/hr-access-controller";
-import { useListEmployees } from "@/lib/api/generated/ems/employee-controller/employee-controller";
 import type {
   GrantHrAccessRequest,
   RevokeHrAccessRequest,
 } from "@/lib/api/generated/model";
 
 import { isHrAccessQueryKey } from "@/features/hr/access-delegation/api/query-keys";
-import { pageableParamsSerializer } from "@/lib/api/pageable";
+import { useAllEmployees } from "@/features/hr/employees/api/use-employees";
 
 const ACCESS_STALE_TIME = 5 * 60 * 1000;
-const ALL_EMPLOYEES_PAGE_SIZE = 1000;
 
 export function useMyHrAccess() {
   return useGetMyAccess({
@@ -29,13 +27,7 @@ export function useAccessGrants() {
 }
 
 export function useEmployeesForGrant() {
-  return useListEmployees(
-    { pageable: { size: ALL_EMPLOYEES_PAGE_SIZE } },
-    {
-      query: { select: (page) => page.content ?? [] },
-      request: { paramsSerializer: pageableParamsSerializer },
-    },
-  );
+  return useAllEmployees();
 }
 
 export function useGrantHrAccess() {
