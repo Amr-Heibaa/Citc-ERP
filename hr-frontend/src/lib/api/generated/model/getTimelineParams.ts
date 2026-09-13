@@ -12,6 +12,7 @@ export type GetTimelineParams = {
 page?: number;
 /**
  * @minimum 1
+ * @maximum 100
  */
 size?: number;
 };

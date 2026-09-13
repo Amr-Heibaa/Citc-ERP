@@ -35,7 +35,12 @@ export function EmploymentStepForm({
   const organizations = useOrganizations();
   const units = useOrgUnits();
 
-  const { register, control, handleSubmit } = useForm<EmploymentFormValues>({
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<EmploymentFormValues>({
     resolver: zodResolver(employmentSchema),
 
     defaultValues: {
@@ -51,11 +56,16 @@ export function EmploymentStepForm({
   const organizationId = useWatch({ control, name: "organizationId" });
 
   const visibleUnits = organizationId
-    ? units.data?.filter((unit) => String(unit.organizationId) === organizationId)
+    ? units.data?.filter(
+        (unit) => String(unit.organizationId) === organizationId,
+      )
     : units.data;
 
   return (
-    <form onSubmit={handleSubmit(next)} className="flex min-h-0 flex-1 flex-col">
+    <form
+      onSubmit={handleSubmit(next)}
+      className="flex min-h-0 flex-1 flex-col"
+    >
       <WizardHeader
         step={3}
         title={t("employees.wizard.employment.title")}
@@ -64,6 +74,16 @@ export function EmploymentStepForm({
 
       <div className="flex min-h-0 flex-1">
         <div className="grid flex-1 grid-cols-1 content-center gap-x-6 gap-y-5 px-8 py-4 md:grid-cols-2">
+          <LabeledField
+            label={t("employees.wizard.employment.employeeNumber")}
+            error={errors.employeeNumber?.message}
+          >
+            <Input
+              {...register("employeeNumber")}
+              placeholder="CITC-0001"
+              autoComplete="off"
+            />
+          </LabeledField>
           <LabeledField label={t("employees.wizard.employment.employeeStatus")}>
             <SelectField
               control={control}
@@ -100,7 +120,9 @@ export function EmploymentStepForm({
             />
           </LabeledField>
 
-          <LabeledField label={t("employees.wizard.employment.organizationUnit")}>
+          <LabeledField
+            label={t("employees.wizard.employment.organizationUnit")}
+          >
             <SelectField
               control={control}
               name="currentOrgUnitId"

@@ -106,7 +106,9 @@ export function useEmployeeDetail(employeeId: number) {
 export function useFetchEmployeeDetails() {
   return useMutation({
     mutationFn: (employeeIds: number[]) =>
-      Promise.all(employeeIds.map((employeeId) => getEmployeeDetail(employeeId))),
+      Promise.all(
+        employeeIds.map((employeeId) => getEmployeeDetail(employeeId)),
+      ),
   });
 }
 
@@ -139,7 +141,7 @@ export function useContractTypes() {
 }
 
 export type CreateEmployeeInput = {
-  account?: CreateUserRequest;
+  account: CreateUserRequest;
   employee: CreateEmployeeRequest;
 };
 
@@ -152,28 +154,60 @@ export function useCreateEmployee() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ account, employee }: CreateEmployeeInput): Promise<CreateEmployeeResult> => {
-      let userId = employee.userId;
-      let accountCreated = false;
+    mutationFn: async ({
+      account,
+      employee,
+    }: CreateEmployeeInput): Promise<CreateEmployeeResult> => {
+      // Employee number must be explicitly entered.
+      // Do not allow the backend to generate a fallback/random number.
+      // const employeeNumber = employee.employeeNumber?.trim();
 
-      if (account) {
-        try {
-          const createdUser = await createUser(account);
+      // if (!employeeNumber) {
+      //   throw new Error("Employee number is required");
+      // }
 
-          userId = createdUser.userId;
-          accountCreated = true;
-        } catch {
-          // The login-account provisioning endpoint is currently broken on
-          // the auth service (unrelated to this app — tracked separately).
-          // Don't let that block creating the employee record itself; the
-          // employee is created without a linked login, and the caller
-          // surfaces a warning so it isn't silent.
-        }
+      // if (!/^CITC-\d+$/.test(employeeNumber)) {
+      //   throw new Error("Employee number must be in the format CITC-123");
+      // }
+
+      if (!account.username?.trim()) {
+        throw new Error("Username is required");
       }
 
-      const employeeId = await createEmployee({ ...employee, userId });
+      if (!account.email?.trim()) {
+        throw new Error("Email is required");
+      }
 
-      return { employeeId, accountCreated };
+      if (!account.password) {
+        throw new Error("Password is required");
+      }
+
+      // IMPORTANT:
+      // If account creation fails, the mutation stops here.
+      // Employee will NOT be created without a login account.
+      const createdUser = await createUser({
+        username: account.username.trim(),
+        email: account.email.trim(),
+        password: account.password,
+      });
+
+      if (!createdUser?.userId) {
+        throw new Error(
+          "Account was not created correctly: userId was not returned",
+        );
+      }
+
+      // Create employee only after the login account was successfully created.
+      const employeeId = await createEmployee({
+        ...employee,
+        // employeeNumber,
+        userId: createdUser.userId,
+      });
+
+      return {
+        employeeId,
+        accountCreated: true,
+      };
     },
 
     onSuccess: async () => {
@@ -188,7 +222,8 @@ export function useUpdateEmployee(employeeId: number) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: UpdateEmployeeRequest) => updateEmployee(employeeId, data),
+    mutationFn: (data: UpdateEmployeeRequest) =>
+      updateEmployee(employeeId, data),
 
     onSuccess: async () => {
       await queryClient.invalidateQueries({
@@ -206,7 +241,8 @@ export function useDeleteEmployee(employeeId: number) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: DeleteEmployeeRequest) => deleteEmployee(employeeId, data),
+    mutationFn: (data: DeleteEmployeeRequest) =>
+      deleteEmployee(employeeId, data),
 
     onSuccess: async () => {
       await queryClient.invalidateQueries({
@@ -220,7 +256,8 @@ export function useRestoreEmployee(employeeId: number) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: RestoreEmployeeRequest) => restoreEmployee(employeeId, data),
+    mutationFn: (data: RestoreEmployeeRequest) =>
+      restoreEmployee(employeeId, data),
 
     onSuccess: async () => {
       await queryClient.invalidateQueries({
@@ -233,7 +270,10 @@ export function useRestoreEmployee(employeeId: number) {
 export function usePreviewEmployeeImport() {
   return useMutation({
     mutationFn: (file: File) =>
-      previewEmployeeImport({ file }, { timeout: 120_000 }) as unknown as Promise<EmployeeImportPreview>,
+      previewEmployeeImport(
+        { file },
+        { timeout: 120_000 },
+      ) as unknown as Promise<EmployeeImportPreview>,
   });
 }
 
@@ -242,12 +282,16 @@ export function useConfirmEmployeeImport() {
 
   return useMutation({
     mutationFn: (file: File) =>
-      confirmEmployeeImport({ file }, { timeout: 300_000 }) as unknown as Promise<EmployeeImportResult>,
+      confirmEmployeeImport(
+        { file },
+        { timeout: 300_000 },
+      ) as unknown as Promise<EmployeeImportResult>,
 
     onSuccess: async () => {
       await queryClient.invalidateQueries({
         predicate: (query) =>
-          isEmployeeQueryKey(query.queryKey) || isReferenceQueryKey(query.queryKey),
+          isEmployeeQueryKey(query.queryKey) ||
+          isReferenceQueryKey(query.queryKey),
       });
     },
   });
@@ -265,7 +309,11 @@ export function useConfirmContractImport(employeeId: number) {
 
   return useMutation({
     mutationFn: (file: File) =>
-      confirmContractImport(employeeId, { file }, { timeout: 300_000 }) as unknown as Promise<ContractImportResult>,
+      confirmContractImport(
+        employeeId,
+        { file },
+        { timeout: 300_000 },
+      ) as unknown as Promise<ContractImportResult>,
 
     onSuccess: async () => {
       await queryClient.invalidateQueries({
