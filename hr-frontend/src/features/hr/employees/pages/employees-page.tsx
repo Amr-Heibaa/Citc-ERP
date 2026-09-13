@@ -5,7 +5,10 @@ import { useNavigate } from "react-router";
 
 import { Button } from "@/components/ui/button";
 import { useEmployees, useOrgUnits } from "@/features/hr/employees/api/use-employees";
-import { useEmployeesFiltersStore } from "@/features/hr/employees/store/employees-filters-store";
+import {
+  NO_WORK_LOCATION_ID,
+  useEmployeesFiltersStore,
+} from "@/features/hr/employees/store/employees-filters-store";
 import { EmployeeImportDialog } from "@/features/hr/employees/components/employee-import-dialog";
 import { EmployeesExportDialog } from "@/features/hr/employees/components/employees-export-dialog";
 import { EmployeesFiltersBar } from "@/features/hr/employees/components/employees-filters-bar";
@@ -92,7 +95,11 @@ export function EmployeesPage() {
         (employee.currentOrgUnitId != null &&
           orgUnitToOrganization.get(employee.currentOrgUnitId) === organizationId);
 
-      const matchesBranch = branchId == null || employee.workLocationId === branchId;
+      const matchesBranch =
+        branchId == null ||
+        (branchId === NO_WORK_LOCATION_ID
+          ? employee.workLocationId == null
+          : employee.workLocationId === branchId);
 
       return Boolean(
         matchesSearch && matchesDepartment && matchesStatus && matchesOrganization && matchesBranch,

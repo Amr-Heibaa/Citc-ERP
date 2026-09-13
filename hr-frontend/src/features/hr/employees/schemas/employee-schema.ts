@@ -74,7 +74,7 @@ export const personalInfoSchema = z.object({
 
   specialization: z.string().max(255).optional(),
 
-  workLocation: z.string().max(255).optional(),
+  workLocationId: z.string().optional(),
 
   healthInsuranceCardNumber: z.string().max(100).optional(),
 

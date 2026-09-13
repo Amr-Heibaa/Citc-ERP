@@ -136,7 +136,7 @@ function profileSectionHtml(emp: EmployeeDetail) {
         ${field2("hireDate", formatDate(emp.hireDate))}
         ${field2("startDate", formatDate(emp.startDate))}
         ${field2("terminationDate", formatDate(emp.terminationDate))}
-        ${field2("workLocation", emp.workLocation)}
+        ${field2("workLocation", emp.workLocationName)}
         ${field2("totalExperienceYears", emp.totalExperienceYears)}
       </div>
 

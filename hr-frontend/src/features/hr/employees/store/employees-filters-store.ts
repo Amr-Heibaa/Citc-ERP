@@ -2,6 +2,10 @@ import { create } from "zustand";
 
 export type EmployeeExportFormat = "CSV" | "Excel" | "PDF" | "Full Profile PDF";
 
+// Sentinel branchId for the dashboard's "Other" bucket: employees with no
+// work location assigned at all, as opposed to a real location's id.
+export const NO_WORK_LOCATION_ID = -1;
+
 type EmployeesFiltersStore = {
   search: string;
   department: string;

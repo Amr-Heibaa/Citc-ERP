@@ -4,7 +4,10 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 
 import { useEmployees } from "@/features/hr/employees/api/use-employees";
-import { useEmployeesFiltersStore } from "@/features/hr/employees/store/employees-filters-store";
+import {
+  NO_WORK_LOCATION_ID,
+  useEmployeesFiltersStore,
+} from "@/features/hr/employees/store/employees-filters-store";
 import type { EmployeeSummary } from "@/lib/api/generated/model";
 
 const NO_EMPLOYEES: EmployeeSummary[] = [];
@@ -22,9 +25,11 @@ export function EmployeesBreakdownCard() {
 
   const rows = useMemo(() => {
     const countByLocation = new Map<number, { id: number; name: string; count: number }>();
+    let unassignedCount = 0;
 
     employees.forEach((employee) => {
       if (employee.workLocationId == null || !employee.workLocationName) {
+        unassignedCount += 1;
         return;
       }
 
@@ -41,8 +46,14 @@ export function EmployeesBreakdownCard() {
       }
     });
 
-    return [...countByLocation.values()].sort((a, b) => b.count - a.count);
-  }, [employees]);
+    const sorted = [...countByLocation.values()].sort((a, b) => b.count - a.count);
+
+    if (unassignedCount > 0) {
+      sorted.push({ id: NO_WORK_LOCATION_ID, name: t("dashboard.otherLocation"), count: unassignedCount });
+    }
+
+    return sorted;
+  }, [employees, t]);
 
   function handleRowClick(id: number, name: string) {
     setBranchFilter(id, name);

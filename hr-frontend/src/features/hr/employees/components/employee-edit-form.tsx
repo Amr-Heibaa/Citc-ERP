@@ -6,7 +6,12 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useOrgUnits, useStatuses, useUpdateEmployee } from "@/features/hr/employees/api/use-employees";
+import {
+  useOrgUnits,
+  useStatuses,
+  useUpdateEmployee,
+  useWorkLocations,
+} from "@/features/hr/employees/api/use-employees";
 import { EditSection } from "@/features/hr/shared/components/edit-section";
 import { SelectField } from "@/features/hr/shared/components/select-field";
 import { LabeledField } from "@/features/hr/shared/components/labeled-field";
@@ -34,6 +39,7 @@ export function EmployeeEditForm({
   const { t } = useTranslation();
   const statuses = useStatuses();
   const orgUnits = useOrgUnits();
+  const workLocations = useWorkLocations();
   const updateEmployee = useUpdateEmployee(employee.employeeId ?? 0);
 
   const GENDER_OPTIONS = [
@@ -271,7 +277,17 @@ export function EmployeeEditForm({
           </LabeledField>
 
           <LabeledField label={t("employees.editForm.workLocation")}>
-            <Input {...register("workLocation")} maxLength={255} />
+            <SelectField
+              control={control}
+              name="workLocationId"
+              placeholder={t("employees.editForm.workLocation")}
+              options={
+                workLocations.data?.map((location) => ({
+                  value: String(location.id),
+                  label: location.name,
+                })) ?? []
+              }
+            />
           </LabeledField>
 
           <LabeledField label={t("employees.editForm.healthInsuranceCardNumber")}>

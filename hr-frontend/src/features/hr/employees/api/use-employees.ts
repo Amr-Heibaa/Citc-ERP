@@ -31,6 +31,7 @@ import {
   useOrgUnits as useOrgUnitsQuery,
   useOrganizations as useOrganizationsQuery,
   useStatuses as useStatusesQuery,
+  useWorkLocations as useWorkLocationsQuery,
 } from "@/lib/api/generated/ems/reference-controller/reference-controller";
 
 import type {
@@ -111,6 +112,10 @@ export function useFetchEmployeeDetails() {
 
 export function useStatuses() {
   return useStatusesQuery({ query: { staleTime: REFERENCE_STALE_TIME } });
+}
+
+export function useWorkLocations() {
+  return useWorkLocationsQuery({ query: { staleTime: REFERENCE_STALE_TIME } });
 }
 
 export function useOrgUnits() {

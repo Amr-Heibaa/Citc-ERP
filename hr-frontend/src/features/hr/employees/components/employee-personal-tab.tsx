@@ -80,7 +80,7 @@ export function PersonalTab({ emp }: { emp: EmployeeDetail }) {
             }
           />
 
-          <InfoRow label={t("employees.fields.workLocation")} value={emp.workLocation} />
+          <InfoRow label={t("employees.fields.workLocation")} value={emp.workLocationName} />
 
           <InfoRow label={t("employees.fields.qualification")} value={emp.qualification} />
         </div>

@@ -101,7 +101,7 @@ export function toCreateEmployeeRequest(
 
     specialization: all.specialization?.trim() || undefined,
 
-    workLocation: all.workLocation?.trim() || undefined,
+    workLocationId: numberOrNull(all.workLocationId) ?? undefined,
 
     healthInsuranceCardNumber: all.healthInsuranceCardNumber?.trim() || undefined,
 
@@ -207,7 +207,7 @@ export function toUpdateEmployeeRequest(
 
     specialization: values.specialization?.trim() || undefined,
 
-    workLocation: values.workLocation?.trim() || undefined,
+    workLocationId: numberOrNull(values.workLocationId) ?? undefined,
 
     healthInsuranceCardNumber:
       values.healthInsuranceCardNumber?.trim() || undefined,
@@ -263,7 +263,7 @@ export function employeeDetailToEditFormValues(
 
     specialization: emp.specialization ?? "",
 
-    workLocation: emp.workLocation ?? "",
+    workLocationId: emp.workLocationId?.toString() ?? "",
 
     healthInsuranceCardNumber: emp.healthInsuranceCardNumber ?? "",
 

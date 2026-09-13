@@ -160,7 +160,7 @@ export function JobPositionEmployeeTab({
 
             <p className="flex items-center gap-2">
               <MapPin className="size-4 text-gray-400" />
-              {emp?.workLocation ?? "—"}
+              {emp?.workLocationName ?? "—"}
             </p>
           </div>
         </Section>

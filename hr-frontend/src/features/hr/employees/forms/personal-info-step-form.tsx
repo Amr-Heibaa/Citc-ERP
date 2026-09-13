@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Input } from "@/components/ui/input";
+import { useWorkLocations } from "@/features/hr/employees/api/use-employees";
 import { SelectField } from "@/features/hr/shared/components/select-field";
 import { LabeledField } from "@/features/hr/shared/components/labeled-field";
 import { WizardFooter } from "@/features/hr/employees/components/wizard-footer";
@@ -27,6 +28,7 @@ export function PersonalInfoStepForm({
   back: () => void;
 }) {
   const { t } = useTranslation();
+  const workLocations = useWorkLocations();
 
   const GENDER_OPTIONS = [
     { value: "Male", label: t("employees.wizard.personalInfo.male") },
@@ -57,7 +59,7 @@ export function PersonalInfoStepForm({
       maritalStatus: defaults.maritalStatus ?? "",
       graduationDate: defaults.graduationDate ?? "",
       specialization: defaults.specialization ?? "",
-      workLocation: defaults.workLocation ?? "",
+      workLocationId: defaults.workLocationId ?? "",
       healthInsuranceCardNumber: defaults.healthInsuranceCardNumber ?? "",
       totalExperienceYears: defaults.totalExperienceYears ?? "",
       leaveNotes: defaults.leaveNotes ?? "",
@@ -161,7 +163,17 @@ export function PersonalInfoStepForm({
           </LabeledField>
 
           <LabeledField label={t("employees.wizard.personalInfo.workLocation")}>
-            <Input {...register("workLocation")} maxLength={255} />
+            <SelectField
+              control={control}
+              name="workLocationId"
+              placeholder={t("employees.wizard.personalInfo.workLocation")}
+              options={
+                workLocations.data?.map((location) => ({
+                  value: String(location.id),
+                  label: location.name,
+                })) ?? []
+              }
+            />
           </LabeledField>
 
           <LabeledField label={t("employees.wizard.personalInfo.healthInsuranceCardNumber")}>
