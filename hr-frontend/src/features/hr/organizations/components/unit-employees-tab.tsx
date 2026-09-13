@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router";
 
 import {
   Table,
@@ -13,26 +14,11 @@ import { useOrganizationUnitEmployees } from "@/features/hr/organizations/api/us
 import { OrganizationStatusBadge } from "@/features/hr/organizations/components/organization-status-badge";
 import { UnitTabToolbar } from "@/features/hr/organizations/components/unit-tab-toolbar";
 import { downloadUnitCsv } from "@/features/hr/organizations/utils/organization-unit-export";
+import { EmployeeAvatar } from "@/features/hr/shared/components/employee-avatar";
 import { formatDate } from "@/features/hr/shared/utils/format";
 import type { UnitEmployee } from "@/lib/api/generated/model";
 
 const NO_EMPLOYEES: UnitEmployee[] = [];
-
-function initials(
-  name?: string,
-): string {
-  if (!name) {
-    return "—";
-  }
-
-  return name
-    .split(" ")
-    .filter(Boolean)
-    .map((part) => part[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
-}
 
 export function UnitEmployeesTab({
   orgUnitId,
@@ -40,6 +26,7 @@ export function UnitEmployeesTab({
   orgUnitId: number;
 }) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [search, setSearch] =
     useState("");
 
@@ -172,14 +159,24 @@ export function UnitEmployeesTab({
                     employee.id ??
                     `${employee.empCode}-${index}`
                   }
+                  className={
+                    employee.id != null
+                      ? "cursor-pointer hover:bg-[#f4f6f9]"
+                      : undefined
+                  }
+                  onClick={
+                    employee.id != null
+                      ? () => navigate(`/hr/employees/${employee.id}`)
+                      : undefined
+                  }
                 >
                   <TableCell className="px-4">
                     <div className="flex items-center gap-3">
-                      <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#f5841f] text-xs font-bold text-white">
-                        {initials(
-                          employee.name,
-                        )}
-                      </div>
+                      <EmployeeAvatar
+                        employeeId={employee.id}
+                        displayName={employee.name}
+                        className="size-9"
+                      />
 
                       <div>
                         <p className="font-['Inter',sans-serif] text-sm font-semibold text-[#1a2535]">

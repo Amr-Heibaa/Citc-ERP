@@ -919,7 +919,10 @@
       "chart": {
         "unnamedUnit": "Unnamed unit",
         "organizationFallback": "Organization",
-        "noUnits": "No organization units have been added."
+        "noUnits": "No organization units have been added.",
+        "zoomIn": "Zoom in",
+        "zoomOut": "Zoom out",
+        "resetZoom": "Reset zoom"
       },
       "loading": "Loading organization structure…",
       "unableToLoad": "Unable to load organization structure.",

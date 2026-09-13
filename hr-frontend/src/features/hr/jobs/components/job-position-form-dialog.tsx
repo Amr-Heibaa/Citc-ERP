@@ -17,6 +17,7 @@ import {
   type JobPositionFormValues,
 } from "@/features/hr/jobs/schemas/job-position-schema";
 import { BooleanSelectField } from "@/features/hr/shared/components/boolean-select-field";
+import { ComboboxField } from "@/features/hr/shared/components/combobox-field";
 import { LabeledField } from "@/features/hr/shared/components/labeled-field";
 import { SelectField } from "@/features/hr/shared/components/select-field";
 import { StatusSelectField } from "@/features/hr/shared/components/status-select-field";
@@ -157,7 +158,7 @@ export function JobPositionForm({
           </LabeledField>
 
           <LabeledField label={t("jobs.positionForm.reportsTo")} error={errors.reportsToPositionId?.message}>
-            <SelectField
+            <ComboboxField
               control={control}
               name="reportsToPositionId"
               placeholder={t("jobs.positionForm.selectReportingPosition")}

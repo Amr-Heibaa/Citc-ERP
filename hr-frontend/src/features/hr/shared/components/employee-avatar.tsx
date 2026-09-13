@@ -20,15 +20,16 @@ function avatarColor(employeeId: number | null | undefined) {
 // employee from the dedicated photo endpoint, lazily and only when present.
 function useEmployeePhotoUrl(
   employeeId: number | null | undefined,
-  hasPhoto: boolean | undefined,
+  hasPhoto: boolean | null | undefined,
 ) {
-  const enabled = Boolean(hasPhoto) && Number.isInteger(employeeId) && (employeeId ?? 0) > 0;
+  const enabled = hasPhoto !== false && Number.isInteger(employeeId) && (employeeId ?? 0) > 0;
 
   const query = useQuery({
     queryKey: ["employee-photo", employeeId],
     queryFn: () =>
       getEmployeePhoto(employeeId as number, { responseType: "blob" }) as unknown as Promise<Blob>,
     enabled,
+    retry: false,
     staleTime: 5 * 60 * 1000,
   });
 
@@ -53,7 +54,7 @@ export function EmployeeAvatar({
   className = "size-10",
 }: {
   employeeId: number | null | undefined;
-  hasPhoto: boolean | undefined;
+  hasPhoto?: boolean | null;
   displayName: string | null | undefined;
   className?: string;
 }) {

@@ -24,6 +24,7 @@ import {
   assignEmployeeSchema,
   type AssignEmployeeFormValues,
 } from "@/features/hr/jobs/schemas/assign-employee-schema";
+import { ComboboxField } from "@/features/hr/shared/components/combobox-field";
 import { LabeledField } from "@/features/hr/shared/components/labeled-field";
 import { SelectField } from "@/features/hr/shared/components/select-field";
 import type { JobPositionDetail } from "@/lib/api/generated/model";
@@ -127,7 +128,7 @@ export function AssignEmployeeDialog({
           <div className="grid grid-cols-1 gap-4 px-6 py-5 sm:grid-cols-2">
             <div className="sm:col-span-2">
               <LabeledField label={t("jobs.assignDialog.employee")} error={errors.employeeId?.message}>
-                <SelectField
+                <ComboboxField
                   control={control}
                   name="employeeId"
                   placeholder={t("jobs.assignDialog.selectEmployee")}

@@ -8,6 +8,7 @@ import {
   useOrgUnits,
   usePositions,
 } from "@/features/hr/employees/api/use-employees";
+import { ComboboxField } from "@/features/hr/shared/components/combobox-field";
 import { SelectField } from "@/features/hr/shared/components/select-field";
 import { WizardDesignArt } from "@/features/hr/employees/components/wizard-design-art";
 import { LabeledField } from "@/features/hr/shared/components/labeled-field";
@@ -72,7 +73,7 @@ export function PositionStepForm({
       <div className="flex min-h-0 flex-1">
         <div className="grid flex-1 grid-cols-1 content-center gap-x-6 gap-y-5 px-8 py-4 md:grid-cols-2">
           <LabeledField label={t("employees.wizard.position.position")}>
-            <SelectField
+            <ComboboxField
               control={control}
               name="positionId"
               placeholder={t("employees.wizard.position.position")}
