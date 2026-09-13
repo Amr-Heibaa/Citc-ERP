@@ -25,7 +25,8 @@ import type {
   OrgUnitRef,
   OrganizationRef,
   SkillRef,
-  StatusRef
+  StatusRef,
+  WorkLocationRef
 } from '../../model';
 
 import { customInstance } from '../../../axios';
@@ -49,6 +50,92 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   }
   return result;
 };
+
+export const workLocations = (
+
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+
+
+      return customInstance<WorkLocationRef[]>(
+      {url: `/api/hr/ref/work-locations`, method: 'GET', signal
+    },
+      options);
+    }
+
+
+
+
+export const getWorkLocationsQueryKey = () => {
+    return [
+    `/api/hr/ref/work-locations`
+    ] as const;
+    }
+
+
+export const getWorkLocationsQueryOptions = <TData = Awaited<ReturnType<typeof workLocations>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof workLocations>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getWorkLocationsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof workLocations>>> = ({ signal }) => workLocations(requestOptions, signal);
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof workLocations>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type WorkLocationsQueryResult = NonNullable<Awaited<ReturnType<typeof workLocations>>>
+export type WorkLocationsQueryError = unknown
+
+
+export function useWorkLocations<TData = Awaited<ReturnType<typeof workLocations>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof workLocations>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof workLocations>>,
+          TError,
+          Awaited<ReturnType<typeof workLocations>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useWorkLocations<TData = Awaited<ReturnType<typeof workLocations>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof workLocations>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof workLocations>>,
+          TError,
+          Awaited<ReturnType<typeof workLocations>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useWorkLocations<TData = Awaited<ReturnType<typeof workLocations>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof workLocations>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useWorkLocations<TData = Awaited<ReturnType<typeof workLocations>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof workLocations>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getWorkLocationsQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
 
 export const statuses = (
 

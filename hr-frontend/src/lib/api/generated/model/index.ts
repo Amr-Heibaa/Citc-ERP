@@ -169,3 +169,4 @@ export * from './updateOrganizationUnitRequest';
 export * from './updateUnitRelationshipRequest';
 export * from './uploadInitialFileBody';
 export * from './uploadSignedContractDocumentBody';
+export * from './workLocationRef';

@@ -21,6 +21,7 @@ export interface CreateEmployeeRequest {
   graduationDate?: string;
   specialization?: string;
   workLocation?: string;
+  workLocationId?: number;
   healthInsuranceCardNumber?: string;
   totalExperienceYears?: number;
   leaveNotes?: string;

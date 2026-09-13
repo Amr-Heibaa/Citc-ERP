@@ -67,6 +67,7 @@ export interface UpdateEmployeeRequest {
      * @maxLength 200
      */
   workLocation?: string;
+  workLocationId?: number;
   /**
      * @minLength 0
      * @maxLength 50

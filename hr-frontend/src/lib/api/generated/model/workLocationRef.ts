@@ -5,10 +5,9 @@
  * OpenAPI spec version: v0
  */
 
-export interface DeleteEmployeeRequest {
-  /**
-     * @minLength 5
-     * @maxLength 500
-     */
-  reason: string;
+export interface WorkLocationRef {
+  id?: number;
+  code?: string;
+  nameAr?: string;
+  name?: string;
 }

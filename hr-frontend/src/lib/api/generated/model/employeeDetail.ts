@@ -32,6 +32,8 @@ export interface EmployeeDetail {
   graduationDate?: string;
   specialization?: string;
   workLocation?: string;
+  workLocationId?: number;
+  workLocationName?: string;
   healthInsuranceCardNumber?: string;
   totalExperienceYears?: number;
   leaveNotes?: string;
