@@ -1,60 +1,62 @@
+import { useMemo } from "react";
 import { Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
-import { useQueries } from "@tanstack/react-query";
 
-import { useOrganizations } from "@/features/hr/organizations/api/use-organizations";
-import { listOrganizationUnits } from "@/lib/api/generated/ems/organization-unit-controller/organization-unit-controller";
-import { organizationUnitsQueryKey } from "@/features/hr/organizations/api/query-keys";
+import { useEmployees } from "@/features/hr/employees/api/use-employees";
 import { useEmployeesFiltersStore } from "@/features/hr/employees/store/employees-filters-store";
+import { useAllOrganizationUnits } from "@/features/hr/organizations/api/use-all-organization-units";
+import { buildOrgUnitToBranchMap } from "@/features/hr/organizations/utils/org-unit-branch";
+import type { EmployeeSummary } from "@/lib/api/generated/model";
 
-function isValidId(value: number | undefined): value is number {
-  return Number.isInteger(value) && (value ?? 0) > 0;
-}
+const NO_EMPLOYEES: EmployeeSummary[] = [];
 
 export function EmployeesBreakdownCard() {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const organizations = useOrganizations();
-  const setDepartment = useEmployeesFiltersStore((state) => state.setDepartment);
+  const employeesQuery = useEmployees();
+  const unitsQuery = useAllOrganizationUnits();
+  const setBranchFilter = useEmployeesFiltersStore((state) => state.setBranchFilter);
 
-  const organizationIds = (organizations.data ?? [])
-    .map((org) => org.id)
-    .filter(isValidId);
+  const isLoading = employeesQuery.isLoading || unitsQuery.isLoading;
 
-  const unitQueries = useQueries({
-    queries: organizationIds.map((organizationId) => ({
-      queryKey: organizationUnitsQueryKey(organizationId),
-      queryFn: () => listOrganizationUnits(organizationId),
-      staleTime: 5 * 60 * 1000,
-    })),
-  });
-
-  const unitsLoading = organizations.isLoading || unitQueries.some((query) => query.isLoading);
-
-  // "Branches" are the top-level units directly under each organization
-  // (no parent unit) — deeper departments/sections roll up into them.
-  const rows = unitQueries
-    .flatMap((query) => query.data ?? [])
-    .filter((unit) => unit.parentUnitId == null && unit.name)
-    .map((unit) => ({
-      id: unit.id,
-      name: unit.name as string,
-      count: unit.employees ?? 0,
-    }))
-    .sort((a, b) => b.count - a.count);
-
-  // Use the organization-level counts (known to add up to the real
-  // headcount) for the header total — branch rows are for filtering only,
-  // and a branch's "employees" count may or may not roll up its sub-units.
-  const total = (organizations.data ?? []).reduce(
-    (sum, org) => sum + (org.summary?.employees ?? 0),
-    0,
+  const orgUnitToBranch = useMemo(
+    () => buildOrgUnitToBranchMap(unitsQuery.units),
+    [unitsQuery.units],
   );
 
-  function handleRowClick(name: string) {
-    setDepartment(name);
+  const employees = employeesQuery.data ?? NO_EMPLOYEES;
+  const total = employees.length;
+
+  const rows = useMemo(() => {
+    const countByBranch = new Map<number, { id: number; name: string; count: number }>();
+
+    employees.forEach((employee) => {
+      if (employee.currentOrgUnitId == null) {
+        return;
+      }
+
+      const branch = orgUnitToBranch.get(employee.currentOrgUnitId);
+
+      if (!branch) {
+        return;
+      }
+
+      const existing = countByBranch.get(branch.id);
+
+      if (existing) {
+        existing.count += 1;
+      } else {
+        countByBranch.set(branch.id, { id: branch.id, name: branch.name, count: 1 });
+      }
+    });
+
+    return [...countByBranch.values()].sort((a, b) => b.count - a.count);
+  }, [employees, orgUnitToBranch]);
+
+  function handleRowClick(id: number, name: string) {
+    setBranchFilter(id, name);
     navigate("/hr/employees");
   }
 
@@ -79,17 +81,17 @@ export function EmployeesBreakdownCard() {
         </div>
 
         <p className="font-['Space_Grotesk',sans-serif] text-[28px] font-bold text-[#1a2535]">
-          {unitsLoading ? "—" : total}
+          {isLoading ? "—" : total}
         </p>
       </button>
 
-      {!unitsLoading && rows.length > 0 && (
+      {!isLoading && rows.length > 0 && (
         <div className="flex flex-col divide-y divide-gray-100">
           {rows.map((row) => (
             <button
               key={row.id}
               type="button"
-              onClick={() => handleRowClick(row.name)}
+              onClick={() => handleRowClick(row.id, row.name)}
               className="flex items-center justify-between gap-3 rounded-lg px-1 py-2 text-left transition-colors hover:bg-gray-50"
             >
               <span className="font-['Inter',sans-serif] text-sm text-[#1a2535]">{row.name}</span>

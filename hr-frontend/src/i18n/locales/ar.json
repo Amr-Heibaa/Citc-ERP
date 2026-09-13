@@ -163,7 +163,8 @@
     "searchPlaceholder": "ابحث بالاسم أو الرقم الوظيفي أو البريد الإلكتروني أو الإدارة...",
     "allDepartments": "كل الإدارات",
     "allStatuses": "كل الحالات",
-    "filteredByOrganization": "الفرع: {{name}}",
+    "filteredByOrganization": "المنظمة: {{name}}",
+    "filteredByBranch": "الفرع: {{name}}",
     "table": {
       "employee": "الموظف",
       "contact": "بيانات التواصل",

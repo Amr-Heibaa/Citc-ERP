@@ -8,6 +8,8 @@ type EmployeesFiltersStore = {
   status: string;
   organizationId: number | null;
   organizationName: string;
+  branchId: number | null;
+  branchName: string;
   exportOpen: boolean;
   importOpen: boolean;
   exportFormat: EmployeeExportFormat;
@@ -15,6 +17,7 @@ type EmployeesFiltersStore = {
   setDepartment: (value: string) => void;
   setStatus: (value: string) => void;
   setOrganizationFilter: (id: number | null, name: string) => void;
+  setBranchFilter: (id: number | null, name: string) => void;
   setExportOpen: (open: boolean) => void;
   setImportOpen: (open: boolean) => void;
   setExportFormat: (format: EmployeeExportFormat) => void;
@@ -27,6 +30,8 @@ const initialFilters = {
   status: "",
   organizationId: null as number | null,
   organizationName: "",
+  branchId: null as number | null,
+  branchName: "",
 };
 
 export const useEmployeesFiltersStore = create<EmployeesFiltersStore>(
@@ -41,6 +46,7 @@ export const useEmployeesFiltersStore = create<EmployeesFiltersStore>(
     setStatus: (status) => set({ status }),
     setOrganizationFilter: (organizationId, organizationName) =>
       set({ organizationId, organizationName }),
+    setBranchFilter: (branchId, branchName) => set({ branchId, branchName }),
     setExportOpen: (exportOpen) => set({ exportOpen }),
     setImportOpen: (importOpen) => set({ importOpen }),
     setExportFormat: (exportFormat) => set({ exportFormat }),

@@ -163,7 +163,8 @@
     "searchPlaceholder": "Search for name, ID, email or department...",
     "allDepartments": "All Departments",
     "allStatuses": "All Status",
-    "filteredByOrganization": "Branch: {{name}}",
+    "filteredByOrganization": "Organization: {{name}}",
+    "filteredByBranch": "Branch: {{name}}",
     "table": {
       "employee": "Employee",
       "contact": "Contact",

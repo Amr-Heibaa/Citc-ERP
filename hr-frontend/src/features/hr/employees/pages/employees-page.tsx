@@ -10,6 +10,8 @@ import { EmployeeImportDialog } from "@/features/hr/employees/components/employe
 import { EmployeesExportDialog } from "@/features/hr/employees/components/employees-export-dialog";
 import { EmployeesFiltersBar } from "@/features/hr/employees/components/employees-filters-bar";
 import { EmployeesTable } from "@/features/hr/employees/components/employees-table";
+import { useAllOrganizationUnits } from "@/features/hr/organizations/api/use-all-organization-units";
+import { buildOrgUnitToBranchMap } from "@/features/hr/organizations/utils/org-unit-branch";
 import type { EmployeeSummary } from "@/lib/api/generated/model";
 
 const NO_EMPLOYEES: EmployeeSummary[] = [];
@@ -27,8 +29,13 @@ export function EmployeesPage() {
   const organizationId = useEmployeesFiltersStore((state) => state.organizationId);
   const organizationName = useEmployeesFiltersStore((state) => state.organizationName);
   const setOrganizationFilter = useEmployeesFiltersStore((state) => state.setOrganizationFilter);
+  const branchId = useEmployeesFiltersStore((state) => state.branchId);
+  const branchName = useEmployeesFiltersStore((state) => state.branchName);
+  const setBranchFilter = useEmployeesFiltersStore((state) => state.setBranchFilter);
   const importOpen = useEmployeesFiltersStore((state) => state.importOpen);
   const setImportOpen = useEmployeesFiltersStore((state) => state.setImportOpen);
+
+  const allOrgUnits = useAllOrganizationUnits();
 
   const orgUnitToOrganization = useMemo(() => {
     const map = new Map<number, number>();
@@ -41,6 +48,11 @@ export function EmployeesPage() {
 
     return map;
   }, [orgUnits.data]);
+
+  const orgUnitToBranch = useMemo(
+    () => buildOrgUnitToBranchMap(allOrgUnits.units),
+    [allOrgUnits.units],
+  );
 
   const departments = useMemo(() => {
     const values = employees
@@ -89,11 +101,25 @@ export function EmployeesPage() {
         (employee.currentOrgUnitId != null &&
           orgUnitToOrganization.get(employee.currentOrgUnitId) === organizationId);
 
+      const matchesBranch =
+        branchId == null ||
+        (employee.currentOrgUnitId != null &&
+          orgUnitToBranch.get(employee.currentOrgUnitId)?.id === branchId);
+
       return Boolean(
-        matchesSearch && matchesDepartment && matchesStatus && matchesOrganization,
+        matchesSearch && matchesDepartment && matchesStatus && matchesOrganization && matchesBranch,
       );
     });
-  }, [department, employees, organizationId, orgUnitToOrganization, search, status]);
+  }, [
+    branchId,
+    department,
+    employees,
+    organizationId,
+    orgUnitToBranch,
+    orgUnitToOrganization,
+    search,
+    status,
+  ]);
 
   function handleSelect(employee: EmployeeSummary) {
     navigate(`/hr/employees/${employee.employeeId}`);
@@ -141,17 +167,35 @@ export function EmployeesPage() {
           </div>
         </div>
 
-        {organizationId != null && (
-          <div className="flex w-fit items-center gap-2 rounded-lg bg-[#f5841f]/10 px-3 py-2 text-sm text-[#f5841f]">
-            <span>{t("employees.filteredByOrganization", { name: organizationName })}</span>
+        {(organizationId != null || branchId != null) && (
+          <div className="flex flex-wrap gap-2">
+            {organizationId != null && (
+              <div className="flex w-fit items-center gap-2 rounded-lg bg-[#f5841f]/10 px-3 py-2 text-sm text-[#f5841f]">
+                <span>{t("employees.filteredByOrganization", { name: organizationName })}</span>
 
-            <button
-              type="button"
-              onClick={() => setOrganizationFilter(null, "")}
-              className="rounded-full p-0.5 hover:bg-[#f5841f]/20"
-            >
-              <X className="size-3.5" />
-            </button>
+                <button
+                  type="button"
+                  onClick={() => setOrganizationFilter(null, "")}
+                  className="rounded-full p-0.5 hover:bg-[#f5841f]/20"
+                >
+                  <X className="size-3.5" />
+                </button>
+              </div>
+            )}
+
+            {branchId != null && (
+              <div className="flex w-fit items-center gap-2 rounded-lg bg-[#f5841f]/10 px-3 py-2 text-sm text-[#f5841f]">
+                <span>{t("employees.filteredByBranch", { name: branchName })}</span>
+
+                <button
+                  type="button"
+                  onClick={() => setBranchFilter(null, "")}
+                  className="rounded-full p-0.5 hover:bg-[#f5841f]/20"
+                >
+                  <X className="size-3.5" />
+                </button>
+              </div>
+            )}
           </div>
         )}
 
