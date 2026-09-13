@@ -10,8 +10,6 @@ import { EmployeeImportDialog } from "@/features/hr/employees/components/employe
 import { EmployeesExportDialog } from "@/features/hr/employees/components/employees-export-dialog";
 import { EmployeesFiltersBar } from "@/features/hr/employees/components/employees-filters-bar";
 import { EmployeesTable } from "@/features/hr/employees/components/employees-table";
-import { useAllOrganizationUnits } from "@/features/hr/organizations/api/use-all-organization-units";
-import { buildOrgUnitToBranchMap } from "@/features/hr/organizations/utils/org-unit-branch";
 import type { EmployeeSummary } from "@/lib/api/generated/model";
 
 const NO_EMPLOYEES: EmployeeSummary[] = [];
@@ -35,8 +33,6 @@ export function EmployeesPage() {
   const importOpen = useEmployeesFiltersStore((state) => state.importOpen);
   const setImportOpen = useEmployeesFiltersStore((state) => state.setImportOpen);
 
-  const allOrgUnits = useAllOrganizationUnits();
-
   const orgUnitToOrganization = useMemo(() => {
     const map = new Map<number, number>();
 
@@ -48,11 +44,6 @@ export function EmployeesPage() {
 
     return map;
   }, [orgUnits.data]);
-
-  const orgUnitToBranch = useMemo(
-    () => buildOrgUnitToBranchMap(allOrgUnits.units),
-    [allOrgUnits.units],
-  );
 
   const departments = useMemo(() => {
     const values = employees
@@ -101,25 +92,13 @@ export function EmployeesPage() {
         (employee.currentOrgUnitId != null &&
           orgUnitToOrganization.get(employee.currentOrgUnitId) === organizationId);
 
-      const matchesBranch =
-        branchId == null ||
-        (employee.currentOrgUnitId != null &&
-          orgUnitToBranch.get(employee.currentOrgUnitId)?.id === branchId);
+      const matchesBranch = branchId == null || employee.workLocationId === branchId;
 
       return Boolean(
         matchesSearch && matchesDepartment && matchesStatus && matchesOrganization && matchesBranch,
       );
     });
-  }, [
-    branchId,
-    department,
-    employees,
-    organizationId,
-    orgUnitToBranch,
-    orgUnitToOrganization,
-    search,
-    status,
-  ]);
+  }, [branchId, department, employees, organizationId, orgUnitToOrganization, search, status]);
 
   function handleSelect(employee: EmployeeSummary) {
     navigate(`/hr/employees/${employee.employeeId}`);

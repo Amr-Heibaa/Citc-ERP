@@ -13,6 +13,8 @@ export interface EmployeeSummary {
   hasPhoto?: boolean;
   currentOrgUnitId?: number;
   currentOrgUnitName?: string;
+  workLocationId?: number;
+  workLocationName?: string;
   employeeStatusId?: number;
   statusCode?: string;
   statusName?: string;

@@ -5,8 +5,6 @@ import { useNavigate } from "react-router";
 
 import { useEmployees } from "@/features/hr/employees/api/use-employees";
 import { useEmployeesFiltersStore } from "@/features/hr/employees/store/employees-filters-store";
-import { useAllOrganizationUnits } from "@/features/hr/organizations/api/use-all-organization-units";
-import { buildOrgUnitToBranchMap } from "@/features/hr/organizations/utils/org-unit-branch";
 import type { EmployeeSummary } from "@/lib/api/generated/model";
 
 const NO_EMPLOYEES: EmployeeSummary[] = [];
@@ -16,44 +14,35 @@ export function EmployeesBreakdownCard() {
   const navigate = useNavigate();
 
   const employeesQuery = useEmployees();
-  const unitsQuery = useAllOrganizationUnits();
   const setBranchFilter = useEmployeesFiltersStore((state) => state.setBranchFilter);
 
-  const isLoading = employeesQuery.isLoading || unitsQuery.isLoading;
-
-  const orgUnitToBranch = useMemo(
-    () => buildOrgUnitToBranchMap(unitsQuery.units),
-    [unitsQuery.units],
-  );
-
+  const isLoading = employeesQuery.isLoading;
   const employees = employeesQuery.data ?? NO_EMPLOYEES;
   const total = employees.length;
 
   const rows = useMemo(() => {
-    const countByBranch = new Map<number, { id: number; name: string; count: number }>();
+    const countByLocation = new Map<number, { id: number; name: string; count: number }>();
 
     employees.forEach((employee) => {
-      if (employee.currentOrgUnitId == null) {
+      if (employee.workLocationId == null || !employee.workLocationName) {
         return;
       }
 
-      const branch = orgUnitToBranch.get(employee.currentOrgUnitId);
-
-      if (!branch) {
-        return;
-      }
-
-      const existing = countByBranch.get(branch.id);
+      const existing = countByLocation.get(employee.workLocationId);
 
       if (existing) {
         existing.count += 1;
       } else {
-        countByBranch.set(branch.id, { id: branch.id, name: branch.name, count: 1 });
+        countByLocation.set(employee.workLocationId, {
+          id: employee.workLocationId,
+          name: employee.workLocationName,
+          count: 1,
+        });
       }
     });
 
-    return [...countByBranch.values()].sort((a, b) => b.count - a.count);
-  }, [employees, orgUnitToBranch]);
+    return [...countByLocation.values()].sort((a, b) => b.count - a.count);
+  }, [employees]);
 
   function handleRowClick(id: number, name: string) {
     setBranchFilter(id, name);
