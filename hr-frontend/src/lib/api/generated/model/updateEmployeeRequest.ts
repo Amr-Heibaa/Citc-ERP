@@ -11,6 +11,7 @@ export interface UpdateEmployeeRequest {
      * @maxLength 50
      */
   employeeNumber: string;
+  userId?: number;
   currentOrgUnitId?: number;
   employeeStatusId?: number;
   hireDate?: string;

@@ -262,7 +262,7 @@ export function useCreateEmployeeAccount(employeeId: number) {
       await updateEmployee(employeeId, {
         ...employeePayload,
         userId: createdUser.userId,
-      } as UpdateEmployeeRequest);
+      });
 
       return createdUser;
     },
