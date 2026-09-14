@@ -18,10 +18,9 @@ import {
   downloadAgeGroupsCsv,
   downloadAgeGroupsExcel,
   printAgeGroupsReport,
+  RETIREMENT_AGE,
 } from "@/features/hr/reports/utils/age-groups-report-export";
 import type { EmployeeDetail } from "@/lib/api/generated/model";
-
-export const RETIREMENT_AGE = 60;
 
 const AGE_BRACKETS = [
   { key: "under30", min: 0, max: 29 },
