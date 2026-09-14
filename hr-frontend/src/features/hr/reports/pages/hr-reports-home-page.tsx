@@ -1,4 +1,4 @@
-import { CalendarRange, FileBarChart2 } from "lucide-react";
+import { CalendarRange, FileBarChart2, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 
@@ -20,6 +20,13 @@ export function HrReportsHomePage() {
       description: t("reports.home.contractTypes.description"),
       icon: FileBarChart2,
       to: "/hr/reports/contract-types",
+    },
+    {
+      id: "age-groups",
+      title: t("reports.home.ageGroups.title"),
+      description: t("reports.home.ageGroups.description"),
+      icon: Users,
+      to: "/hr/reports/age-groups",
     },
   ];
 

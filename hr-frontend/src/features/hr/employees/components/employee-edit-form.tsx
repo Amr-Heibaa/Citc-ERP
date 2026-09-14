@@ -13,6 +13,7 @@ import {
   useWorkLocations,
 } from "@/features/hr/employees/api/use-employees";
 import { EditSection } from "@/features/hr/shared/components/edit-section";
+import { EmployeeAccountSection } from "@/features/hr/employees/components/employee-account-section";
 import { SelectField } from "@/features/hr/shared/components/select-field";
 import { LabeledField } from "@/features/hr/shared/components/labeled-field";
 import {
@@ -108,6 +109,8 @@ export function EmployeeEditForm({
       className="flex min-h-0 flex-1 flex-col overflow-hidden"
     >
       <div className="flex-1 space-y-5 overflow-y-auto px-6 py-5">
+        <EmployeeAccountSection employee={employee} />
+
         <EditSection title={t("employees.editForm.employmentSection")}>
           <LabeledField label={t("employees.editForm.employeeNumber")} error={errors.employeeNumber?.message}>
             <Input {...register("employeeNumber")} />

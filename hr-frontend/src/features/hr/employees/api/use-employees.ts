@@ -1,6 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { createUser, type CreateUserRequest } from "@/lib/api/auth";
+import {
+  createUser,
+  resetUserPassword,
+  type CreateUserRequest,
+} from "@/lib/api/auth";
 
 import {
   confirmImport as confirmContractImport,
@@ -230,6 +234,51 @@ export function useUpdateEmployee(employeeId: number) {
         predicate: (query) => isEmployeeQueryKey(query.queryKey),
       });
     },
+  });
+}
+
+// Creates a login account for an employee who doesn't have one yet, then
+// links it by re-saving the employee with the new userId. UpdateEmployeeRequest
+// does not have a `userId` field on the backend yet - see backend notes
+// handed to the team for the required ems-hr change.
+export type LinkEmployeeAccountInput = {
+  account: CreateUserRequest;
+  employeePayload: UpdateEmployeeRequest;
+};
+
+export function useCreateEmployeeAccount(employeeId: number) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ account, employeePayload }: LinkEmployeeAccountInput) => {
+      const createdUser = await createUser(account);
+
+      if (!createdUser?.userId) {
+        throw new Error(
+          "Account was not created correctly: userId was not returned",
+        );
+      }
+
+      await updateEmployee(employeeId, {
+        ...employeePayload,
+        userId: createdUser.userId,
+      } as UpdateEmployeeRequest);
+
+      return createdUser;
+    },
+
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        predicate: (query) => isEmployeeQueryKey(query.queryKey),
+      });
+    },
+  });
+}
+
+export function useResetEmployeePassword() {
+  return useMutation({
+    mutationFn: ({ userId, newPassword }: { userId: number; newPassword: string }) =>
+      resetUserPassword(userId, { newPassword }),
   });
 }
 

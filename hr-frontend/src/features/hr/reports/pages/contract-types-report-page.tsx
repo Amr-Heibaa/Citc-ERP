@@ -1,8 +1,15 @@
-import { Download, FileSpreadsheet, FileText } from "lucide-react";
-import { useState } from "react";
+import { Download, FileSpreadsheet, FileText, Users } from "lucide-react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Table,
   TableBody,
@@ -12,16 +19,139 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { StatusBadge } from "@/features/hr/shared/components/status-badge";
-import { useContractTypesForReport } from "@/features/hr/reports/api/use-reports";
+import { formatDate } from "@/features/hr/shared/utils/format";
+import { printTableReport } from "@/features/hr/shared/utils/export";
+import {
+  useAllEmployeeDetailsForReport,
+  useContractTypesForReport,
+} from "@/features/hr/reports/api/use-reports";
 import {
   downloadContractTypesCsv,
   downloadContractTypesExcel,
   printContractTypesReport,
 } from "@/features/hr/reports/utils/contract-types-report-export";
+import type { ContractTypeSetting } from "@/lib/api/generated/model";
+
+function ContractTypeEmployeesDialog({
+  contractType,
+  onClose,
+}: {
+  contractType: ContractTypeSetting | null;
+  onClose: () => void;
+}) {
+  const { t } = useTranslation();
+  const details = useAllEmployeeDetailsForReport();
+
+  const employees = useMemo(() => {
+    if (!contractType) return [];
+
+    return (details.data ?? []).filter((emp) =>
+      (emp.contracts ?? []).some(
+        (contract) =>
+          contract.contractTypeId === contractType.contractTypeId &&
+          contract.active,
+      ),
+    );
+  }, [details.data, contractType]);
+
+  function handlePrint() {
+    if (!contractType) return;
+
+    printTableReport({
+      title: t("reports.contractTypesReport.employeesDialog.title", {
+        name: contractType.name,
+      }),
+      subtitle: t("reports.contractTypesReport.employeesDialog.summary", {
+        count: employees.length,
+      }),
+      rows: employees.map((emp) => ({
+        [t("reports.contractTypesReport.columns.employeeNumber")]: emp.employeeNumber ?? "",
+        [t("reports.contractTypesReport.columns.name")]: emp.displayName ?? "",
+        [t("reports.contractTypesReport.columns.position")]: emp.positionTitle ?? "",
+        [t("reports.contractTypesReport.columns.department")]: emp.department ?? "",
+        [t("reports.contractTypesReport.columns.hireDate")]: formatDate(emp.hireDate),
+      })),
+    });
+  }
+
+  return (
+    <Dialog open={contractType != null} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="sm:max-w-[720px]">
+        <DialogHeader>
+          <DialogTitle>
+            {t("reports.contractTypesReport.employeesDialog.title", {
+              name: contractType?.name ?? "",
+            })}
+          </DialogTitle>
+
+          <DialogDescription>
+            {t("reports.contractTypesReport.employeesDialog.summary", {
+              count: employees.length,
+            })}
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="max-h-[60vh] overflow-y-auto">
+          {details.isLoading ? (
+            <div className="flex h-32 items-center justify-center font-['Inter',sans-serif] text-sm text-gray-400">
+              {t("reports.contractTypesReport.loading")}
+            </div>
+          ) : employees.length === 0 ? (
+            <div className="flex h-32 items-center justify-center font-['Inter',sans-serif] text-sm text-gray-400">
+              {t("reports.contractTypesReport.employeesDialog.noEmployees")}
+            </div>
+          ) : (
+            <Table>
+              <TableHeader className="bg-[#f4f6f9]">
+                <TableRow>
+                  <TableHead>{t("reports.contractTypesReport.columns.employeeNumber")}</TableHead>
+                  <TableHead>{t("reports.contractTypesReport.columns.name")}</TableHead>
+                  <TableHead>{t("reports.contractTypesReport.columns.position")}</TableHead>
+                  <TableHead>{t("reports.contractTypesReport.columns.hireDate")}</TableHead>
+                </TableRow>
+              </TableHeader>
+
+              <TableBody>
+                {employees.map((emp) => (
+                  <TableRow key={emp.employeeId}>
+                    <TableCell className="font-['Inter',sans-serif] font-semibold text-[#1a2535]">
+                      {emp.employeeNumber}
+                    </TableCell>
+                    <TableCell className="font-['Inter',sans-serif] text-sm text-gray-600">
+                      {emp.displayName}
+                    </TableCell>
+                    <TableCell className="font-['Inter',sans-serif] text-sm text-gray-600">
+                      {emp.positionTitle ?? "—"}
+                    </TableCell>
+                    <TableCell className="font-['Inter',sans-serif] text-sm text-gray-600">
+                      {formatDate(emp.hireDate)}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </div>
+
+        <div className="flex justify-end">
+          <Button
+            variant="outline"
+            onClick={handlePrint}
+            disabled={employees.length === 0}
+          >
+            <FileText className="size-4" />
+            {t("reports.contractTypesReport.pdf")}
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
 
 export function ContractTypesReportPage() {
   const { t } = useTranslation();
   const [exporting, setExporting] = useState(false);
+  const [selectedType, setSelectedType] = useState<ContractTypeSetting | null>(null);
 
   const query = useContractTypesForReport();
   const rows = query.data ?? [];
@@ -97,6 +227,7 @@ export function ContractTypesReportPage() {
                 <TableHead className="w-1/3">
                   {t("reports.contractTypesReport.columns.distribution")}
                 </TableHead>
+                <TableHead />
               </TableRow>
             </TableHeader>
 
@@ -129,12 +260,29 @@ export function ContractTypesReportPage() {
                       />
                     </div>
                   </TableCell>
+
+                  <TableCell>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setSelectedType(row)}
+                    >
+                      <Users className="size-4" />
+                      {t("reports.contractTypesReport.viewEmployees")}
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         )}
       </div>
+
+      <ContractTypeEmployeesDialog
+        contractType={selectedType}
+        onClose={() => setSelectedType(null)}
+      />
     </div>
   );
 }
