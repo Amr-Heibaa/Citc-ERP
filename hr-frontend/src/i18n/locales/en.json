@@ -539,6 +539,26 @@
       "createdFromFile": "Contract {{number}} created from file",
       "unableToCreateFromFile": "Unable to create the contract from this file"
     },
+    "account": {
+      "sectionTitle": "Login Account",
+      "hasAccount": "This employee already has a login account.",
+      "resetPassword": "Reset Password",
+      "adminOnlyReset": "Only an administrator can reset this employee's password.",
+      "newPassword": "New Password",
+      "confirmReset": "Reset Password",
+      "resetting": "Resetting...",
+      "resetSuccess": "Password reset successfully",
+      "resetError": "Unable to reset the password",
+      "passwordTooShort": "Password must be at least 6 characters",
+      "username": "Username",
+      "email": "Email",
+      "password": "Password",
+      "createAccount": "Create Account",
+      "creating": "Creating...",
+      "createdSuccess": "Login account created successfully",
+      "createError": "Unable to create the login account",
+      "missingFields": "Username, email and password are required"
+    },
     "editForm": {
       "employmentSection": "Employment",
       "employeeNumber": "Employee Number",
@@ -1711,6 +1731,10 @@
       "contractTypes": {
         "title": "Contract Types",
         "description": "See how contracts break down by contract type"
+      },
+      "ageGroups": {
+        "title": "Age Groups & Retirement",
+        "description": "Breakdown by age bracket, with a retirement-age (60) alert"
       }
     },
     "contractTypesReport": {
@@ -1722,12 +1746,53 @@
       "loading": "Loading contract types…",
       "unableToLoad": "Unable to load contract types.",
       "noResults": "No contract types found.",
+      "viewEmployees": "View Employees",
       "columns": {
         "code": "Code",
         "name": "Name",
         "status": "Status",
         "usage": "Usage",
-        "distribution": "Distribution"
+        "distribution": "Distribution",
+        "employeeNumber": "Employee Number",
+        "position": "Position",
+        "department": "Department",
+        "hireDate": "Hire Date"
+      },
+      "employeesDialog": {
+        "title": "Employees — {{name}}",
+        "summary": "{{count}} employees under this contract type",
+        "noEmployees": "No employees currently have this contract type."
+      }
+    },
+    "ageGroupsReport": {
+      "title": "Age Groups & Retirement Report",
+      "summary": "{{count}} active employees with a known birth date",
+      "csv": "CSV",
+      "excel": "Excel",
+      "pdf": "PDF",
+      "loading": "Loading employees…",
+      "unableToLoad": "Unable to load employees.",
+      "noResults": "No employees found.",
+      "retirementAlert": {
+        "title": "{{count}} employee(s) at or past retirement age ({{age}})",
+        "yearsOld": "years old",
+        "badge": "RETIREMENT AGE"
+      },
+      "brackets": {
+        "under30": "Under 30",
+        "30to39": "30–39",
+        "40to49": "40–49",
+        "50to59": "50–59",
+        "60plus": "60+ (Retirement)"
+      },
+      "columns": {
+        "employeeNumber": "Employee Number",
+        "name": "Name",
+        "department": "Department",
+        "position": "Position",
+        "birthDate": "Birth Date",
+        "age": "Age",
+        "alert": "Alert"
       }
     },
     "hiresResignationsReport": {

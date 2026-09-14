@@ -34,6 +34,7 @@ import { SettingsHistoryPage } from "@/features/hr/hr-settings/pages/settings-hi
 import { HrReportsHomePage } from "@/features/hr/reports/pages/hr-reports-home-page";
 import { HiresResignationsReportPage } from "@/features/hr/reports/pages/hires-resignations-report-page";
 import { ContractTypesReportPage } from "@/features/hr/reports/pages/contract-types-report-page";
+import { AgeGroupsReportPage } from "@/features/hr/reports/pages/age-groups-report-page";
 import { HrAccessGate } from "@/features/hr/access-delegation/components/hr-access-gate";
 import { AccessDelegationPage } from "@/features/hr/access-delegation/pages/access-delegation-page";
 function Placeholder({ nameKey }: { nameKey: string }) {
@@ -142,6 +143,10 @@ export const router = createBrowserRouter([
               {
                 path: "reports/contract-types",
                 element: <ContractTypesReportPage />,
+              },
+              {
+                path: "reports/age-groups",
+                element: <AgeGroupsReportPage />,
               },
             ],
           },

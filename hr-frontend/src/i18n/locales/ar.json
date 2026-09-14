@@ -539,6 +539,26 @@
       "createdFromFile": "تم إنشاء العقد {{number}} من الملف",
       "unableToCreateFromFile": "تعذر إنشاء العقد من هذا الملف"
     },
+    "account": {
+      "sectionTitle": "حساب الدخول",
+      "hasAccount": "هذا الموظف لديه حساب دخول بالفعل.",
+      "resetPassword": "إعادة تعيين كلمة المرور",
+      "adminOnlyReset": "فقط المسؤول يمكنه إعادة تعيين كلمة مرور هذا الموظف.",
+      "newPassword": "كلمة المرور الجديدة",
+      "confirmReset": "إعادة تعيين كلمة المرور",
+      "resetting": "جارٍ إعادة التعيين...",
+      "resetSuccess": "تم إعادة تعيين كلمة المرور بنجاح",
+      "resetError": "تعذر إعادة تعيين كلمة المرور",
+      "passwordTooShort": "يجب ألا تقل كلمة المرور عن 6 أحرف",
+      "username": "اسم المستخدم",
+      "email": "البريد الإلكتروني",
+      "password": "كلمة المرور",
+      "createAccount": "إنشاء حساب",
+      "creating": "جارٍ الإنشاء...",
+      "createdSuccess": "تم إنشاء حساب الدخول بنجاح",
+      "createError": "تعذر إنشاء حساب الدخول",
+      "missingFields": "اسم المستخدم والبريد الإلكتروني وكلمة المرور مطلوبة"
+    },
     "editForm": {
       "employmentSection": "التوظيف",
       "employeeNumber": "الرقم الوظيفي",
@@ -1711,6 +1731,10 @@
       "contractTypes": {
         "title": "أنواع العقود",
         "description": "اطّلع على توزيع العقود حسب نوع العقد"
+      },
+      "ageGroups": {
+        "title": "الفئات العمرية وسن المعاش",
+        "description": "توزيع الموظفين حسب الفئة العمرية، مع تنبيه لسن المعاش (60)"
       }
     },
     "contractTypesReport": {
@@ -1722,12 +1746,53 @@
       "loading": "جارٍ تحميل أنواع العقود…",
       "unableToLoad": "تعذر تحميل أنواع العقود.",
       "noResults": "لا توجد أنواع عقود.",
+      "viewEmployees": "عرض الموظفين",
       "columns": {
         "code": "الكود",
         "name": "الاسم",
         "status": "الحالة",
         "usage": "الاستخدام",
-        "distribution": "التوزيع"
+        "distribution": "التوزيع",
+        "employeeNumber": "الرقم الوظيفي",
+        "position": "الوظيفة",
+        "department": "القسم",
+        "hireDate": "تاريخ التعيين"
+      },
+      "employeesDialog": {
+        "title": "الموظفون — {{name}}",
+        "summary": "{{count}} موظف بهذا النوع من العقود",
+        "noEmployees": "لا يوجد حاليًا موظفون بهذا النوع من العقود."
+      }
+    },
+    "ageGroupsReport": {
+      "title": "تقرير الفئات العمرية وسن المعاش",
+      "summary": "{{count}} موظف نشط بتاريخ ميلاد معروف",
+      "csv": "CSV",
+      "excel": "Excel",
+      "pdf": "PDF",
+      "loading": "جارٍ تحميل الموظفين…",
+      "unableToLoad": "تعذر تحميل الموظفين.",
+      "noResults": "لا يوجد موظفون.",
+      "retirementAlert": {
+        "title": "{{count}} موظف بلغ أو تجاوز سن المعاش ({{age}})",
+        "yearsOld": "سنة",
+        "badge": "سن المعاش"
+      },
+      "brackets": {
+        "under30": "أقل من 30",
+        "30to39": "30–39",
+        "40to49": "40–49",
+        "50to59": "50–59",
+        "60plus": "60+ (سن المعاش)"
+      },
+      "columns": {
+        "employeeNumber": "الرقم الوظيفي",
+        "name": "الاسم",
+        "department": "القسم",
+        "position": "الوظيفة",
+        "birthDate": "تاريخ الميلاد",
+        "age": "العمر",
+        "alert": "تنبيه"
       }
     },
     "hiresResignationsReport": {

@@ -49,6 +49,27 @@ export function formatDuration(startDate: string | null | undefined): string {
   return parts.join(", ");
 }
 
+export function ageFromBirthDate(
+  birthDate: string | null | undefined,
+  asOf: Date = new Date(),
+): number | null {
+  if (!birthDate) return null;
+
+  const birth = new Date(birthDate);
+  if (Number.isNaN(birth.getTime())) return null;
+
+  let age = asOf.getFullYear() - birth.getFullYear();
+  const hasHadBirthdayThisYear =
+    asOf.getMonth() > birth.getMonth() ||
+    (asOf.getMonth() === birth.getMonth() && asOf.getDate() >= birth.getDate());
+
+  if (!hasHadBirthdayThisYear) {
+    age -= 1;
+  }
+
+  return age;
+}
+
 export function initials(name: string | null | undefined): string {
   if (!name) {
     return "NA";
