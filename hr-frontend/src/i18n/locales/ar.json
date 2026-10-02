@@ -60,7 +60,8 @@
     "goToDashboard": "الذهاب للرئيسية",
     "logout": "تسجيل الخروج",
     "user": "مستخدم",
-    "employee": "موظف"
+    "employee": "موظف",
+    "security": "الأمان"
   },
   "header": {
     "searchPlaceholder": "ابحث في الوحدات والمشاريع...",
@@ -103,7 +104,18 @@
     "functionalRelationTypes": "أنواع العلاقات الوظيفية",
     "accessDelegation": "تفويض الصلاحيات",
     "hrReports": "التقارير",
-    "hiresAndResignations": "التعيينات والاستقالات"
+    "hiresAndResignations": "التعيينات والاستقالات",
+    "security": "الأمان",
+    "securityUsers": "المستخدمون",
+    "securityUserDetails": "تفاصيل المستخدم",
+    "securityAssignRoles": "تعيين الأدوار",
+    "securityRoles": "الأدوار",
+    "securityRoleDetails": "تفاصيل الدور",
+    "securityPermissions": "الصلاحيات",
+    "securityPermissionDetails": "تفاصيل الصلاحية",
+    "securityModules": "وحدات التطبيق",
+    "securityModuleDetails": "تفاصيل الوحدة",
+    "securityAuditLogs": "سجلات التدقيق"
   },
   "dashboard": {
     "totalRequests": "إجمالي الطلبات",
@@ -1766,5 +1778,357 @@
     "signingIn": "جارٍ تسجيل الدخول…",
     "welcomeToast": "مرحبًا بعودتك",
     "unableToSignIn": "تعذر تسجيل الدخول. حاول مرة أخرى."
+  },
+  "security": {
+    "nav": {
+      "users": "المستخدمون",
+      "roles": "الأدوار",
+      "permissions": "الصلاحيات",
+      "modules": "وحدات التطبيق",
+      "auditLogs": "سجلات التدقيق"
+    },
+    "common": {
+      "saving": "جارٍ الحفظ…",
+      "working": "جارٍ التنفيذ…",
+      "saveChanges": "حفظ التغييرات",
+      "activate": "تفعيل",
+      "deactivate": "إلغاء التفعيل"
+    },
+    "fields": {
+      "code": "الرمز",
+      "name": "الاسم",
+      "description": "الوصف",
+      "status": "الحالة",
+      "module": "وحدة التطبيق",
+      "moduleOptional": "وحدة التطبيق (اختياري)",
+      "createdAt": "تاريخ الإنشاء",
+      "updatedAt": "تاريخ التحديث",
+      "username": "اسم المستخدم",
+      "email": "البريد الإلكتروني",
+      "displayName": "الاسم المعروض",
+      "employeeNumber": "الرقم الوظيفي",
+      "employeeId": "معرّف الموظف",
+      "lastAccess": "آخر دخول",
+      "initialPassword": "كلمة المرور الأولية"
+    },
+    "filters": {
+      "status": "التصفية حسب الحالة",
+      "role": "التصفية حسب الدور",
+      "module": "التصفية حسب الوحدة",
+      "allStatuses": "كل الحالات",
+      "allRoles": "كل الأدوار",
+      "allModules": "كل الوحدات"
+    },
+    "states": {
+      "unableToLoad": "تعذّر تحميل هذه البيانات",
+      "tryAgain": "إعادة المحاولة",
+      "noMatches": "لا توجد نتائج مطابقة للتصفية",
+      "noMatchesHint": "جرّب كلمة بحث أخرى أو امسح عوامل التصفية."
+    },
+    "errors": {
+      "forbiddenTitle": "غير مسموح",
+      "forbidden": "ليست لديك صلاحية لتنفيذ هذه العملية.",
+      "notFoundTitle": "غير موجود",
+      "notFound": "هذا السجل لم يعد موجودًا أو تمت إزالته."
+    },
+    "accessDenied": {
+      "title": "تم رفض الوصول",
+      "description": "قسم الأمان متاح لمسؤولي النظام ومسؤولي الموارد البشرية فقط.",
+      "backToDashboard": "العودة إلى الرئيسية"
+    },
+    "pagination": {
+      "label": "التنقل بين الصفحات",
+      "showing": "عرض {{from}}–{{to}} من {{total}}",
+      "previous": "الصفحة السابقة",
+      "next": "الصفحة التالية",
+      "goTo": "الانتقال إلى الصفحة {{page}}"
+    },
+    "transfer": {
+      "addAll": "إضافة كل المعروض",
+      "addSelected": "إضافة المحدد",
+      "removeSelected": "إزالة المحدد",
+      "removeAll": "إزالة كل المعروض",
+      "nothingAvailable": "لا يوجد ما يمكن إضافته.",
+      "nothingAssigned": "لم يتم تعيين أي عنصر بعد.",
+      "noChanges": "لا توجد تغييرات بعد.",
+      "changes": "{{added}} للإضافة · {{removed}} للإزالة",
+      "overLimit": "يمكن تعيين {{max}} عنصرًا كحد أقصى في المرة الواحدة.",
+      "saving": "جارٍ الحفظ…"
+    },
+    "overview": {
+      "title": "الأمان",
+      "subtitle": "إدارة المستخدمين والأدوار والصلاحيات ووحدات التطبيق.",
+      "signedInAs": "مسجّل الدخول باسم {{username}} · {{role}}",
+      "activeUsers": "المستخدمون النشطون",
+      "activeRoles": "الأدوار النشطة",
+      "activePermissions": "الصلاحيات النشطة",
+      "activeModules": "وحدات التطبيق النشطة",
+      "areas": "إدارة الأمان",
+      "usersHint": "الحسابات وحالتها وصلاحياتها الفعلية",
+      "rolesHint": "أدوار الوصول وصلاحياتها وأعضاؤها",
+      "permissionsHint": "تعريفات الصلاحيات والأدوار المرتبطة بها",
+      "modulesHint": "الوحدات والصلاحيات التي تضمها",
+      "auditHint": "سجل تدقيق الأمان الدائم"
+    },
+    "users": {
+      "title": "المستخدمون",
+      "subtitle": "إدارة مستخدمي النظام وصلاحيات وصولهم.",
+      "searchPlaceholder": "ابحث بالاسم أو اسم المستخدم أو البريد…",
+      "addUser": "إضافة مستخدم",
+      "empty": "لا توجد حسابات مستخدمين بعد.",
+      "backToList": "العودة إلى المستخدمين",
+      "open": "فتح {{name}}",
+      "notLinked": "غير مرتبط",
+      "never": "لم يسجّل الدخول",
+      "noRoles": "لا توجد أدوار",
+      "moreRoles": "+{{count}}",
+      "manageRoles": "إدارة الأدوار",
+      "enable": "تفعيل المستخدم",
+      "disable": "تعطيل المستخدم",
+      "enableTitle": "تفعيل هذا الحساب؟",
+      "disableTitle": "تعطيل هذا الحساب؟",
+      "enableDescription": "سيتمكن {{name}} من تسجيل الدخول مجددًا.",
+      "disableDescription": "لن يتمكن {{name}} من تسجيل الدخول حتى يُعاد تفعيل الحساب.",
+      "enabled": "تم تفعيل حساب المستخدم",
+      "disabled": "تم تعطيل حساب المستخدم",
+      "statusError": "تعذّر تحديث حالة الحساب",
+      "columns": {
+        "user": "المستخدم",
+        "employee": "الموظف",
+        "email": "البريد الإلكتروني",
+        "status": "الحالة",
+        "roles": "الأدوار",
+        "lastAccess": "آخر دخول"
+      },
+      "create": {
+        "title": "إضافة مستخدم",
+        "description": "أنشئ حساب دخول. يمكن تعيين الأدوار بعد إنشاء الحساب.",
+        "submit": "إنشاء المستخدم",
+        "success": "تم إنشاء حساب المستخدم",
+        "error": "تعذّر إنشاء حساب المستخدم"
+      },
+      "detail": {
+        "overviewTab": "نظرة عامة",
+        "rolesTab": "الأدوار",
+        "permissionsTab": "الصلاحيات",
+        "activityTab": "النشاط",
+        "sessionsTab": "الجلسات",
+        "account": "معلومات المستخدم",
+        "linkedEmployee": "الموظف المرتبط",
+        "noEmployee": "هذا الحساب غير مرتبط بموظف.",
+        "viewEmployee": "عرض ملف الموظف",
+        "loginStatistics": "إحصائيات الدخول",
+        "assignedRoles": "الأدوار المعيّنة ({{count}})",
+        "noRoles": "لا توجد أدوار معيّنة لهذا المستخدم.",
+        "effectivePermissions": "الصلاحيات الفعلية ({{count}})",
+        "effectivePermissionsHint": "الصلاحيات الممنوحة من خلال أدوار المستخدم النشطة.",
+        "noPermissions": "لا توجد صلاحيات فعلية لهذا المستخدم.",
+        "activityHint": "مصدرها محاولات الدخول المسجّلة، وقد لا تشمل كل المحاولات السابقة.",
+        "noActivity": "لا يوجد نشاط دخول مسجّل.",
+        "noSessions": "لا توجد جلسات.",
+        "attempts": "محاولات الدخول",
+        "successfulAttempts": "المحاولات الناجحة",
+        "failedAttempts": "المحاولات الفاشلة",
+        "loginStatisticsHint": "محسوبة من محاولات الدخول المسجّلة."
+      }
+    },
+    "assign": {
+      "userRolesTitle": "تعيين أدوار للمستخدم",
+      "userRolesSubtitle": "اختر الأدوار من القائمة اليسرى وانقلها إلى قائمة الأدوار المعيّنة.",
+      "availableRoles": "الأدوار المتاحة",
+      "assignedRoles": "الأدوار المعيّنة",
+      "availablePermissions": "الصلاحيات المتاحة",
+      "assignedPermissions": "الصلاحيات المعيّنة",
+      "availableUsers": "المستخدمون المتاحون",
+      "assignedUsers": "المستخدمون المعيّنون",
+      "searchRoles": "ابحث باسم الدور أو رمزه…",
+      "searchPermissions": "ابحث باسم الصلاحية أو رمزها…",
+      "searchUsers": "ابحث بالاسم أو اسم المستخدم أو الرقم الوظيفي…",
+      "saveRoles": "حفظ الأدوار",
+      "savePermissions": "حفظ الصلاحيات",
+      "saveUsers": "حفظ المستخدمين",
+      "saved": "تم حفظ التعيينات",
+      "saveError": "تعذّر حفظ التعيينات",
+      "roleNotManageable": "لا يمكنك منح هذا الدور أو إزالته",
+      "hrAdminRolesNote": "بصفتك مسؤول موارد بشرية يمكنك فقط منح أو إزالة الأدوار غير المحمية التي تملكها أنت. الأدوار المقفلة تبقى كما هي.",
+      "hrAdminUsersNote": "بصفتك مسؤول موارد بشرية يمكنك إدارة حسابات الموظفين المرتبطة فقط. حسابات مسؤولي النظام مقفلة.",
+      "block": {
+        "notAllowed": "غير مسموح لك بإدارة تعيين الأدوار.",
+        "systemAdminAccount": "حسابات مسؤولي النظام لا يديرها إلا مسؤول نظام.",
+        "notLinkedToEmployee": "يمكن لمسؤول الموارد البشرية إدارة الحسابات المرتبطة بموظف فقط."
+      }
+    },
+    "bulk": {
+      "userRolesButton": "مستخدمون ← دور (جماعي)",
+      "rolePermissionsButton": "أدوار ← صلاحية (جماعي)",
+      "userRolesTitle": "تعيين أدوار لعدة مستخدمين",
+      "userRolesDescription": "اختر المستخدمين ثم الأدوار، ثم أكّد طريقة تطبيق التعيين.",
+      "rolePermissionsTitle": "تعيين صلاحيات لعدة أدوار",
+      "rolePermissionsDescription": "اختر الأدوار ثم الصلاحيات، ثم أكّد طريقة تطبيق التعيين.",
+      "stepUsers": "اختيار المستخدمين",
+      "stepRoles": "اختيار الأدوار",
+      "stepPermissions": "اختيار الصلاحيات",
+      "stepConfirm": "التأكيد",
+      "selectedUsers": "المستخدمون المحددون",
+      "selectedRoles": "الأدوار المحددة",
+      "selectedPermissions": "الصلاحيات المحددة",
+      "pairs": "يشمل هذا الطلب {{count}} زوج تعيين.",
+      "tooManyPairs": "الحد الأقصى للطلب الجماعي الواحد {{max}} زوج تعيين. قلّل الاختيار.",
+      "modeLegend": "كيف يتم التعامل مع التعيينات الحالية؟",
+      "modeAdd": "إضافة إلى الحالي",
+      "modeReplace": "استبدال الحالي",
+      "userRolesAdd": "تُضاف الأدوار المحددة، ويحتفظ كل مستخدم بأدواره الأخرى.",
+      "userRolesReplace": "تُستبدل أدوار كل مستخدم محدد بالأدوار المحددة فقط.",
+      "rolePermissionsAdd": "تُضاف الصلاحيات المحددة، ويحتفظ كل دور بصلاحياته الأخرى.",
+      "rolePermissionsReplace": "تُستبدل صلاحيات كل دور محدد بالصلاحيات المحددة فقط.",
+      "replaceHrAdmin": "استبدال الأدوار الحالية متاح لمسؤولي النظام فقط.",
+      "replaceWarning": "ستُزال التعيينات الحالية غير الموجودة في اختيارك.",
+      "assignRoles": "تعيين الأدوار",
+      "assignPermissions": "تعيين الصلاحيات",
+      "userRolesSuccess": "تم تعيين الأدوار للمستخدمين المحددين",
+      "rolePermissionsSuccess": "تم تعيين الصلاحيات للأدوار المحددة",
+      "error": "تعذّر تطبيق التعيين الجماعي"
+    },
+    "roles": {
+      "title": "الأدوار",
+      "subtitle": "إدارة أدوار الوصول وصلاحياتها.",
+      "searchPlaceholder": "ابحث باسم الدور أو رمزه…",
+      "create": "إنشاء دور",
+      "edit": "تعديل الدور",
+      "empty": "لا توجد أدوار معرّفة بعد.",
+      "backToList": "العودة إلى الأدوار",
+      "open": "فتح {{name}}",
+      "builtIn": "مدمج",
+      "managePermissions": "إدارة الصلاحيات",
+      "managePermissionsDescription": "اختر الصلاحيات التي يمنحها {{name}}.",
+      "manageUsers": "إدارة المستخدمين",
+      "manageUsersDescription": "اختر حسابات المستخدمين التي تحمل {{name}}.",
+      "activateTitle": "تفعيل هذا الدور؟",
+      "deactivateTitle": "إلغاء تفعيل هذا الدور؟",
+      "activateDescription": "سيعود {{name}} لمنح صلاحياته لمستخدميه.",
+      "deactivateDescription": "سيتوقف {{name}} عن منح صلاحياته لكل من يحمله.",
+      "statusUpdated": "تم تحديث حالة الدور",
+      "statusError": "تعذّر تحديث حالة الدور",
+      "columns": {
+        "role": "الدور",
+        "permissions": "الصلاحيات",
+        "users": "المستخدمون"
+      },
+      "form": {
+        "createTitle": "إنشاء دور",
+        "editTitle": "تعديل الدور",
+        "description": "يحوّل الخادم الرموز إلى صيغة UPPER_SNAKE_CASE.",
+        "builtInHint": "لا يمكن إعادة تسمية الأدوار المدمجة.",
+        "systemAdminHint": "SYSTEM_ADMIN دور مدمج: لا يمكن إعادة تسميته أو إلغاء تفعيله.",
+        "created": "تم إنشاء الدور",
+        "updated": "تم تحديث الدور",
+        "saveError": "تعذّر حفظ الدور"
+      },
+      "detail": {
+        "overviewTab": "نظرة عامة",
+        "permissionsTab": "الصلاحيات",
+        "usersTab": "المستخدمون",
+        "information": "معلومات الدور",
+        "summary": "ملخص",
+        "modules": "الوحدات الممثلة",
+        "permissionsCount": "الصلاحيات ({{count}})",
+        "usersCount": "المستخدمون ({{count}})",
+        "noPermissions": "هذا الدور لا يمنح أي صلاحيات.",
+        "noUsers": "لا يوجد مستخدمون يحملون هذا الدور."
+      }
+    },
+    "permissions": {
+      "title": "الصلاحيات",
+      "subtitle": "إدارة تعريفات الصلاحيات والأدوار التي تمنحها.",
+      "searchPlaceholder": "ابحث باسم الصلاحية أو رمزها…",
+      "create": "إنشاء صلاحية",
+      "edit": "تعديل الصلاحية",
+      "empty": "لا توجد صلاحيات معرّفة بعد.",
+      "backToList": "العودة إلى الصلاحيات",
+      "open": "فتح {{code}}",
+      "noModule": "بدون وحدة",
+      "manageRoles": "إدارة الأدوار",
+      "manageRolesDescription": "اختر الأدوار التي تمنح {{code}}.",
+      "columns": {
+        "permission": "الصلاحية"
+      },
+      "form": {
+        "createTitle": "إنشاء صلاحية",
+        "editTitle": "تعديل الصلاحية",
+        "description": "يجب ألا يبدأ رمز الصلاحية بـ ROLE_.",
+        "noModule": "بدون وحدة",
+        "created": "تم إنشاء الصلاحية",
+        "updated": "تم تحديث الصلاحية",
+        "saveError": "تعذّر حفظ الصلاحية"
+      },
+      "detail": {
+        "overviewTab": "نظرة عامة",
+        "rolesTab": "الأدوار المعيّنة",
+        "information": "معلومات الصلاحية",
+        "related": "معلومات مرتبطة",
+        "assignedRoles": "الأدوار المعيّنة",
+        "rolesCount": "الأدوار المعيّنة ({{count}})",
+        "noRoles": "لا يوجد دور يمنح هذه الصلاحية."
+      }
+    },
+    "modules": {
+      "title": "وحدات التطبيق",
+      "subtitle": "إدارة وحدات النظام وصلاحياتها.",
+      "searchPlaceholder": "ابحث في الوحدات…",
+      "create": "إنشاء وحدة",
+      "edit": "تعديل الوحدة",
+      "empty": "لا توجد وحدات تطبيق معرّفة بعد.",
+      "backToList": "العودة إلى وحدات التطبيق",
+      "open": "فتح {{name}}",
+      "managePermissions": "إدارة الصلاحيات",
+      "managePermissionsDescription": "اختر الصلاحيات التي تنتمي إلى {{name}}.",
+      "membershipWarning": "الحفظ يستبدل عضوية هذه الوحدة: الصلاحيات المحددة الموجودة في وحدة أخرى ستُنقل إلى هنا، والصلاحيات المُزالة ستبقى بدون وحدة.",
+      "modulePermissions": "صلاحيات الوحدة",
+      "columns": {
+        "permissions": "الصلاحيات"
+      },
+      "form": {
+        "createTitle": "إنشاء وحدة",
+        "editTitle": "تعديل الوحدة",
+        "description": "يحوّل الخادم الرموز إلى صيغة UPPER_SNAKE_CASE.",
+        "created": "تم إنشاء الوحدة",
+        "updated": "تم تحديث الوحدة",
+        "saveError": "تعذّر حفظ الوحدة"
+      },
+      "detail": {
+        "overviewTab": "نظرة عامة",
+        "permissionsTab": "الصلاحيات",
+        "information": "معلومات الوحدة",
+        "permissionsCount": "الصلاحيات ({{count}})",
+        "noPermissions": "لا توجد صلاحيات تنتمي إلى هذه الوحدة."
+      }
+    },
+    "audit": {
+      "title": "سجلات التدقيق",
+      "subtitle": "أحداث تدقيق الأمان الدائمة.",
+      "empty": "لا توجد أحداث تدقيق مسجّلة بعد.",
+      "emptyHint": "تُسجَّل بيانات التدقيق فقط منذ لحظة تفعيل الحفظ الدائم.",
+      "unavailableTitle": "تدقيق الأمان غير مفعّل",
+      "unavailableDescription": "تدقيق الأمان الدائم غير مفعّل في هذه البيئة. ستظهر أحداث التدقيق هنا بعد تفعيله على الخادم."
+    },
+    "activity": {
+      "time": "الوقت",
+      "result": "النتيجة",
+      "success": "ناجحة",
+      "failed": "فاشلة",
+      "failureReason": "سبب الفشل",
+      "ipAddress": "عنوان IP",
+      "userAgent": "متصفح المستخدم",
+      "clientApplication": "تطبيق العميل"
+    },
+    "sessions": {
+      "startedAt": "بدأت",
+      "lastSeenAt": "آخر نشاط",
+      "expiresAt": "تنتهي",
+      "revoked": "أُلغيت",
+      "ipAddress": "عنوان IP",
+      "userAgent": "متصفح المستخدم",
+      "clientApplication": "تطبيق العميل"
+    }
   }
 }

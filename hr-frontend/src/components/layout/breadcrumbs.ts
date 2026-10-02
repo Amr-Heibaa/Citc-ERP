@@ -12,6 +12,14 @@ const POSITIONS: Crumb = { label: "breadcrumbs.positions", to: "/hr/jobs/positio
 const EMPLOYMENT: Crumb = { label: "breadcrumbs.employment", to: "/hr/employment" };
 const HR_SETTINGS: Crumb = { label: "breadcrumbs.hrSettings", to: "/hr/settings" };
 const HR_REPORTS: Crumb = { label: "breadcrumbs.reports", to: "/hr/reports" };
+const SECURITY: Crumb = { label: "breadcrumbs.security", to: "/security" };
+const SECURITY_USERS: Crumb = { label: "breadcrumbs.securityUsers", to: "/security/users" };
+const SECURITY_ROLES: Crumb = { label: "breadcrumbs.securityRoles", to: "/security/roles" };
+const SECURITY_PERMISSIONS: Crumb = {
+  label: "breadcrumbs.securityPermissions",
+  to: "/security/permissions",
+};
+const SECURITY_MODULES: Crumb = { label: "breadcrumbs.securityModules", to: "/security/modules" };
 
 type Rule = {
   pattern: RegExp;
@@ -163,6 +171,57 @@ const rules: Rule[] = [
   {
     pattern: /^\/hr\/reports\/contract-types$/,
     build: () => [HR, HR_REPORTS, { label: "breadcrumbs.contractTypes" }],
+  },
+
+  { pattern: /^\/security$/, build: () => [{ label: "breadcrumbs.security" }] },
+  {
+    pattern: /^\/security\/users$/,
+    build: () => [SECURITY, { label: "breadcrumbs.securityUsers" }],
+  },
+  {
+    pattern: /^\/security\/users\/(\d+)\/assign-roles$/,
+    build: ([id]) => [
+      SECURITY,
+      SECURITY_USERS,
+      { label: "breadcrumbs.securityUserDetails", to: `/security/users/${id}` },
+      { label: "breadcrumbs.securityAssignRoles" },
+    ],
+  },
+  {
+    pattern: /^\/security\/users\/(\d+)$/,
+    build: () => [SECURITY, SECURITY_USERS, { label: "breadcrumbs.securityUserDetails" }],
+  },
+  {
+    pattern: /^\/security\/roles$/,
+    build: () => [SECURITY, { label: "breadcrumbs.securityRoles" }],
+  },
+  {
+    pattern: /^\/security\/roles\/(\d+)$/,
+    build: () => [SECURITY, SECURITY_ROLES, { label: "breadcrumbs.securityRoleDetails" }],
+  },
+  {
+    pattern: /^\/security\/permissions$/,
+    build: () => [SECURITY, { label: "breadcrumbs.securityPermissions" }],
+  },
+  {
+    pattern: /^\/security\/permissions\/(\d+)$/,
+    build: () => [
+      SECURITY,
+      SECURITY_PERMISSIONS,
+      { label: "breadcrumbs.securityPermissionDetails" },
+    ],
+  },
+  {
+    pattern: /^\/security\/modules$/,
+    build: () => [SECURITY, { label: "breadcrumbs.securityModules" }],
+  },
+  {
+    pattern: /^\/security\/modules\/(\d+)$/,
+    build: () => [SECURITY, SECURITY_MODULES, { label: "breadcrumbs.securityModuleDetails" }],
+  },
+  {
+    pattern: /^\/security\/audit-logs$/,
+    build: () => [SECURITY, { label: "breadcrumbs.securityAuditLogs" }],
   },
 ];
 

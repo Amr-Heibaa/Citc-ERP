@@ -6,6 +6,7 @@ import {
   Briefcase,
   BarChart2,
   Settings,
+  ShieldCheck,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -25,5 +26,6 @@ export const sidebarMenu: MenuItem[] = [
   { labelKey: 'sidebar.hr', to: '/hr', icon: Users },
   { labelKey: 'sidebar.projects', to: '/projects', icon: Briefcase },
   { labelKey: 'sidebar.reports', to: '/reports', icon: BarChart2 },
+  { labelKey: 'sidebar.security', to: '/security', icon: ShieldCheck },
   { labelKey: 'sidebar.settings', to: '/settings', icon: Settings },
 ]

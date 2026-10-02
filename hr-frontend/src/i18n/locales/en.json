@@ -60,7 +60,8 @@
     "goToDashboard": "Go to dashboard",
     "logout": "Logout",
     "user": "User",
-    "employee": "Employee"
+    "employee": "Employee",
+    "security": "Security"
   },
   "header": {
     "searchPlaceholder": "Search modules, projects...",
@@ -103,7 +104,18 @@
     "functionalRelationTypes": "Functional Relation Types",
     "accessDelegation": "Access Delegation",
     "hrReports": "Reports",
-    "hiresAndResignations": "Hires & Resignations"
+    "hiresAndResignations": "Hires & Resignations",
+    "security": "Security",
+    "securityUsers": "Users",
+    "securityUserDetails": "User Details",
+    "securityAssignRoles": "Assign Roles",
+    "securityRoles": "Roles",
+    "securityRoleDetails": "Role Details",
+    "securityPermissions": "Permissions",
+    "securityPermissionDetails": "Permission Details",
+    "securityModules": "Application Modules",
+    "securityModuleDetails": "Module Details",
+    "securityAuditLogs": "Audit Logs"
   },
   "dashboard": {
     "totalRequests": "Total Requests",
@@ -1766,5 +1778,357 @@
     "signingIn": "Signing In…",
     "welcomeToast": "Welcome back",
     "unableToSignIn": "Unable to sign in. Please try again."
+  },
+  "security": {
+    "nav": {
+      "users": "Users",
+      "roles": "Roles",
+      "permissions": "Permissions",
+      "modules": "Application Modules",
+      "auditLogs": "Audit Logs"
+    },
+    "common": {
+      "saving": "Saving…",
+      "working": "Working…",
+      "saveChanges": "Save Changes",
+      "activate": "Activate",
+      "deactivate": "Deactivate"
+    },
+    "fields": {
+      "code": "Code",
+      "name": "Name",
+      "description": "Description",
+      "status": "Status",
+      "module": "Application Module",
+      "moduleOptional": "Application Module (optional)",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "username": "Username",
+      "email": "Email",
+      "displayName": "Display Name",
+      "employeeNumber": "Employee Number",
+      "employeeId": "Employee ID",
+      "lastAccess": "Last Access",
+      "initialPassword": "Initial Password"
+    },
+    "filters": {
+      "status": "Filter by status",
+      "role": "Filter by role",
+      "module": "Filter by module",
+      "allStatuses": "All Status",
+      "allRoles": "All Roles",
+      "allModules": "All Modules"
+    },
+    "states": {
+      "unableToLoad": "Unable to load this data",
+      "tryAgain": "Try Again",
+      "noMatches": "No results match your filters",
+      "noMatchesHint": "Try a different search term or clear the filters."
+    },
+    "errors": {
+      "forbiddenTitle": "Not allowed",
+      "forbidden": "You do not have permission to perform this operation.",
+      "notFoundTitle": "Not found",
+      "notFound": "This record no longer exists or was removed."
+    },
+    "accessDenied": {
+      "title": "Access denied",
+      "description": "The Security area is available to system and HR administrators only.",
+      "backToDashboard": "Back to Dashboard"
+    },
+    "pagination": {
+      "label": "Pagination",
+      "showing": "Showing {{from}}–{{to}} of {{total}}",
+      "previous": "Previous page",
+      "next": "Next page",
+      "goTo": "Go to page {{page}}"
+    },
+    "transfer": {
+      "addAll": "Add all shown",
+      "addSelected": "Add selected",
+      "removeSelected": "Remove selected",
+      "removeAll": "Remove all shown",
+      "nothingAvailable": "Nothing left to add.",
+      "nothingAssigned": "Nothing assigned yet.",
+      "noChanges": "No changes yet.",
+      "changes": "{{added}} to add · {{removed}} to remove",
+      "overLimit": "A maximum of {{max}} items can be assigned at once.",
+      "saving": "Saving…"
+    },
+    "overview": {
+      "title": "Security",
+      "subtitle": "Manage users, roles, permissions and application modules.",
+      "signedInAs": "Signed in as {{username}} · {{role}}",
+      "activeUsers": "Active Users",
+      "activeRoles": "Active Roles",
+      "activePermissions": "Active Permissions",
+      "activeModules": "Active Application Modules",
+      "areas": "Security Administration",
+      "usersHint": "Accounts, status and effective access",
+      "rolesHint": "Access roles, their permissions and members",
+      "permissionsHint": "Permission definitions and assigned roles",
+      "modulesHint": "Modules and the permissions they group",
+      "auditHint": "Persistent security audit trail"
+    },
+    "users": {
+      "title": "Users",
+      "subtitle": "Manage system users and their access.",
+      "searchPlaceholder": "Search by name, username or email…",
+      "addUser": "Add User",
+      "empty": "No user accounts yet.",
+      "backToList": "Back to Users",
+      "open": "Open {{name}}",
+      "notLinked": "Not linked",
+      "never": "Never",
+      "noRoles": "No roles",
+      "moreRoles": "+{{count}}",
+      "manageRoles": "Manage Roles",
+      "enable": "Enable User",
+      "disable": "Disable User",
+      "enableTitle": "Enable this account?",
+      "disableTitle": "Disable this account?",
+      "enableDescription": "{{name}} will be able to sign in again.",
+      "disableDescription": "{{name}} will no longer be able to sign in until the account is enabled again.",
+      "enabled": "User account enabled",
+      "disabled": "User account disabled",
+      "statusError": "Unable to update the account status",
+      "columns": {
+        "user": "User",
+        "employee": "Employee",
+        "email": "Email",
+        "status": "Status",
+        "roles": "Roles",
+        "lastAccess": "Last Access"
+      },
+      "create": {
+        "title": "Add User",
+        "description": "Create a sign-in account. Roles can be assigned once the account exists.",
+        "submit": "Create User",
+        "success": "User account created",
+        "error": "Unable to create the user account"
+      },
+      "detail": {
+        "overviewTab": "Overview",
+        "rolesTab": "Roles",
+        "permissionsTab": "Permissions",
+        "activityTab": "Activity",
+        "sessionsTab": "Sessions",
+        "account": "User Information",
+        "linkedEmployee": "Linked Employee",
+        "noEmployee": "This account is not linked to an employee.",
+        "viewEmployee": "View Employee Profile",
+        "loginStatistics": "Login Statistics",
+        "assignedRoles": "Assigned Roles ({{count}})",
+        "noRoles": "No roles assigned to this user.",
+        "effectivePermissions": "Effective Permissions ({{count}})",
+        "effectivePermissionsHint": "Permissions granted through the user's active roles.",
+        "noPermissions": "This user has no effective permissions.",
+        "activityHint": "Sourced from recorded login attempts; it may not include every historical attempt.",
+        "noActivity": "No login activity recorded.",
+        "noSessions": "No sessions found.",
+        "attempts": "Login attempts",
+        "successfulAttempts": "Successful attempts",
+        "failedAttempts": "Failed attempts",
+        "loginStatisticsHint": "Counted from recorded login attempts."
+      }
+    },
+    "assign": {
+      "userRolesTitle": "Assign Roles to User",
+      "userRolesSubtitle": "Select roles on the left and move them to the assigned list.",
+      "availableRoles": "Available Roles",
+      "assignedRoles": "Assigned Roles",
+      "availablePermissions": "Available Permissions",
+      "assignedPermissions": "Assigned Permissions",
+      "availableUsers": "Available Users",
+      "assignedUsers": "Assigned Users",
+      "searchRoles": "Search role name or code…",
+      "searchPermissions": "Search permission name or code…",
+      "searchUsers": "Search name, username or employee number…",
+      "saveRoles": "Save Roles",
+      "savePermissions": "Save Permissions",
+      "saveUsers": "Save Users",
+      "saved": "Assignments saved",
+      "saveError": "Unable to save the assignments",
+      "roleNotManageable": "You cannot grant or remove this role",
+      "hrAdminRolesNote": "As HR administrator you can only grant or remove non-protected roles that you hold yourself. Locked roles are kept as they are.",
+      "hrAdminUsersNote": "As HR administrator you can only manage linked employee accounts. System administrator accounts are locked.",
+      "block": {
+        "notAllowed": "You are not allowed to manage role assignments.",
+        "systemAdminAccount": "System administrator accounts can only be managed by a system administrator.",
+        "notLinkedToEmployee": "Only accounts linked to an employee can be managed by an HR administrator."
+      }
+    },
+    "bulk": {
+      "userRolesButton": "Bulk User → Role",
+      "rolePermissionsButton": "Bulk Role → Permission",
+      "userRolesTitle": "Assign Roles to Multiple Users",
+      "userRolesDescription": "Choose users, choose roles, then confirm how the assignment is applied.",
+      "rolePermissionsTitle": "Assign Permissions to Multiple Roles",
+      "rolePermissionsDescription": "Choose roles, choose permissions, then confirm how the assignment is applied.",
+      "stepUsers": "Select Users",
+      "stepRoles": "Select Roles",
+      "stepPermissions": "Select Permissions",
+      "stepConfirm": "Confirm",
+      "selectedUsers": "Selected Users",
+      "selectedRoles": "Selected Roles",
+      "selectedPermissions": "Selected Permissions",
+      "pairs": "This request covers {{count}} assignment pair(s).",
+      "tooManyPairs": "A single bulk request is limited to {{max}} assignment pairs. Reduce the selection.",
+      "modeLegend": "How should existing assignments be handled?",
+      "modeAdd": "Add to existing",
+      "modeReplace": "Replace existing",
+      "userRolesAdd": "Selected roles are added; each user keeps their other roles.",
+      "userRolesReplace": "Each selected user's roles are replaced by exactly the selected roles.",
+      "rolePermissionsAdd": "Selected permissions are added; each role keeps its other permissions.",
+      "rolePermissionsReplace": "Each selected role's permissions are replaced by exactly the selected permissions.",
+      "replaceHrAdmin": "Replacing existing roles is limited to system administrators.",
+      "replaceWarning": "Existing assignments not in your selection will be removed.",
+      "assignRoles": "Assign Roles",
+      "assignPermissions": "Assign Permissions",
+      "userRolesSuccess": "Roles assigned to the selected users",
+      "rolePermissionsSuccess": "Permissions assigned to the selected roles",
+      "error": "Unable to apply the bulk assignment"
+    },
+    "roles": {
+      "title": "Roles",
+      "subtitle": "Manage access roles and their permissions.",
+      "searchPlaceholder": "Search by role name or code…",
+      "create": "Create Role",
+      "edit": "Edit Role",
+      "empty": "No roles defined yet.",
+      "backToList": "Back to Roles",
+      "open": "Open {{name}}",
+      "builtIn": "Built-in",
+      "managePermissions": "Manage Permissions",
+      "managePermissionsDescription": "Choose the permissions granted by {{name}}.",
+      "manageUsers": "Manage Users",
+      "manageUsersDescription": "Choose the user accounts that hold {{name}}.",
+      "activateTitle": "Activate this role?",
+      "deactivateTitle": "Deactivate this role?",
+      "activateDescription": "{{name}} will grant its permissions to its users again.",
+      "deactivateDescription": "{{name}} will stop granting its permissions to every user who holds it.",
+      "statusUpdated": "Role status updated",
+      "statusError": "Unable to update the role status",
+      "columns": {
+        "role": "Role",
+        "permissions": "Permissions",
+        "users": "Users"
+      },
+      "form": {
+        "createTitle": "Create Role",
+        "editTitle": "Edit Role",
+        "description": "Codes are normalized to UPPER_SNAKE_CASE by the server.",
+        "builtInHint": "Built-in roles cannot be renamed.",
+        "systemAdminHint": "SYSTEM_ADMIN is a built-in role: it cannot be renamed or deactivated.",
+        "created": "Role created",
+        "updated": "Role updated",
+        "saveError": "Unable to save the role"
+      },
+      "detail": {
+        "overviewTab": "Overview",
+        "permissionsTab": "Permissions",
+        "usersTab": "Users",
+        "information": "Role Information",
+        "summary": "Summary",
+        "modules": "Represented Modules",
+        "permissionsCount": "Permissions ({{count}})",
+        "usersCount": "Users ({{count}})",
+        "noPermissions": "This role grants no permissions.",
+        "noUsers": "No users hold this role."
+      }
+    },
+    "permissions": {
+      "title": "Permissions",
+      "subtitle": "Manage permission definitions and the roles that grant them.",
+      "searchPlaceholder": "Search by permission name or code…",
+      "create": "Create Permission",
+      "edit": "Edit Permission",
+      "empty": "No permissions defined yet.",
+      "backToList": "Back to Permissions",
+      "open": "Open {{code}}",
+      "noModule": "No module",
+      "manageRoles": "Manage Roles",
+      "manageRolesDescription": "Choose the roles that grant {{code}}.",
+      "columns": {
+        "permission": "Permission"
+      },
+      "form": {
+        "createTitle": "Create Permission",
+        "editTitle": "Edit Permission",
+        "description": "Permission codes must not begin with ROLE_.",
+        "noModule": "No module",
+        "created": "Permission created",
+        "updated": "Permission updated",
+        "saveError": "Unable to save the permission"
+      },
+      "detail": {
+        "overviewTab": "Overview",
+        "rolesTab": "Assigned Roles",
+        "information": "Permission Information",
+        "related": "Related Information",
+        "assignedRoles": "Assigned Roles",
+        "rolesCount": "Assigned Roles ({{count}})",
+        "noRoles": "No role grants this permission."
+      }
+    },
+    "modules": {
+      "title": "Application Modules",
+      "subtitle": "Manage system modules and their permissions.",
+      "searchPlaceholder": "Search modules…",
+      "create": "Create Module",
+      "edit": "Edit Module",
+      "empty": "No application modules defined yet.",
+      "backToList": "Back to Application Modules",
+      "open": "Open {{name}}",
+      "managePermissions": "Manage Permissions",
+      "managePermissionsDescription": "Choose the permissions that belong to {{name}}.",
+      "membershipWarning": "Saving replaces this module's membership: selected permissions currently in another module are moved here, and removed permissions are left without a module.",
+      "modulePermissions": "Module Permissions",
+      "columns": {
+        "permissions": "Permissions"
+      },
+      "form": {
+        "createTitle": "Create Module",
+        "editTitle": "Edit Module",
+        "description": "Codes are normalized to UPPER_SNAKE_CASE by the server.",
+        "created": "Module created",
+        "updated": "Module updated",
+        "saveError": "Unable to save the module"
+      },
+      "detail": {
+        "overviewTab": "Overview",
+        "permissionsTab": "Permissions",
+        "information": "Module Information",
+        "permissionsCount": "Permissions ({{count}})",
+        "noPermissions": "No permissions belong to this module."
+      }
+    },
+    "audit": {
+      "title": "Audit Logs",
+      "subtitle": "Persistent security audit events.",
+      "empty": "No audit events recorded yet.",
+      "emptyHint": "Audit data is only recorded from the moment persistence was enabled.",
+      "unavailableTitle": "Security audit is not enabled",
+      "unavailableDescription": "Persistent security audit is not enabled in this environment. Audit events will appear here once it has been enabled on the server."
+    },
+    "activity": {
+      "time": "Time",
+      "result": "Result",
+      "success": "Success",
+      "failed": "Failed",
+      "failureReason": "Failure reason",
+      "ipAddress": "IP address",
+      "userAgent": "User agent",
+      "clientApplication": "Client application"
+    },
+    "sessions": {
+      "startedAt": "Started",
+      "lastSeenAt": "Last seen",
+      "expiresAt": "Expires",
+      "revoked": "Revoked",
+      "ipAddress": "IP address",
+      "userAgent": "User agent",
+      "clientApplication": "Client application"
+    }
   }
 }
