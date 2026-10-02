@@ -36,6 +36,21 @@ import { HiresResignationsReportPage } from "@/features/hr/reports/pages/hires-r
 import { ContractTypesReportPage } from "@/features/hr/reports/pages/contract-types-report-page";
 import { HrAccessGate } from "@/features/hr/access-delegation/components/hr-access-gate";
 import { AccessDelegationPage } from "@/features/hr/access-delegation/pages/access-delegation-page";
+import {
+  RequireSecurityCapability,
+  SecurityAccessGate,
+} from "@/features/security/components/security-access-gate";
+import { SecurityOverviewPage } from "@/features/security/pages/security-overview-page";
+import { SecurityUsersPage } from "@/features/security/pages/security-users-page";
+import { SecurityUserDetailPage } from "@/features/security/pages/security-user-detail-page";
+import { SecurityUserAssignRolesPage } from "@/features/security/pages/security-user-assign-roles-page";
+import { SecurityRolesPage } from "@/features/security/pages/security-roles-page";
+import { SecurityRoleDetailPage } from "@/features/security/pages/security-role-detail-page";
+import { SecurityPermissionsPage } from "@/features/security/pages/security-permissions-page";
+import { SecurityPermissionDetailPage } from "@/features/security/pages/security-permission-detail-page";
+import { SecurityModulesPage } from "@/features/security/pages/security-modules-page";
+import { SecurityModuleDetailPage } from "@/features/security/pages/security-module-detail-page";
+import { SecurityAuditLogsPage } from "@/features/security/pages/security-audit-logs-page";
 function Placeholder({ nameKey }: { nameKey: string }) {
   const { t } = useTranslation();
 
@@ -142,6 +157,36 @@ export const router = createBrowserRouter([
               {
                 path: "reports/contract-types",
                 element: <ContractTypesReportPage />,
+              },
+            ],
+          },
+          {
+            path: "security",
+            element: <SecurityAccessGate />,
+            children: [
+              { index: true, element: <SecurityOverviewPage /> },
+              { path: "users", element: <SecurityUsersPage /> },
+              { path: "users/:userId", element: <SecurityUserDetailPage /> },
+              {
+                path: "users/:userId/assign-roles",
+                element: <SecurityUserAssignRolesPage />,
+              },
+              { path: "roles", element: <SecurityRolesPage /> },
+              { path: "roles/:roleId", element: <SecurityRoleDetailPage /> },
+              { path: "permissions", element: <SecurityPermissionsPage /> },
+              {
+                path: "permissions/:permissionId",
+                element: <SecurityPermissionDetailPage />,
+              },
+              { path: "modules", element: <SecurityModulesPage /> },
+              { path: "modules/:moduleId", element: <SecurityModuleDetailPage /> },
+              {
+                path: "audit-logs",
+                element: (
+                  <RequireSecurityCapability capability="canViewAuditLogs">
+                    <SecurityAuditLogsPage />
+                  </RequireSecurityCapability>
+                ),
               },
             ],
           },
