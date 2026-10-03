@@ -30,3 +30,15 @@ export async function createUser(data: CreateUserRequest): Promise<CreateUserRes
   const res = await axiosInstance.post('/api/auth/users', data)
   return res.data
 }
+
+// Admin-only: reset another user's password. Requires a new ems-auth
+// endpoint (PUT /api/auth/users/{userId}/password) restricted to
+// SYSTEM_ADMIN/HR_ADMIN roles - see backend notes handed to the team.
+export type ResetPasswordRequest = { newPassword: string }
+
+export async function resetUserPassword(
+  userId: number,
+  data: ResetPasswordRequest,
+): Promise<void> {
+  await axiosInstance.put(`/api/auth/users/${userId}/password`, data)
+}

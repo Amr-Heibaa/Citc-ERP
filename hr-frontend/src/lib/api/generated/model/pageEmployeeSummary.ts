@@ -9,8 +9,8 @@ import type { PageableObject } from './pageableObject';
 import type { SortObject } from './sortObject';
 
 export interface PageEmployeeSummary {
-  totalPages?: number;
   totalElements?: number;
+  totalPages?: number;
   size?: number;
   content?: EmployeeSummary[];
   number?: number;
