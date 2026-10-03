@@ -2,11 +2,15 @@ import { Users, FileText, Briefcase, Settings, Building2, BarChart2 } from "luci
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 import { useMyEmployee } from "@/features/hr/employees/api/use-employees";
+import type { HrCapabilities } from "@/features/hr/shared/access/hr-capabilities";
+import { useHrCapabilities } from "@/features/hr/shared/access/use-hr-capabilities";
 type ModuleCard = {
   id: string;
   labelKey: string;
   icon: React.ReactNode;
   to?: string;
+  /** Capability required to show the card. */
+  requires: keyof Pick<HrCapabilities, "canViewEmployees" | "canViewBroadHr">;
 };
 
 const MODULES: ModuleCard[] = [
@@ -15,36 +19,42 @@ const MODULES: ModuleCard[] = [
     labelKey: "hrHome.employees",
     icon: <Users size={24} className="text-[#1a2535]" />,
     to: "/hr/employees",
+    requires: "canViewEmployees",
   },
   {
     id: "organization",
     labelKey: "hrHome.organization",
     icon: <Building2 size={24} className="text-[#1a2535]" />,
     to: "/hr/organizations",
+    requires: "canViewBroadHr",
   },
   {
     id: "jobs",
     labelKey: "hrHome.jobs",
     icon: <Briefcase size={24} className="text-[#1a2535]" />,
     to: "/hr/jobs",
+    requires: "canViewBroadHr",
   },
   {
     id: "employment",
     labelKey: "hrHome.employment",
     icon: <FileText size={24} className="text-[#1a2535]" />,
     to: "/hr/employment",
+    requires: "canViewBroadHr",
   },
   {
     id: "hr-settings",
     labelKey: "hrHome.hrSettings",
     icon: <Settings size={24} className="text-[#1a2535]" />,
     to: "/hr/settings",
+    requires: "canViewBroadHr",
   },
   {
     id: "reports",
     labelKey: "hrHome.reports",
     icon: <BarChart2 size={24} className="text-[#1a2535]" />,
     to: "/hr/reports",
+    requires: "canViewBroadHr",
   },
 ];
 
@@ -52,6 +62,8 @@ export function HrHomePage() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { data: me } = useMyEmployee();
+  const { capabilities } = useHrCapabilities();
+  const modules = MODULES.filter((mod) => capabilities[mod.requires]);
 
   const today = new Date().toLocaleDateString(i18n.language === "ar" ? "ar-EG" : "en-GB", {
     weekday: "long",
@@ -119,7 +131,7 @@ export function HrHomePage() {
           {t("hrHome.title")}
         </h2>
         <div className="mx-auto grid max-w-3xl grid-cols-2 gap-4 sm:grid-cols-3">
-          {MODULES.map((mod) => (
+          {modules.map((mod) => (
             <button
               key={mod.id}
               disabled={!mod.to}

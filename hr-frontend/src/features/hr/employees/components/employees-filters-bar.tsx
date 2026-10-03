@@ -19,10 +19,13 @@ export function EmployeesFiltersBar({
   departments,
   statuses,
   exportDisabled,
+  canExport,
 }: {
   departments: string[];
   statuses: [code: string, name: string][];
   exportDisabled: boolean;
+  /** Export is not permissionized yet: broad HR access only. */
+  canExport: boolean;
 }) {
   const { t } = useTranslation();
   const search = useEmployeesFiltersStore((state) => state.search);
@@ -90,14 +93,16 @@ export function EmployeesFiltersBar({
         </SelectContent>
       </Select>
 
-      <Button
-        onClick={() => setExportOpen(true)}
-        disabled={exportDisabled}
-        className="h-10 gap-2 bg-[#1a2535] text-white hover:bg-[#243347]"
-      >
-        <Download size={15} />
-        {t("common.export")}
-      </Button>
+      {canExport && (
+        <Button
+          onClick={() => setExportOpen(true)}
+          disabled={exportDisabled}
+          className="h-10 gap-2 bg-[#1a2535] text-white hover:bg-[#243347]"
+        >
+          <Download size={15} />
+          {t("common.export")}
+        </Button>
+      )}
     </div>
   );
 }

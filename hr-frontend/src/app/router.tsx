@@ -36,6 +36,7 @@ import { HiresResignationsReportPage } from "@/features/hr/reports/pages/hires-r
 import { ContractTypesReportPage } from "@/features/hr/reports/pages/contract-types-report-page";
 import { AgeGroupsReportPage } from "@/features/hr/reports/pages/age-groups-report-page";
 import { HrAccessGate } from "@/features/hr/access-delegation/components/hr-access-gate";
+import { HrCapabilityGate } from "@/features/hr/shared/access/hr-capability-gate";
 import { AccessDelegationPage } from "@/features/hr/access-delegation/pages/access-delegation-page";
 import {
   RequireSecurityCapability,
@@ -87,81 +88,95 @@ export const router = createBrowserRouter([
             element: <HrAccessGate />,
             children: [
               { index: true, element: <HrHomePage /> },
-              { path: "employees", element: <EmployeesPage /> },
-              { path: "employees/new", element: <EmployeeCreatePage /> },
-              { path: "employees/deleted", element: <DeletedEmployeesPage /> },
+              // Employees: IAM HR_EMPLOYEE_* permissions or broad HR access.
               {
-                path: "employees/:employeeId/edit",
-                element: <EmployeeEditPage />,
+                element: <HrCapabilityGate capability="canViewEmployees" />,
+                children: [
+                  { path: "employees", element: <EmployeesPage /> },
+                  { path: "employees/:employeeId", element: <EmployeeDetailPage /> },
+                ],
               },
               {
-                path: "employees/:employeeId",
-                element: <EmployeeDetailPage />,
-              },
-              { path: "organizations", element: <OrganizationsPage /> },
-              { path: "organizations/new", element: <OrganizationCreatePage /> },
-              {
-                path: "organizations/:organizationId/edit",
-                element: <OrganizationEditPage />,
+                element: <HrCapabilityGate capability="canCreateEmployee" />,
+                children: [{ path: "employees/new", element: <EmployeeCreatePage /> }],
               },
               {
-                path: "organizations/:organizationId",
-                element: <OrganizationDetailPage />,
+                element: <HrCapabilityGate capability="canEditEmployee" />,
+                children: [
+                  { path: "employees/:employeeId/edit", element: <EmployeeEditPage /> },
+                ],
               },
+              // Areas not permissionized yet keep broad HR authorization.
               {
-                path: "organizations/:organizationId/units/:orgUnitId",
-                element: <OrganizationUnitDetailPage />,
-              },
+                element: <HrCapabilityGate capability="canViewBroadHr" />,
+                children: [
+                  { path: "employees/deleted", element: <DeletedEmployeesPage /> },
+                  { path: "organizations", element: <OrganizationsPage /> },
+                  { path: "organizations/new", element: <OrganizationCreatePage /> },
+                  {
+                    path: "organizations/:organizationId/edit",
+                    element: <OrganizationEditPage />,
+                  },
+                  {
+                    path: "organizations/:organizationId",
+                    element: <OrganizationDetailPage />,
+                  },
+                  {
+                    path: "organizations/:organizationId/units/:orgUnitId",
+                    element: <OrganizationUnitDetailPage />,
+                  },
 
-              { path: "jobs", element: <JobsHomePage /> },
-              { path: "jobs/grades", element: <JobGradesPage /> },
-              { path: "jobs/positions", element: <JobPositionsPage /> },
-              { path: "jobs/positions/new", element: <JobPositionCreatePage /> },
-              {
-                path: "jobs/positions/:positionId/edit",
-                element: <JobPositionEditPage />,
-              },
-              {
-                path: "jobs/positions/:positionId",
-                element: <JobPositionDetailPage />,
-              },
+                  { path: "jobs", element: <JobsHomePage /> },
+                  { path: "jobs/grades", element: <JobGradesPage /> },
+                  { path: "jobs/positions", element: <JobPositionsPage /> },
+                  { path: "jobs/positions/new", element: <JobPositionCreatePage /> },
+                  {
+                    path: "jobs/positions/:positionId/edit",
+                    element: <JobPositionEditPage />,
+                  },
+                  {
+                    path: "jobs/positions/:positionId",
+                    element: <JobPositionDetailPage />,
+                  },
 
-              { path: "employment", element: <EmploymentHomePage /> },
-              { path: "employment/records", element: <EmploymentRecordsPage /> },
+                  { path: "employment", element: <EmploymentHomePage /> },
+                  { path: "employment/records", element: <EmploymentRecordsPage /> },
 
-              { path: "settings", element: <HrSettingsHomePage /> },
-              { path: "settings/history", element: <SettingsHistoryPage /> },
-              {
-                path: "settings/employee-statuses",
-                element: <EmployeeStatusesPage />,
-              },
-              { path: "settings/contract-types", element: <ContractTypesPage /> },
-              {
-                path: "settings/contract-templates",
-                element: <ContractTemplatesPage />,
-              },
-              { path: "settings/skills", element: <SkillsPage /> },
-              {
-                path: "settings/functional-relation-types",
-                element: <FunctionalRelationTypesPage />,
-              },
-              {
-                path: "settings/access-delegation",
-                element: <AccessDelegationPage />,
-              },
+                  { path: "settings", element: <HrSettingsHomePage /> },
+                  { path: "settings/history", element: <SettingsHistoryPage /> },
+                  {
+                    path: "settings/employee-statuses",
+                    element: <EmployeeStatusesPage />,
+                  },
+                  { path: "settings/contract-types", element: <ContractTypesPage /> },
+                  {
+                    path: "settings/contract-templates",
+                    element: <ContractTemplatesPage />,
+                  },
+                  { path: "settings/skills", element: <SkillsPage /> },
+                  {
+                    path: "settings/functional-relation-types",
+                    element: <FunctionalRelationTypesPage />,
+                  },
+                  {
+                    path: "settings/access-delegation",
+                    element: <AccessDelegationPage />,
+                  },
 
-              { path: "reports", element: <HrReportsHomePage /> },
-              {
-                path: "reports/hires-resignations",
-                element: <HiresResignationsReportPage />,
-              },
-              {
-                path: "reports/contract-types",
-                element: <ContractTypesReportPage />,
-              },
-              {
-                path: "reports/age-groups",
-                element: <AgeGroupsReportPage />,
+                  { path: "reports", element: <HrReportsHomePage /> },
+                  {
+                    path: "reports/hires-resignations",
+                    element: <HiresResignationsReportPage />,
+                  },
+                  {
+                    path: "reports/contract-types",
+                    element: <ContractTypesReportPage />,
+                  },
+                  {
+                    path: "reports/age-groups",
+                    element: <AgeGroupsReportPage />,
+                  },
+                ],
               },
             ],
           },

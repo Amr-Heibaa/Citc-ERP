@@ -13,6 +13,7 @@ import { EmployeeImportDialog } from "@/features/hr/employees/components/employe
 import { EmployeesExportDialog } from "@/features/hr/employees/components/employees-export-dialog";
 import { EmployeesFiltersBar } from "@/features/hr/employees/components/employees-filters-bar";
 import { EmployeesTable } from "@/features/hr/employees/components/employees-table";
+import { useHrCapabilities } from "@/features/hr/shared/access/use-hr-capabilities";
 import type { EmployeeSummary } from "@/lib/api/generated/model";
 
 const NO_EMPLOYEES: EmployeeSummary[] = [];
@@ -20,6 +21,7 @@ const NO_EMPLOYEES: EmployeeSummary[] = [];
 export function EmployeesPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { capabilities } = useHrCapabilities();
   const employeesQuery = useEmployees();
   const employees = employeesQuery.data ?? NO_EMPLOYEES;
   const orgUnits = useOrgUnits();
@@ -126,30 +128,37 @@ export function EmployeesPage() {
           </div>
 
           <div className="flex flex-wrap gap-2">
-            <Button
-              variant="outline"
-              onClick={() => navigate("/hr/employees/deleted")}
-              className="h-10 gap-2"
-            >
-              <Trash2 className="size-4" />
-              {t("employees.deletedEmployees")}
-            </Button>
+            {/* Deleted/restore and import are not permissionized: broad HR only. */}
+            {capabilities.canViewBroadHr && (
+              <>
+                <Button
+                  variant="outline"
+                  onClick={() => navigate("/hr/employees/deleted")}
+                  className="h-10 gap-2"
+                >
+                  <Trash2 className="size-4" />
+                  {t("employees.deletedEmployees")}
+                </Button>
 
-            <Button
-              variant="outline"
-              onClick={() => setImportOpen(true)}
-              className="h-10 gap-2"
-            >
-              <FileUp className="size-4" />
-              {t("employees.importEmployees")}
-            </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setImportOpen(true)}
+                  className="h-10 gap-2"
+                >
+                  <FileUp className="size-4" />
+                  {t("employees.importEmployees")}
+                </Button>
+              </>
+            )}
 
-            <Button
-              onClick={() => navigate("/hr/employees/new")}
-              className="h-10 bg-[#1a2535] text-white hover:bg-[#243347]"
-            >
-              {t("employees.addEmployee")}
-            </Button>
+            {capabilities.canCreateEmployee && (
+              <Button
+                onClick={() => navigate("/hr/employees/new")}
+                className="h-10 bg-[#1a2535] text-white hover:bg-[#243347]"
+              >
+                {t("employees.addEmployee")}
+              </Button>
+            )}
           </div>
         </div>
 
@@ -189,6 +198,7 @@ export function EmployeesPage() {
           departments={departments}
           statuses={statuses}
           exportDisabled={employeesQuery.isLoading || filtered.length === 0}
+          canExport={capabilities.canViewBroadHr}
         />
 
         <EmployeesTable
@@ -201,8 +211,12 @@ export function EmployeesPage() {
         />
       </div>
 
-      <EmployeesExportDialog employees={filtered} />
-      <EmployeeImportDialog open={importOpen} onOpenChange={setImportOpen} />
+      {capabilities.canViewBroadHr && (
+        <>
+          <EmployeesExportDialog employees={filtered} />
+          <EmployeeImportDialog open={importOpen} onOpenChange={setImportOpen} />
+        </>
+      )}
     </>
   );
 }

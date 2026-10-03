@@ -1,13 +1,13 @@
 import { useTranslation } from "react-i18next";
 import { Navigate, Outlet } from "react-router";
 
-import { useMyHrAccess } from "@/features/hr/access-delegation/api/use-hr-access";
+import { useHrCapabilities } from "@/features/hr/shared/access/use-hr-capabilities";
 
 export function HrAccessGate() {
   const { t } = useTranslation();
-  const access = useMyHrAccess();
+  const { capabilities, isLoading } = useHrCapabilities();
 
-  if (access.isLoading) {
+  if (isLoading) {
     return (
       <div className="flex h-64 items-center justify-center font-['Inter',sans-serif] text-sm text-gray-400">
         {t("dashboard.checkingAccess")}
@@ -15,7 +15,7 @@ export function HrAccessGate() {
     );
   }
 
-  if (access.isError || !access.data?.canViewHr) {
+  if (!capabilities.canEnterHr) {
     return <Navigate to="/" replace />;
   }
 

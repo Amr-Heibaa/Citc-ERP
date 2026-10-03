@@ -2195,5 +2195,8 @@
       "userAgent": "User agent",
       "clientApplication": "Client application"
     }
+  },
+  "hrAccess": {
+    "deniedDescription": "Your access covers only some HR areas. Ask an HR administrator if you need access to this page."
   }
 }

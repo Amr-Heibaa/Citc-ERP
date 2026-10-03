@@ -6,8 +6,8 @@ import { sidebarMenu } from '@/config/sidebar-menu'
 import { useTokenStore } from '@/stores/token-store'
 import { useUserStore } from '@/stores/user-store'
 import { useUiStore } from '@/stores/ui-store'
-import { useGetMyAccess } from '@/lib/api/generated/ems/hr-access-controller/hr-access-controller'
 import { useMyEmployee } from '@/features/hr/employees/api/use-employees'
+import { useHrCapabilities } from '@/features/hr/shared/access/use-hr-capabilities'
 import { useSecurityAccess } from '@/features/security/api/use-security-access'
 import citoLogo from '@/features/dashboard/assets/cito-logo-white.png'
 
@@ -34,14 +34,13 @@ export function SidebarContent({ onNavigate }: SidebarContentProps) {
   const role = useUserStore((s) => s.roles[0])
   const notificationCount = useUiStore((s) => s.notificationCount)
   const roles = useUserStore((s) => s.roles)
-  const hrAccess = useGetMyAccess({ query: { retry: false } })
-  const canViewHr = hrAccess.data?.canViewHr ?? false
+  const canEnterHr = useHrCapabilities().capabilities.canEnterHr
   const canReadSecurity = useSecurityAccess().capabilities.canReadSecurity
   const myEmployee = useMyEmployee()
 
   const visibleMenu = sidebarMenu
     .filter((item) => !item.roles || item.roles.some((role) => roles.includes(role)))
-    .filter((item) => item.to !== '/hr' || canViewHr)
+    .filter((item) => item.to !== '/hr' || canEnterHr)
     .filter((item) => item.to !== '/security' || canReadSecurity)
 
   const displayName =

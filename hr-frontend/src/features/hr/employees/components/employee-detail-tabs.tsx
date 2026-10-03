@@ -13,6 +13,7 @@ import { OverviewTab } from "@/features/hr/employees/components/employee-overvie
 import { PersonalTab } from "@/features/hr/employees/components/employee-personal-tab";
 import { ContractsTab } from "@/features/hr/employees/components/employee-contracts-tab";
 import { printEmployeeProfiles } from "@/features/hr/employees/utils/employee-profile-export";
+import { useHrCapabilities } from "@/features/hr/shared/access/use-hr-capabilities";
 import type { EmployeeDetail } from "@/lib/api/generated/model";
 
 const TAB_TRIGGER_CLASS =
@@ -20,15 +21,23 @@ const TAB_TRIGGER_CLASS =
 
 const TAB_VALUES = ["overview", "personal", "employment", "contracts", "history"];
 
+// Employment and contracts load from areas that are not permissionized yet.
+const BROAD_HR_TABS = ["employment", "contracts"];
+
 export function EmployeeDetailTabs({ emp }: { emp: EmployeeDetail }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
+  const { capabilities } = useHrCapabilities();
+  const canViewBroadHr = capabilities.canViewBroadHr;
 
+  const allowedTabs = canViewBroadHr
+    ? TAB_VALUES
+    : TAB_VALUES.filter((tab) => !BROAD_HR_TABS.includes(tab));
   const requestedTab = searchParams.get("tab");
-  const activeTab = TAB_VALUES.includes(requestedTab ?? "") ? requestedTab! : "overview";
+  const activeTab = allowedTabs.includes(requestedTab ?? "") ? requestedTab! : "overview";
 
   function handleTabChange(value: string) {
     setSearchParams(
@@ -58,13 +67,17 @@ export function EmployeeDetailTabs({ emp }: { emp: EmployeeDetail }) {
                 {t("employees.tabs.personal")}
               </TabsTrigger>
 
-              <TabsTrigger value="employment" className={TAB_TRIGGER_CLASS}>
-                {t("employees.tabs.employment")}
-              </TabsTrigger>
+              {canViewBroadHr && (
+                <>
+                  <TabsTrigger value="employment" className={TAB_TRIGGER_CLASS}>
+                    {t("employees.tabs.employment")}
+                  </TabsTrigger>
 
-              <TabsTrigger value="contracts" className={TAB_TRIGGER_CLASS}>
-                {t("employees.tabs.contracts")}
-              </TabsTrigger>
+                  <TabsTrigger value="contracts" className={TAB_TRIGGER_CLASS}>
+                    {t("employees.tabs.contracts")}
+                  </TabsTrigger>
+                </>
+              )}
 
               <TabsTrigger value="history" className={TAB_TRIGGER_CLASS}>
                 {t("employees.tabs.history")}
@@ -73,38 +86,44 @@ export function EmployeeDetailTabs({ emp }: { emp: EmployeeDetail }) {
           </div>
 
           <div className="flex shrink-0 gap-2">
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => printEmployeeProfiles([emp])}
-            >
-              <Download className="size-4" />
-              {t("employees.exportProfile")}
-            </Button>
+            {canViewBroadHr && (
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => printEmployeeProfiles([emp])}
+              >
+                <Download className="size-4" />
+                {t("employees.exportProfile")}
+              </Button>
+            )}
 
-            {activeTab === "contracts" && (
+            {canViewBroadHr && activeTab === "contracts" && (
               <Button size="sm" variant="outline" onClick={() => setImportOpen(true)}>
                 <FileSpreadsheet className="size-4" />
                 {t("employees.contractsTab.importContracts")}
               </Button>
             )}
 
-            <Button
-              size="sm"
-              onClick={() => navigate(`/hr/employees/${emp.employeeId}/edit`)}
-            >
-              {t("employees.editEmployee")}
-            </Button>
+            {capabilities.canEditEmployee && (
+              <Button
+                size="sm"
+                onClick={() => navigate(`/hr/employees/${emp.employeeId}/edit`)}
+              >
+                {t("employees.editEmployee")}
+              </Button>
+            )}
 
-            <Button
-              size="sm"
-              variant="outline"
-              className="border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
-              onClick={() => setDeleteOpen(true)}
-            >
-              <Trash2 className="size-4" />
-              {t("employees.delete")}
-            </Button>
+            {capabilities.canDeleteEmployee && (
+              <Button
+                size="sm"
+                variant="outline"
+                className="border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
+                onClick={() => setDeleteOpen(true)}
+              >
+                <Trash2 className="size-4" />
+                {t("employees.delete")}
+              </Button>
+            )}
           </div>
         </div>
 
@@ -117,13 +136,17 @@ export function EmployeeDetailTabs({ emp }: { emp: EmployeeDetail }) {
             <PersonalTab emp={emp} />
           </TabsContent>
 
-          <TabsContent value="employment">
-            <EmploymentTab emp={emp} />
-          </TabsContent>
+          {canViewBroadHr && (
+            <>
+              <TabsContent value="employment">
+                <EmploymentTab emp={emp} />
+              </TabsContent>
 
-          <TabsContent value="contracts">
-            <ContractsTab emp={emp} />
-          </TabsContent>
+              <TabsContent value="contracts">
+                <ContractsTab emp={emp} />
+              </TabsContent>
+            </>
+          )}
 
           <TabsContent value="history">
             <HistoryTab history={emp.history ?? []} />
@@ -131,19 +154,23 @@ export function EmployeeDetailTabs({ emp }: { emp: EmployeeDetail }) {
         </div>
       </Tabs>
 
-      <DeleteEmployeeDialog
-        open={deleteOpen}
-        onOpenChange={setDeleteOpen}
-        employeeId={emp.employeeId ?? 0}
-        employeeName={emp.displayName ?? t("employees.thisEmployee")}
-        onDeleted={() => navigate("/hr/employees")}
-      />
+      {capabilities.canDeleteEmployee && (
+        <DeleteEmployeeDialog
+          open={deleteOpen}
+          onOpenChange={setDeleteOpen}
+          employeeId={emp.employeeId ?? 0}
+          employeeName={emp.displayName ?? t("employees.thisEmployee")}
+          onDeleted={() => navigate("/hr/employees")}
+        />
+      )}
 
-      <EmployeeContractImportDialog
-        employeeId={emp.employeeId ?? 0}
-        open={importOpen}
-        onOpenChange={setImportOpen}
-      />
+      {canViewBroadHr && (
+        <EmployeeContractImportDialog
+          employeeId={emp.employeeId ?? 0}
+          open={importOpen}
+          onOpenChange={setImportOpen}
+        />
+      )}
     </div>
   );
 }
